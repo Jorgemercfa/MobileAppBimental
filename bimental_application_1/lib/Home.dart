@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Chatbot.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -15,7 +17,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const HomePage(),
+      initialRoute: './',
+      routes: {
+        './': (context) => HomePage(),
+        './Chatbot': (context) => ChatbotPage(),
+        // '/ForgetPassword': (context) => ResetPasswordPage(),
+      },
     );
   }
 }
@@ -55,6 +62,8 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Acción al presionar el botón de Chatbot
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatbotPage()));
               },
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xFF1A119B),
