@@ -35,10 +35,15 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar Sesión'),
+        title: const Text(
+          'Iniciar Sesión',
+          style: TextStyle(color: Color(0xFF1A119B)), // Cambia color del texto
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(
+            color: Color(0xFF1A119B)), // Color de los íconos
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -50,6 +55,7 @@ class LoginPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
+                color: Color(0xFF1A119B), // Cambia color del texto principal
               ),
             ),
             const SizedBox(height: 20),
@@ -69,11 +75,16 @@ class LoginPage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => HomePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
+                primary:
+                    const Color(0xFF1A119B), // Cambia color de fondo del botón
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Iniciar Sesión'),
+              child: const Text(
+                'Iniciar Sesión',
+                style:
+                    TextStyle(color: Colors.white), // Color del texto del botón
+              ),
             ),
             const SizedBox(height: 10),
             TextButton(
@@ -84,7 +95,11 @@ class LoginPage extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => ResetPasswordPage()));
               },
-              child: const Text('Olvidé contraseña'),
+              child: const Text(
+                'Olvidé contraseña',
+                style: TextStyle(
+                    color: Color(0xFF1A119B)), // Cambia color del texto
+              ),
             ),
             const SizedBox(height: 10),
             TextButton(
@@ -95,7 +110,11 @@ class LoginPage extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => RegisterUserPage()));
               },
-              child: const Text('Registrar usuario'),
+              child: const Text(
+                'Registrar usuario',
+                style: TextStyle(
+                    color: Color(0xFF1A119B)), // Cambia color del texto
+              ),
             ),
           ],
         ),
@@ -120,12 +139,15 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
+        labelStyle:
+            const TextStyle(color: Color(0xFF1A119B)), // Cambia color del label
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
         filled: true,
         fillColor: Colors.white,
       ),
+      cursorColor: const Color(0xFF1A119B), // Cambia color del cursor
     );
   }
 }

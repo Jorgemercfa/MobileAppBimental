@@ -26,12 +26,11 @@ class RegisterUserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registrar Usuario'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.deepPurple,
-      ),
+          title: const Text('Registrar Usuario'),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF1A119B)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -42,7 +41,7 @@ class RegisterUserPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 10),
@@ -50,7 +49,6 @@ class RegisterUserPage extends StatelessWidget {
               'Registrar Usuario',
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.deepPurple,
               ),
             ),
             const SizedBox(height: 30),
@@ -74,7 +72,7 @@ class RegisterUserPage extends StatelessWidget {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
+                primary: Color(0xFF1A119B),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),

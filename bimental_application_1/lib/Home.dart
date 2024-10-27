@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: const Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 50),
@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
                 // Acción al presionar el botón de Chatbot
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
+                primary: const Color(0xFF1A119B),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                 // Acción al presionar el botón de Pre diagnóstico
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurple,
+                primary: const Color(0xFF1A119B),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
