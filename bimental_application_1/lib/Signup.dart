@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BiMental',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
@@ -45,12 +46,6 @@ class RegisterUserPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Registrar Usuario',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
             const SizedBox(height: 30),
             const CustomTextField(
               labelText: 'Correo Electronico',
