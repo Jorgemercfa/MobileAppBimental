@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'BiMental',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.green),
+            onPressed: () {
+              // Acción al presionar el botón de salir
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'BiMental',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple,
+              ),
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                // Acción al presionar el botón de Chatbot
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.deepPurple,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
+              child: const Text('Chatbot'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Acción al presionar el botón de Pre diagnóstico
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.deepPurple,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              child: const Text('Pre diagnóstico'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

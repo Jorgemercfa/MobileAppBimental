@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'ForgetPassword.dart';
-import 'Home.dart';
-import 'Signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,30 +12,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BiMental',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(),
-        '/Home': (context) => HomePage(),
-        '/ForgetPassword': (context) => ResetPasswordPage(),
-        '/Signup': (context) => RegisterUserPage(),
-      },
+      home: const RegisterUserPage(),
     );
   }
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegisterUserPage extends StatelessWidget {
+  const RegisterUserPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar Sesión'),
+        title: const Text('Registrar Usuario'),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
+        foregroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -50,9 +42,18 @@ class LoginPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
+                color: Colors.deepPurple,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            const Text(
+              'Registrar Usuario',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.deepPurple,
+              ),
+            ),
+            const SizedBox(height: 30),
             const CustomTextField(
               labelText: 'Correo Electronico',
             ),
@@ -61,41 +62,23 @@ class LoginPage extends StatelessWidget {
               labelText: 'Contraseña',
               obscureText: true,
             ),
+            const SizedBox(height: 20),
+            const CustomTextField(
+              labelText: 'Confirmar Contraseña',
+              obscureText: true,
+            ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Acción al presionar el botón de iniciar sesión
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                // Acción al presionar el botón de registro
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.deepPurple,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Iniciar Sesión'),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Acción al presionar "Olvidé contraseña"
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPasswordPage()));
-              },
-              child: const Text('Olvidé contraseña'),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Acción al presionar "Registrar usuario"
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RegisterUserPage()));
-              },
-              child: const Text('Registrar usuario'),
+              child: const Text('Registrar Usuario'),
             ),
           ],
         ),
@@ -121,7 +104,8 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
         filled: true,
         fillColor: Colors.white,

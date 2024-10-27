@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'ForgetPassword.dart';
-import 'Home.dart';
-import 'Signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,25 +14,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(),
-        '/Home': (context) => HomePage(),
-        '/ForgetPassword': (context) => ResetPasswordPage(),
-        '/Signup': (context) => RegisterUserPage(),
-      },
+      home: const ResetPasswordPage(),
     );
   }
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class ResetPasswordPage extends StatelessWidget {
+  const ResetPasswordPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar Sesión'),
+        title: const Text('Olvidé Contraseña'),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -54,48 +45,26 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Correo Electronico',
+              labelText: 'Nueva Contraseña',
+              obscureText: true,
             ),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Contraseña',
+              labelText: 'Confirmar Nueva Contraseña',
               obscureText: true,
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Acción al presionar el botón de iniciar sesión
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                // Acción al presionar "Cambiar Contraseña"
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.deepPurple,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Iniciar Sesión'),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Acción al presionar "Olvidé contraseña"
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPasswordPage()));
-              },
-              child: const Text('Olvidé contraseña'),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Acción al presionar "Registrar usuario"
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RegisterUserPage()));
-              },
-              child: const Text('Registrar usuario'),
+              child: const Text('Cambiar Contraseña'),
             ),
           ],
         ),
