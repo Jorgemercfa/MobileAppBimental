@@ -36,12 +36,7 @@ class ChatbotPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: const Text(
-          'Contenido de la página',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
+      body: Center(),
     );
   }
 }

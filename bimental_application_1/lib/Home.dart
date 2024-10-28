@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'Chatbot.dart';
+import 'Formulario.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         './': (context) => HomePage(),
         './Chatbot': (context) => ChatbotPage(),
-        // '/ForgetPassword': (context) => ResetPasswordPage(),
+        './Formulario': (context) => CuestionarioScreen(),
       },
     );
   }
@@ -76,6 +76,10 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Acción al presionar el botón de Pre diagnóstico
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CuestionarioScreen()));
               },
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xFF1A119B),
