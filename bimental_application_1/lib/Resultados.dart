@@ -25,7 +25,11 @@ class ResultadoDASS21Screen extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 resultado,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A119B), // Color modificado
+                ),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),

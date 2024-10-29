@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// import 'Resultados.dart';
-
 class CuestionarioDASS21Screen extends StatefulWidget {
   @override
   _CuestionarioDASS21ScreenState createState() =>
@@ -131,7 +129,7 @@ class _CuestionarioDASS21ScreenState extends State<CuestionarioDASS21Screen> {
       children: [
         Text(
           texto,
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 18, color: Color(0xFF1A119B)),
           textAlign: TextAlign.center,
         ),
         Row(
