@@ -1,30 +1,86 @@
 import 'package:flutter/material.dart';
 
-class CuestionarioScreen extends StatefulWidget {
+// import 'Resultados.dart';
+
+class CuestionarioDASS21Screen extends StatefulWidget {
   @override
-  _CuestionarioScreenState createState() => _CuestionarioScreenState();
+  _CuestionarioDASS21ScreenState createState() =>
+      _CuestionarioDASS21ScreenState();
 }
 
-class _CuestionarioScreenState extends State<CuestionarioScreen> {
-  // Inicializamos los puntajes de cada pregunta en 0
-  int pregunta1 = 0;
-  int pregunta2 = 0;
-  int pregunta3 = 0;
+class _CuestionarioDASS21ScreenState extends State<CuestionarioDASS21Screen> {
+  // Lista para almacenar los puntajes de las 21 preguntas
+  List<int> respuestas = List.filled(21, 0);
 
-  // Función para calcular el resultado basado en los puntajes
+  // Lista de textos personalizados para cada pregunta
+  final List<String> textosPreguntas = [
+    "Pregunta 1: Me encontré enojándome por cosas triviales.",
+    "Pregunta 2: Sentí que no podía experimentar ninguna emoción positiva.",
+    "Pregunta 3: Experimenté dificultad para respirar sin esfuerzo físico.",
+    "Pregunta 4: Tuve dificultad para motivarme para hacer cosas.",
+    "Pregunta 5: Me sentí excesivamente ansioso.",
+    "Pregunta 6: Tuve dificultades para relajarme.",
+    "Pregunta 7: Sentí que estaba actuando de forma irritable.",
+    "Pregunta 8: Me sentí preocupado/a por situaciones cotidianas.",
+    "Pregunta 9: Sentí tristeza la mayor parte del día.",
+    "Pregunta 10: Sentí que estaba constantemente en tensión.",
+    "Pregunta 11: Me encontré teniendo reacciones emocionales fuertes.",
+    "Pregunta 12: Experimenté pensamientos negativos acerca de mí mismo.",
+    "Pregunta 13: Me sentí constantemente nervioso.",
+    "Pregunta 14: Me preocupé de manera excesiva por el futuro.",
+    "Pregunta 15: Me sentí cansado/a o fatigado/a sin razón aparente.",
+    "Pregunta 16: Perdí interés en cosas que antes disfrutaba.",
+    "Pregunta 17: Me sentí incapaz de lidiar con mi vida cotidiana.",
+    "Pregunta 18: Me asusté con facilidad.",
+    "Pregunta 19: Sentí dificultad para concentrarme.",
+    "Pregunta 20: Experimenté cambios en mis hábitos de sueño.",
+    "Pregunta 21: Me sentí desconectado de mi entorno.",
+  ];
+
+  // Índices de las preguntas de cada subescala
+  final depresionIndices = [2, 4, 9, 12, 15, 16, 20];
+  final ansiedadIndices = [1, 3, 6, 8, 14, 18, 19];
+  final estresIndices = [0, 5, 7, 10, 11, 13, 17];
+
+  // Función para calcular el resultado de cada subescala
   String calcularResultado() {
-    int puntajeTotal = pregunta1 + pregunta2 + pregunta3;
+    int depresionScore =
+        depresionIndices.map((i) => respuestas[i]).reduce((a, b) => a + b);
+    int ansiedadScore =
+        ansiedadIndices.map((i) => respuestas[i]).reduce((a, b) => a + b);
+    int estresScore =
+        estresIndices.map((i) => respuestas[i]).reduce((a, b) => a + b);
 
-    if (puntajeTotal == 0) {
-      return "Usted no tiene signos de depresión";
-    }
-    if (puntajeTotal == 1) {
-      return "Usted tiene depresión leve";
-    }
-    if (puntajeTotal == 2) {
-      return "Usted tiene depresión grave";
-    } else {
-      return "Usted tiene depresión severa";
+    String depresionResultado = obtenerNivel(depresionScore, "Depresión");
+    String ansiedadResultado = obtenerNivel(ansiedadScore, "Ansiedad");
+    String estresResultado = obtenerNivel(estresScore, "Estrés");
+
+    return "$depresionResultado\n$ansiedadResultado\n$estresResultado";
+  }
+
+  // Función para obtener el nivel de severidad basado en el puntaje y tipo
+  String obtenerNivel(int puntaje, String tipo) {
+    switch (tipo) {
+      case "Depresión":
+        if (puntaje <= 4) return "No tiene depresión";
+        if (puntaje <= 6) return "Depresión leve";
+        if (puntaje <= 10) return "Depresión moderada";
+        if (puntaje <= 13) return "Depresión severa";
+        return "Depresión extremadamente severa";
+      case "Ansiedad":
+        if (puntaje <= 3) return "No tiene ansiedad";
+        if (puntaje == 4) return "Ansiedad leve";
+        if (puntaje <= 7) return "Ansiedad moderada";
+        if (puntaje <= 9) return "Ansiedad severa";
+        return "Ansiedad extremadamente severa";
+      case "Estrés":
+        if (puntaje <= 7) return "No tiene estrés";
+        if (puntaje <= 9) return "Estrés leve";
+        if (puntaje <= 12) return "Estrés moderado";
+        if (puntaje <= 16) return "Estrés severo";
+        return "Estrés extremadamente severo";
+      default:
+        return "";
     }
   }
 
@@ -32,32 +88,19 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cuestionarios de pre diagnóstico'),
+        title: Text('Cuestionario DASS-21'),
         backgroundColor: Color(0xFF1A119B),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
-            buildPregunta(
-                "Me encontré enojándome por cosas bastante triviales.",
-                (value) {
-              setState(() {
-                pregunta1 = value;
-              });
-            }, pregunta1),
-            buildPregunta(
-                "Tenía tendencia a reaccionar exageradamente a las situaciones.",
-                (value) {
-              setState(() {
-                pregunta2 = value;
-              });
-            }, pregunta2),
-            buildPregunta("Sentí que estaba cerca del pánico.", (value) {
-              setState(() {
-                pregunta3 = value;
-              });
-            }, pregunta3),
+            for (int i = 0; i < 21; i++)
+              buildPregunta(textosPreguntas[i], (value) {
+                setState(() {
+                  respuestas[i] = value;
+                });
+              }, respuestas[i]),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -65,7 +108,8 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ResultadoScreen(resultado: resultado),
+                    builder: (context) =>
+                        ResultadoDASS21Screen(resultado: resultado),
                   ),
                 );
               },
@@ -83,9 +127,13 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
   Widget buildPregunta(
       String texto, Function(int) onChanged, int valorSeleccionado) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(texto, style: TextStyle(fontSize: 18)),
+        Text(
+          texto,
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(4, (index) {
@@ -122,10 +170,10 @@ class _CuestionarioScreenState extends State<CuestionarioScreen> {
   }
 }
 
-class ResultadoScreen extends StatelessWidget {
+class ResultadoDASS21Screen extends StatelessWidget {
   final String resultado;
 
-  ResultadoScreen({required this.resultado});
+  ResultadoDASS21Screen({required this.resultado});
 
   @override
   Widget build(BuildContext context) {
