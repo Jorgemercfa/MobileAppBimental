@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dialog_flowtter: ^0.3.1
+  http: ^0.13.4 # Para hacer llamadas HTTP
 
 dev_dependencies:
   flutter_test:

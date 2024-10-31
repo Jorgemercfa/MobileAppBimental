@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       initialRoute: './',
       routes: {
         './': (context) => HomePage(),
-        './Chatbot': (context) => ChatbotPage(),
+        './Chatbot': (context) => ChatScreen(),
         './Formulario': (context) => CuestionarioDASS21Screen(),
       },
     );
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // Acción al presionar el botón de Chatbot
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatbotPage()));
+                    MaterialPageRoute(builder: (context) => ChatScreen()));
               },
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xFF1A119B),
