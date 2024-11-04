@@ -46,9 +46,17 @@ class RegisterUserPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             const CustomTextField(
               labelText: 'Correo Electronico',
+            ),
+            const SizedBox(height: 20),
+            const CustomTextField(
+              labelText: 'Nombres y Apellidos',
+            ),
+            const SizedBox(height: 20),
+            const CustomTextField(
+              labelText: 'Numero Telefonico',
             ),
             const SizedBox(height: 20),
             const CustomTextField(
