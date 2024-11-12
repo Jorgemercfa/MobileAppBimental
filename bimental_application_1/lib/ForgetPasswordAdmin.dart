@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ResetPasswordPageAdmin(),
+      home: const ForgetPasswordPageAdmin(),
     );
   }
 }
 
-class ResetPasswordPageAdmin extends StatelessWidget {
-  const ResetPasswordPageAdmin({Key? key}) : super(key: key);
+class ForgetPasswordPageAdmin extends StatelessWidget {
+  const ForgetPasswordPageAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

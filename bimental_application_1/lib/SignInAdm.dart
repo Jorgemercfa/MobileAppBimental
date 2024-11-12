@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => SignInAdmin(),
         '/HomeAdmin': (context) => HomePageAdmin(),
-        '/ForgetPasswordAdmin': (context) => ResetPasswordPageAdmin(),
+        '/ForgetPasswordAdmin': (context) => ForgetPasswordPageAdmin(),
       },
     );
   }
@@ -94,7 +94,7 @@ class SignInAdmin extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ResetPasswordPageAdmin()));
+                        builder: (context) => const ForgetPasswordPageAdmin()));
               },
               child: const Text(
                 'Olvidé contraseña',
