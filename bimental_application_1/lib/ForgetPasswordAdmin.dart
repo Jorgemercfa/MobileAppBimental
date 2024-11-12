@@ -10,28 +10,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental',
+      title: 'BiMental administrativo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.blue,
       ),
-      home: const RegisterUserPage(),
+      home: const ResetPasswordPageAdmin(),
     );
   }
 }
 
-class RegisterUserPage extends StatelessWidget {
-  const RegisterUserPage({Key? key}) : super(key: key);
+class ResetPasswordPageAdmin extends StatelessWidget {
+  const ResetPasswordPageAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Registrar Usuario'),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF1A119B)),
+        title: const Text(
+          'Olvidé Contraseña',
+          style: TextStyle(color: Color(0xFF1A119B)), // Cambia color del texto
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(
+            color: Color(0xFF1A119B)), // Color de los íconos
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -42,44 +47,41 @@ class RegisterUserPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A119B),
+                color: Color(0xFF1A119B), // Cambia color del texto principal
               ),
             ),
-            const SizedBox(height: 10),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Correo Electronico',
-            ),
-            const SizedBox(height: 20),
-            const CustomTextField(
-              labelText: 'Nombres y Apellidos',
-            ),
-            const SizedBox(height: 20),
-            const CustomTextField(
-              labelText: 'Numero Telefonico',
-            ),
-            const SizedBox(height: 20),
-            const CustomTextField(
-              labelText: 'Contraseña',
+              labelText: 'Correo del usuario',
               obscureText: true,
             ),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Confirmar Contraseña',
+              labelText: 'Nueva Contraseña del usuario',
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            const CustomTextField(
+              labelText: 'Confirmar Nueva Contraseña del usuario',
               obscureText: true,
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Acción al presionar el botón de registro
+                // Acción al presionar "Cambiar Contraseña"
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1A119B),
+                backgroundColor:
+                    const Color(0xFF1A119B), // Cambia color de fondo del botón
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Registrar Usuario'),
+              child: const Text(
+                'Cambiar Contraseña',
+                style:
+                    TextStyle(color: Colors.white), // Color del texto del botón
+              ),
             ),
           ],
         ),
@@ -104,13 +106,15 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
+        labelStyle:
+            const TextStyle(color: Color(0xFF1A119B)), // Cambia color del label
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
         ),
         filled: true,
         fillColor: Colors.white,
       ),
+      cursorColor: const Color(0xFF1A119B), // Cambia color del cursor
     );
   }
 }

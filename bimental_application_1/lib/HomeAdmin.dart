@@ -11,22 +11,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental',
+      title: 'BiMental administrativo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
       initialRoute: './',
       routes: {
-        './': (context) => HomePage(),
+        './': (context) => HomePageAdmin(),
         './Chatbot': (context) => ChatScreen(),
       },
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePageAdmin extends StatelessWidget {
+  const HomePageAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'BiMental',
+              'BiMental adminstrativo',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Chatbot'),
+              child: const Text('Resultados'),
             ),
             const SizedBox(height: 20),
             // ElevatedButton(

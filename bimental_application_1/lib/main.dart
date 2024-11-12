@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
+import 'SignInAdm.dart';
 import 'Signup.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/Home': (context) => HomePage(),
         '/ForgetPassword': (context) => ResetPasswordPage(),
         '/Signup': (context) => RegisterUserPage(),
+        '/SignInAdmin': (context) => SignInAdmin(),
       },
     );
   }
@@ -73,10 +75,10 @@ class LoginPage extends StatelessWidget {
               onPressed: () {
                 // Acción al presionar el botón de iniciar sesión
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                    MaterialPageRoute(builder: (context) => const HomePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary:
+                backgroundColor:
                     const Color(0xFF1A119B), // Cambia color de fondo del botón
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
@@ -94,7 +96,7 @@ class LoginPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ResetPasswordPage()));
+                        builder: (context) => const ResetPasswordPage()));
               },
               child: const Text(
                 'Olvidé contraseña',
@@ -109,10 +111,25 @@ class LoginPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => RegisterUserPage()));
+                        builder: (context) => const RegisterUserPage()));
               },
               child: const Text(
                 'Registrar usuario',
+                style: TextStyle(
+                    color: Color(0xFF1A119B)), // Cambia color del texto
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                // Acción al presionar "Administrativo"
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInAdmin()));
+              },
+              child: const Text(
+                'Administrativo',
                 style: TextStyle(
                     color: Color(0xFF1A119B)), // Cambia color del texto
               ),

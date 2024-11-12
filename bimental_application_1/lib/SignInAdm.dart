@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'ForgetPasswordAdmin.dart';
+import 'HomeAdmin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,25 +12,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental',
+      title: 'BiMental administravito',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ResetPasswordPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SignInAdmin(),
+        '/HomeAdmin': (context) => HomePageAdmin(),
+        '/ForgetPasswordAdmin': (context) => ResetPasswordPageAdmin(),
+      },
     );
   }
 }
 
-class ResetPasswordPage extends StatelessWidget {
-  const ResetPasswordPage({Key? key}) : super(key: key);
+class SignInAdmin extends StatelessWidget {
+  const SignInAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Olvidé Contraseña',
+          'Iniciar Sesión',
           style: TextStyle(color: Color(0xFF1A119B)), // Cambia color del texto
         ),
         centerTitle: true,
@@ -43,7 +50,7 @@ class ResetPasswordPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'BiMental',
+              'BiMental administrativo',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -52,24 +59,21 @@ class ResetPasswordPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Correo del usuario',
-              obscureText: true,
+              labelText: 'Correo Electronico',
             ),
             const SizedBox(height: 20),
             const CustomTextField(
-              labelText: 'Nueva Contraseña del usuario',
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            const CustomTextField(
-              labelText: 'Confirmar Nueva Contraseña del usuario',
+              labelText: 'Contraseña',
               obscureText: true,
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Acción al presionar "Cambiar Contraseña"
-                Navigator.pop(context);
+                // Acción al presionar el botón de iniciar sesión
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomePageAdmin()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:
@@ -78,9 +82,24 @@ class ResetPasswordPage extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text(
-                'Cambiar Contraseña',
+                'Iniciar Sesión',
                 style:
                     TextStyle(color: Colors.white), // Color del texto del botón
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                // Acción al presionar "Olvidé contraseña"
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ResetPasswordPageAdmin()));
+              },
+              child: const Text(
+                'Olvidé contraseña',
+                style: TextStyle(
+                    color: Color(0xFF1A119B)), // Cambia color del texto
               ),
             ),
           ],
