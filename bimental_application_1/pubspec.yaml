@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.2 # Para hacer llamadas HTTP
-
+  font_awesome_flutter: ^10.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

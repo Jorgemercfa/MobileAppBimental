@@ -1,5 +1,5 @@
+import 'package:bimental_application_1/resultadosAdmin.dart';
 import 'package:flutter/material.dart';
-import 'Chatbot.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: './',
       routes: {
         './': (context) => HomePageAdmin(),
-        './Chatbot': (context) => ChatScreen(),
+        './Chatbot': (context) => UserResultsPage(),
       },
     );
   }
@@ -61,7 +61,7 @@ class HomePageAdmin extends StatelessWidget {
               onPressed: () {
                 // Acción al presionar el botón de Chatbot
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatScreen()));
+                    MaterialPageRoute(builder: (context) => UserResultsPage()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1A119B),
@@ -71,21 +71,6 @@ class HomePageAdmin extends StatelessWidget {
               child: const Text('Resultados'),
             ),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     // Acción al presionar el botón de Pre diagnóstico
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //             builder: (context) => CuestionarioDASS21Screen()));
-            //   },
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: const Color(0xFF1A119B),
-            //     padding:
-            //         const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-            //   ),
-            //   child: const Text('Pre diagnóstico'),
-            // ),
           ],
         ),
       ),
