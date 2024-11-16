@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/CofigurationUser.dart';
 import 'package:bimental_application_1/userRespuesta.dart';
 import 'package:flutter/material.dart';
 import 'Chatbot.dart';
@@ -12,18 +13,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      initialRoute: './',
-      routes: {
-        './': (context) => HomePage(),
-        './Chatbot': (context) => ChatScreen(),
-        './userRespuesta.dart': (context) => HistorialResultadosScreen(),
-      },
-    );
+        title: 'BiMental',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+        ),
+        initialRoute: './',
+        routes: {
+          './': (context) => HomePage(),
+          './Chatbot': (context) => ChatScreen(),
+          './userRespuesta.dart': (context) => HistorialResultadosScreen(),
+          './ConfigurationUser': (context) => ConfiguracionScreen(),
+        });
   }
 }
 
@@ -84,9 +85,25 @@ class HomePage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1A119B),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text('Pre diagnóstico'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Acción al presionar el botón de Pre diagnóstico
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ConfiguracionScreen()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1A119B),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
+              child: const Text('Configuración'),
             ),
           ],
         ),

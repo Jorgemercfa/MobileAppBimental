@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/ConfigutarionAdmin.dart';
 import 'package:bimental_application_1/resultadosAdmin.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
       routes: {
         './': (context) => HomePageAdmin(),
         './Chatbot': (context) => UserResultsPage(),
+        './ConfigurationAdmin': (context) =>
+            ConfiguracionAdministracionScreen(),
       },
     );
   }
@@ -69,6 +72,23 @@ class HomePageAdmin extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text('Resultados'),
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                // Acción al presionar el botón de Chatbot
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ConfiguracionAdministracionScreen()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1A119B),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
+              child: const Text('Configuraciones'),
             ),
             const SizedBox(height: 20),
           ],
