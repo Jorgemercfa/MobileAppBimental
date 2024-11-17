@@ -87,7 +87,7 @@ class HomePage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Pre diagnóstico'),
+              child: const Text('Resultado'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
