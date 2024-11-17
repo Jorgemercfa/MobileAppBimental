@@ -29,40 +29,246 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
-  bool _questionnaireCompleted = false;
+  int questionCategoryNumber = 1;
 
-  final Map<String, List<String>> _questions = {
+  // Map de preguntas por categoría
+  final Map<String, List<Map<String, String>>> _questions = {
     "1": [
-      "Me costó mucho relajarme",
-      "Me fue difícil relajarme",
-      "Relajarme resultó ser un desafío",
-      "Tuve problemas para encontrar un momento de relajación"
+      {"id": "1.1", "texto": "Me costó mucho relajarme"},
+      {"id": "1.2", "texto": "Me fue difícil relajarme"},
+      {"id": "1.3", "texto": "Relajarme resultó ser un desafío"},
+      {
+        "id": "1.4",
+        "texto": "Tuve problemas para encontrar un momento de relajación"
+      }
     ],
     "2": [
-      "Me di cuenta que tenía la boca seca",
-      "Noté que mi boca estaba seca",
-      "Sentí sequedad en la boca",
-      "Percibí que mi boca carecía de humedad"
+      {"id": "2.1", "texto": "Me di cuenta que tenía la boca seca"},
+      {"id": "2.2", "texto": "Noté que mi boca estaba seca"},
+      {"id": "2.3", "texto": "Sentí sequedad en la boca"},
+      {"id": "2.4", "texto": "Percibí que mi boca carecía de humedad"}
     ],
     "3": [
-      "No podía sentir ningún sentimiento positivo",
-      "Me resultaba imposible experimentar emociones positivas",
-      "No lograba sentirme bien emocionalmente",
-      "No podía conectar con sentimientos agradables"
+      {"id": "3.1", "texto": "No podía sentir ningún sentimiento positivo"},
+      {
+        "id": "3.2",
+        "texto": "Me resultaba imposible experimentar emociones positivas"
+      },
+      {"id": "3.3", "texto": "No lograba sentirme bien emocionalmente"},
+      {"id": "3.4", "texto": "No podía conectar con sentimientos agradables"}
     ],
     "4": [
-      "Se me hizo difícil respirar (p. ej., respiración excesivamente rápida o falta de aliento sin hacer esfuerzo físico)",
-      "Tuve problemas para respirar de forma normal",
-      "Sentí que me costaba tomar aire",
-      "Experimenté dificultad al intentar respirar sin razón aparente"
+      {
+        "id": "4.1",
+        "texto":
+            "Se me hizo difícil respirar (p. ej., respiración excesivamente rápida o falta de aliento sin hacer esfuerzo físico)"
+      },
+      {"id": "4.2", "texto": "Tuve problemas para respirar de forma normal"},
+      {"id": "4.3", "texto": "Sentí que me costaba tomar aire"},
+      {
+        "id": "4.4",
+        "texto":
+            "Experimenté dificultad al intentar respirar sin razón aparente"
+      }
     ],
     "5": [
-      "Se me hizo difícil tomar la iniciativa para hacer cosas",
-      "Me costó iniciar actividades por mi cuenta",
-      "Sentí que no podía empezar cosas nuevas fácilmente",
-      "Iniciar tareas fue complicado para mí"
+      {
+        "id": "5.1",
+        "texto": "Se me hizo difícil tomar la iniciativa para hacer cosas"
+      },
+      {"id": "5.2", "texto": "Me costó iniciar actividades por mi cuenta"},
+      {
+        "id": "5.3",
+        "texto": "Sentí que no podía empezar cosas nuevas fácilmente"
+      },
+      {"id": "5.4", "texto": "Iniciar tareas fue complicado para mí"}
     ],
+    "6": [
+      {"id": "6.1", "texto": "Reaccioné exageradamente en ciertas situaciones"},
+      {
+        "id": "6.2",
+        "texto": "Respondí de forma desproporcionada en algunas circunstancias"
+      },
+      {
+        "id": "6.3",
+        "texto":
+            "Mi reacción en ciertas situaciones fue más intensa de lo normal"
+      },
+      {"id": "6.4", "texto": "Exageré mis respuestas en determinados momentos"}
+    ],
+    "7": [
+      {"id": "7.1", "texto": "Tuve temblores (p. ej., en las manos)"},
+      {"id": "7.2", "texto": "Sentí que mis manos temblaban"},
+      {"id": "7.3", "texto": "Experimenté temblores físicos"},
+      {
+        "id": "7.4",
+        "texto": "Noté movimientos involuntarios en mis extremidades"
+      }
+    ],
+    "8": [
+      {"id": "8.1", "texto": "Sentí que tenía muchos nervios"},
+      {"id": "8.2", "texto": "Me sentí extremadamente nervioso"},
+      {"id": "8.3", "texto": "Los nervios me dominaron en varias ocasiones"},
+      {"id": "8.4", "texto": "Estuve inquieto y con mucha ansiedad"}
+    ],
+    "9": [
+      {
+        "id": "9.1",
+        "texto":
+            "Estuve preocupado por situaciones en las cuales podía entrar en pánico y hacer el ridículo"
+      },
+      {
+        "id": "9.2",
+        "texto":
+            "Me angustié ante la posibilidad de perder el control y avergonzarme"
+      },
+      {
+        "id": "9.3",
+        "texto":
+            "Temí encontrarme en situaciones donde pudiera entrar en pánico"
+      },
+      {
+        "id": "9.4",
+        "texto": "Me preocupaba pasar vergüenza por no controlar mi ansiedad"
+      }
+    ],
+    "10": [
+      {"id": "10.1", "texto": "Sentí que no tenía nada por lo que ilusionarme"},
+      {"id": "10.2", "texto": "Sentí que no había nada que me motivara"},
+      {"id": "10.3", "texto": "Me faltaba entusiasmo hacia el futuro"},
+      {
+        "id": "10.4",
+        "texto": "Carecía de expectativas positivas que me alegraran"
+      }
+    ],
+    "11": [
+      {"id": "11.1", "texto": "Me sentí agitado"},
+      {"id": "11.2", "texto": "Estuve inquieto y alterado"},
+      {"id": "11.3", "texto": "Sentí que no podía estar en calma"},
+      {"id": "11.4", "texto": "Me noté muy nervioso y acelerado"}
+    ],
+    "12": [
+      {"id": "12.1", "texto": "Se me hizo difícil relajarme"},
+      {"id": "12.2", "texto": "Relajarme fue complicado para mí"},
+      {
+        "id": "12.3",
+        "texto": "Tuve problemas para alcanzar un estado de calma"
+      },
+      {"id": "12.4", "texto": "Me costó mucho encontrar tranquilidad"}
+    ],
+    "13": [
+      {"id": "13.1", "texto": "Me sentí triste y deprimido"},
+      {"id": "13.2", "texto": "Experimenté una sensación profunda de tristeza"},
+      {"id": "13.3", "texto": "Me noté abatido y sin ánimos"},
+      {"id": "13.4", "texto": "Estuve emocionalmente decaído"}
+    ],
+    "14": [
+      {
+        "id": "14.1",
+        "texto":
+            "No toleré nada que no me permitiera continuar con lo que estaba haciendo"
+      },
+      {
+        "id": "14.2",
+        "texto": "Me frustré con cualquier interrupción en mis actividades"
+      },
+      {
+        "id": "14.3",
+        "texto":
+            "No pude soportar situaciones que afectaran mi ritmo de trabajo"
+      },
+      {
+        "id": "14.4",
+        "texto": "Me molestaba cualquier cosa que interrumpiera mis planes"
+      }
+    ],
+    "15": [
+      {"id": "15.1", "texto": "Sentí que estaba cercano a sentir pánico"},
+      {
+        "id": "15.2",
+        "texto": "Percibí que estaba al borde de entrar en pánico"
+      },
+      {
+        "id": "15.3",
+        "texto": "Tuve la sensación de que un ataque de pánico era inminente"
+      },
+      {
+        "id": "15.4",
+        "texto": "Sentí que la ansiedad extrema estaba a punto de desbordarse"
+      }
+    ],
+    "16": [
+      {"id": "16.1", "texto": "No me pude entusiasmar por nada"},
+      {"id": "16.2", "texto": "Nada lograba despertar mi interés"},
+      {"id": "16.3", "texto": "No encontré motivación en ninguna actividad"},
+      {"id": "16.4", "texto": "Carecía de entusiasmo por todo"}
+    ],
+    "17": [
+      {"id": "17.1", "texto": "Sentí que valía muy poco como persona"},
+      {
+        "id": "17.2",
+        "texto": "Percibí que mi valor personal era insignificante"
+      },
+      {"id": "17.3", "texto": "Me sentí menospreciado, incluso por mí mismo"},
+      {"id": "17.4", "texto": "Creí que no tenía importancia como individuo"}
+    ],
+    "18": [
+      {"id": "18.1", "texto": "Sentí que estaba muy irritable"},
+      {"id": "18.2", "texto": "Me noté fácilmente molesto"},
+      {"id": "18.3", "texto": "Estuve más propenso a la irritación"},
+      {
+        "id": "18.4",
+        "texto": "Cualquier cosa pequeña me hacía perder la paciencia"
+      }
+    ],
+    "19": [
+      {
+        "id": "19.1",
+        "texto":
+            "Sentí la actividad de mi corazón a pesar de no haber hecho ningún esfuerzo físico (p. ej., aumento de los latidos, sensación de palpitación o salto de los latidos)"
+      },
+      {"id": "19.2", "texto": "Percibí latidos acelerados sin razón aparente"},
+      {
+        "id": "19.3",
+        "texto": "Sentí que mi corazón palpitaba con fuerza, incluso en reposo"
+      },
+      {
+        "id": "19.4",
+        "texto":
+            "Noté un ritmo cardíaco irregular sin haber realizado ejercicio"
+      }
+    ],
+    "20": [
+      {"id": "20.1", "texto": "Tuve miedo sin razón"},
+      {"id": "20.2", "texto": "Sentí temor sin un motivo específico"},
+      {"id": "20.3", "texto": "Me asusté sin causa aparente"},
+      {
+        "id": "20.4",
+        "texto": "Experimenté una sensación de miedo injustificado"
+      }
+    ],
+    "21": [
+      {"id": "21.1", "texto": "Sentí que la vida no tenía ningún sentido"},
+      {"id": "21.2", "texto": "Percibí que mi existencia carecía de propósito"},
+      {"id": "21.3", "texto": "Me parecía que todo en la vida era inútil"},
+      {"id": "21.4", "texto": "Sentí que no había razones para seguir adelante"}
+    ]
   };
+
+  List<Map<String, String>> _selectedQuestions = [];
+
+  // Método para generar una pregunta aleatoria de la categoría actual
+  Map<String, String> _generateRandomQuestion() {
+    final random = Random();
+    final group = _questions[questionCategoryNumber.toString()];
+
+    // Retorna una pregunta aleatoria del grupo correspondiente
+    if (group != null && group.isNotEmpty) {
+      return group[random.nextInt(group.length)];
+    } else {
+      return {"id": "N/A", "texto": "No hay más preguntas disponibles"};
+    }
+  }
 
   void _sendMessage() async {
     final text = _controller.text.trim();
@@ -71,9 +277,23 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.toLowerCase() == 'cuestionario') {
       setState(() {
         _showQuestionnaire = true;
+        _selectedQuestions = [_generateRandomQuestion()];
         _controller.clear();
+        questionCategoryNumber = 1;
       });
       return;
+    }
+
+    if (_showQuestionnaire == true) {
+      questionCategoryNumber++;
+      if (questionCategoryNumber <= _questions.length) {
+        setState(() {
+          _selectedQuestions = [_generateRandomQuestion()];
+        });
+      } else {
+        _finishQuestionnaire();
+        return;
+      }
     }
 
     setState(() {
@@ -100,24 +320,14 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  List<String> _generateRandomQuestions() {
-    final random = Random();
-    return _questions.entries.map((entry) {
-      final options = entry.value;
-      return options[random.nextInt(options.length)];
-    }).toList();
-  }
-
-  void _completeQuestionnaire() {
+  void _finishQuestionnaire() {
     setState(() {
       _showQuestionnaire = false;
-      _questionnaireCompleted = true;
+      _selectedQuestions = [];
     });
-
-    // Reactivar OpenAI
     _messages.add({
       'bot':
-          "¡Gracias por completar el cuestionario! Puedes continuar interactuando conmigo."
+          "Gracias por completar el cuestionario. Ahora puedes continuar chateando."
     });
   }
 
@@ -177,7 +387,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Responde a las siguientes preguntas con:',
+                    'Responde a la siguiente pregunta con:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const Text(
@@ -185,16 +395,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     style: TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 8),
-                  ..._generateRandomQuestions().map((question) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(
-                          question,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      )),
+                  if (_selectedQuestions.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        _selectedQuestions.first['texto']!,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ElevatedButton(
-                    onPressed: _completeQuestionnaire,
-                    child: const Text('Finalizar Cuestionario'),
+                    onPressed: _finishQuestionnaire,
+                    child: const Text("Finalizar Cuestionario"),
                   ),
                 ],
               ),
@@ -203,7 +414,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              color: const Color(0xFF1A119B), // Fondo del contenedor
+              color: const Color(0xFF1A119B),
               child: Row(
                 children: [
                   Expanded(
@@ -211,11 +422,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       controller: _controller,
                       decoration: InputDecoration(
                         hintText: "Escribe un texto",
-                        fillColor:
-                            Colors.white, // Fondo blanco para el TextField
+                        fillColor: Colors.white,
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16), // Espaciado interno
+                            vertical: 12, horizontal: 16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide.none,
@@ -225,8 +435,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.send,
-                        color: Colors.green), // Icono verde
+                    icon: const Icon(Icons.send, color: Colors.green),
                     onPressed: _sendMessage,
                   ),
                 ],
