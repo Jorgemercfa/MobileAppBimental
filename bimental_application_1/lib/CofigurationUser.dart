@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+// Lista para almacenar temporalmente los datos modificados
+Map<String, String> datosUsuario = {
+  'nombres': 'Nombre por defecto',
+  'apellidos': 'Apellido por defecto',
+  'telefono': 'Número por defecto',
+};
+
 void main() {
   runApp(MyApp());
 }
@@ -32,7 +39,6 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Acción para volver atrás
             Navigator.pop(context);
           },
         ),
@@ -65,7 +71,6 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Acción para cambiar datos
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -80,6 +85,12 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
+            // Mostrar datos actuales
+            Text('Datos actuales:'),
+            Text('Nombres: ${datosUsuario['nombres']}'),
+            Text('Apellidos: ${datosUsuario['apellidos']}'),
+            Text('Teléfono: ${datosUsuario['telefono']}'),
           ],
         ),
       ),
@@ -100,7 +111,6 @@ class CambiarDatosScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Acción para volver atrás
             Navigator.pop(context);
           },
         ),
@@ -113,6 +123,7 @@ class CambiarDatosScreen extends StatelessWidget {
               controller: _nombresController,
               decoration: InputDecoration(
                 labelText: 'Nombres',
+                hintText: datosUsuario['nombres'],
               ),
             ),
             SizedBox(height: 10),
@@ -120,6 +131,7 @@ class CambiarDatosScreen extends StatelessWidget {
               controller: _apellidosController,
               decoration: InputDecoration(
                 labelText: 'Apellidos',
+                hintText: datosUsuario['apellidos'],
               ),
             ),
             SizedBox(height: 10),
@@ -127,6 +139,7 @@ class CambiarDatosScreen extends StatelessWidget {
               controller: _telefonoController,
               decoration: InputDecoration(
                 labelText: 'Numero telefonico',
+                hintText: datosUsuario['telefono'],
               ),
               keyboardType: TextInputType.phone,
             ),
@@ -134,15 +147,22 @@ class CambiarDatosScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Lógica para guardar cambios
-                String nombres = _nombresController.text;
-                String apellidos = _apellidosController.text;
-                String telefono = _telefonoController.text;
-
-                print('Datos guardados: $nombres $apellidos $telefono');
+                datosUsuario['nombres'] = (_nombresController.text.isNotEmpty
+                    ? _nombresController.text
+                    : datosUsuario['nombres'])!;
+                datosUsuario['apellidos'] =
+                    (_apellidosController.text.isNotEmpty
+                        ? _apellidosController.text
+                        : datosUsuario['apellidos'])!;
+                datosUsuario['telefono'] = (_telefonoController.text.isNotEmpty
+                    ? _telefonoController.text
+                    : datosUsuario['telefono'])!;
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Cambios realizados con éxito')),
                 );
+
+                Navigator.pop(context);
               },
               child: Text('Realizar cambios'),
               style: ElevatedButton.styleFrom(

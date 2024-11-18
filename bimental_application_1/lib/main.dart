@@ -4,6 +4,9 @@ import 'Home.dart';
 import 'SignInAdm.dart';
 import 'Signup.dart';
 
+// Lista en memoria para almacenar los usuarios registrados
+List<Map<String, String>> usuariosRegistrados = [];
+
 void main() {
   runApp(const MyApp());
 }
@@ -107,11 +110,27 @@ class LoginPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Acción al presionar el botón si los campos son válidos
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
+                    bool usuarioEncontrado = false;
+                    for (var usuario in usuariosRegistrados) {
+                      if (usuario['email'] == _emailController.text &&
+                          usuario['password'] == _passwordController.text) {
+                        usuarioEncontrado = true;
+                        break;
+                      }
+                    }
+
+                    if (usuarioEncontrado) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Correo o contraseña incorrectos')),
+                      );
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -143,8 +162,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterUserPage()),
+                    MaterialPageRoute(builder: (context) => RegisterUserPage()),
                   );
                 },
                 child: const Text(
@@ -164,6 +182,131 @@ class LoginPage extends StatelessWidget {
                 child: const Text(
                   'Administrativo',
                   style: TextStyle(color: Color(0xFF1A119B)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterUserPage extends StatelessWidget {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  RegisterUserPage({Key? key}) : super(key: key);
+
+  void registrarUsuario(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      // Agrega el usuario a la lista de usuarios registrados
+      usuariosRegistrados.add({
+        'nombre': _nameController.text,
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuario registrado exitosamente')),
+      );
+
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Registrar Usuario',
+          style: TextStyle(color: Color(0xFF1A119B)),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF1A119B)),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su nombre';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Correo electrónico',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su correo electrónico';
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Por favor, ingrese un correo válido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su contraseña';
+                  }
+                  if (value.length < 6) {
+                    return 'La contraseña debe tener al menos 6 caracteres';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () => registrarUsuario(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                ),
+                child: const Text(
+                  'Registrar',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
