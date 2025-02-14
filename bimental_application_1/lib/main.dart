@@ -1,13 +1,19 @@
+// import 'package:bimental_application_1/firebase_options.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
 import 'Signup.dart';
 
 // Lista en memoria para almacenar los usuarios registrados
+
 List<Map<String, String>> usuariosRegistrados = [];
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+// await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -203,6 +209,16 @@ class RegisterUserPage extends StatelessWidget {
   void registrarUsuario(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       // Agrega el usuario a la lista de usuarios registrados
+
+      // // FirebaseFirestore.instance
+      //     .collection('usuarios')
+      //     .snapshots()
+      //     .listen((snapshot) {
+      //   for (var doc in snapshot.docs) {
+      //     print("${doc.id} => ${doc.data()}");
+      //   }
+      // });
+
       usuariosRegistrados.add({
         'nombre': _nameController.text,
         'email': _emailController.text,

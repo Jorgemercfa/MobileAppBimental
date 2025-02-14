@@ -16,6 +16,8 @@ dependencies:
   intl: ^0.18.0  # Usa la versión más reciente disponible.
   path_provider: ^2.0.11
   firebase_core: ^3.11.0
+  firebase_auth: ^5.4.2 # o la versión más recient
+  cloud_firestore: ^5.6.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
