@@ -1,7 +1,7 @@
-// import 'package:bimental_application_1/firebase_options.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bimental_application_1/firebase_options.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
@@ -13,12 +13,14 @@ List<Map<String, String>> usuariosRegistrados = [];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-// await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +144,8 @@ class LoginPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  minimumSize: const Size(200, 50),
                 ),
                 child: const Text(
                   'Iniciar Sesión',
@@ -150,7 +153,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -158,26 +161,38 @@ class LoginPage extends StatelessWidget {
                         builder: (context) => const ResetPasswordPage()),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  minimumSize: const Size(200, 50),
+                ),
                 child: const Text(
                   'Olvidé contraseña',
-                  style: TextStyle(color: Color(0xFF1A119B)),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               const SizedBox(height: 10),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterUserPage()),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  minimumSize: const Size(200, 50),
+                ),
                 child: const Text(
                   'Registrar usuario',
-                  style: TextStyle(color: Color(0xFF1A119B)),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               const SizedBox(height: 10),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -185,9 +200,15 @@ class LoginPage extends StatelessWidget {
                         builder: (context) => const SignInAdmin()),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  minimumSize: const Size(200, 50),
+                ),
                 child: const Text(
                   'Administrativo',
-                  style: TextStyle(color: Color(0xFF1A119B)),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],

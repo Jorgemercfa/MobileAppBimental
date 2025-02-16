@@ -71,7 +71,8 @@ class HomePageAdmin extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Resultados'),
+              child: const Text('Resultados',
+                  style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 50),
             ElevatedButton(
@@ -88,7 +89,8 @@ class HomePageAdmin extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Configuraciones'),
+              child: const Text('Configuraciones',
+                  style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 20),
           ],
