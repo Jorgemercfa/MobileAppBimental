@@ -99,12 +99,13 @@ class _SignInAdminState extends State<SignInAdmin> {
             ),
             const SizedBox(height: 30),
             SizedBox(
-              width: double.infinity,
+              width: 250, // Ajusta el ancho del botón
               child: ElevatedButton(
                 onPressed: signIn,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
                 child: const Text(
                   'Iniciar Sesión',
@@ -114,7 +115,7 @@ class _SignInAdminState extends State<SignInAdmin> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              width: double.infinity,
+              width: 250, // Ajusta el ancho del botón
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -126,7 +127,8 @@ class _SignInAdminState extends State<SignInAdmin> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
                 child: const Text(
                   'Olvidé contraseña',
