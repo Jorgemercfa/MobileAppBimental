@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental administravito',
+      title: 'BiMental Administrativo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -27,22 +27,51 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SignInAdmin extends StatelessWidget {
+class SignInAdmin extends StatefulWidget {
   const SignInAdmin({Key? key}) : super(key: key);
+
+  @override
+  _SignInAdminState createState() => _SignInAdminState();
+}
+
+class _SignInAdminState extends State<SignInAdmin> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  // Lista de credenciales permitidas
+  final Map<String, String> validCredentials = {
+    'admin1@bimental.com': '#wrb22ed',
+  };
+
+  void signIn() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (validCredentials[email] == password) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const HomePageAdmin()));
+    } else {
+      scaffoldKey.currentState?.showSnackBar(
+        const SnackBar(content: Text('Correo o contraseña incorrectos')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
           'Iniciar Sesión',
-          style: TextStyle(color: Color(0xFF1A119B)), // Cambia color del texto
+          style: TextStyle(color: Color(0xFF1A119B)),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(
-            color: Color(0xFF1A119B)), // Color de los íconos
+        iconTheme: const IconThemeData(color: Color(0xFF1A119B)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -50,56 +79,59 @@ class SignInAdmin extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'BiMental administrativo',
+              'BiMental Administrativo',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A119B), // Cambia color del texto principal
+                color: Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 20),
-            const CustomTextField(
-              labelText: 'Correo Electronico',
+            CustomTextField(
+              controller: emailController,
+              labelText: 'Correo Electrónico',
             ),
             const SizedBox(height: 20),
-            const CustomTextField(
+            CustomTextField(
+              controller: passwordController,
               labelText: 'Contraseña',
               obscureText: true,
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                // Acción al presionar el botón de iniciar sesión
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomePageAdmin()));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    const Color(0xFF1A119B), // Cambia color de fondo del botón
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              ),
-              child: const Text(
-                'Iniciar Sesión',
-                style:
-                    TextStyle(color: Colors.white), // Color del texto del botón
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: signIn,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text(
+                  'Iniciar Sesión',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                // Acción al presionar "Olvidé contraseña"
-                Navigator.push(
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ForgetPasswordPageAdmin()));
-              },
-              child: const Text(
-                'Olvidé contraseña',
-                style: TextStyle(
-                    color: Color(0xFF1A119B)), // Cambia color del texto
+                      builder: (context) => const ForgetPasswordPageAdmin(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text(
+                  'Olvidé contraseña',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -110,11 +142,13 @@ class SignInAdmin extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
   final String labelText;
   final bool obscureText;
 
   const CustomTextField({
     Key? key,
+    required this.controller,
     required this.labelText,
     this.obscureText = false,
   }) : super(key: key);
@@ -122,18 +156,16 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle:
-            const TextStyle(color: Color(0xFF1A119B)), // Cambia color del label
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        labelStyle: const TextStyle(color: Color(0xFF1A119B)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         filled: true,
         fillColor: Colors.white,
       ),
-      cursorColor: const Color(0xFF1A119B), // Cambia color del cursor
+      cursorColor: const Color(0xFF1A119B),
     );
   }
 }
