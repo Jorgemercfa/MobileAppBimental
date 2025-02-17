@@ -112,6 +112,8 @@ class RegisterUserPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
+              // Nuevo SizedBox antes del campo de celular
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _phoneController,
                 decoration: const InputDecoration(
