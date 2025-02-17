@@ -339,9 +339,14 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Acción de retroceso
+            Navigator.pop(context);
           },
         ),
+        title: const Text(
+          'Para activar el cuestionario, escriba "cuestionario"',
+          style: TextStyle(color: Colors.white, fontSize: 14),
+        ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
