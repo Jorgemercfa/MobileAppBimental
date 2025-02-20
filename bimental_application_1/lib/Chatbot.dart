@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math'; // Para seleccionar preguntas aleatoriamente
 import 'openai_service.dart';
+import 'ManageAnswers.dart';
 
 void main() => runApp(const ChatBotApp());
 
@@ -257,6 +258,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<Map<String, String>> _selectedQuestions = [];
 
+  List<String> answers = [];
+
   // Método para generar una pregunta aleatoria de la categoría actual
   Map<String, String> _generateRandomQuestion() {
     final random = Random();
@@ -294,8 +297,10 @@ class _ChatScreenState extends State<ChatScreen> {
         _finishQuestionnaire();
         return;
       }
-    }
 
+      answers.add(text);
+    }
+    print(answers);
     setState(() {
       _messages.add({'user': text});
       _controller.clear();
@@ -329,6 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
       'bot':
           "Gracias por completar el cuestionario. Ahora puedes continuar chateando."
     });
+    ManageAnswers.saveAnswers(answers);
   }
 
   @override
