@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'ManageAnswers.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +28,11 @@ class HistorialResultadosScreen extends StatefulWidget {
 class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   List<Map<String, dynamic>> resultados = [];
 
-  void _agregarResultado(List<int> respuestas) {
+  void _agregarResultado() {
+    List<int> respuestas = (ManageAnswers.getAnswers() as List<dynamic>)
+        .map((e) => int.tryParse(e.toString()) ?? 0)
+        .toList();
+
     final now = DateTime.now();
     final formattedDate = DateFormat('dd/MM/yyyy').format(now);
     final formattedTime = DateFormat('HH:mm:ss').format(now);
@@ -49,7 +54,10 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
     List<int> estresIndices = [1, 6, 8, 11, 12, 14, 18];
 
     int calcularSuma(List<int> indices) {
-      return indices.map((i) => respuestas[i - 1]).reduce((a, b) => a + b);
+      return indices
+          .where((i) => i - 1 < respuestas.length) // Filtra índices válidos
+          .map((i) => respuestas[i - 1])
+          .fold(0, (a, b) => a + b); // Evita errores en listas vacías
     }
 
     int sumaDepresion = calcularSuma(depresionIndices);
@@ -143,10 +151,7 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _agregarResultado(List<int>.generate(
-              21, (index) => (index % 4))); // Simulación de respuestas
-        },
+        onPressed: _agregarResultado,
         child: Icon(Icons.add),
       ),
     );
@@ -178,37 +183,20 @@ class ResultadoDetalleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Resultados',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[800]),
-            ),
+            Text('Resultados',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800])),
             SizedBox(height: 24),
-            Text(
-              'Ansiedad: ${detalles['Ansiedad']}',
-              style: TextStyle(fontSize: 20, color: Colors.blue[800]),
-            ),
+            Text('Ansiedad: ${detalles['Ansiedad']}',
+                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
             SizedBox(height: 16),
-            Text(
-              'Depresión: ${detalles['Depresión']}',
-              style: TextStyle(fontSize: 20, color: Colors.blue[800]),
-            ),
+            Text('Depresión: ${detalles['Depresión']}',
+                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
             SizedBox(height: 16),
-            Text(
-              'Estrés: ${detalles['Estrés']}',
-              style: TextStyle(fontSize: 20, color: Colors.blue[800]),
-            ),
-            SizedBox(height: 32),
-            Text(
-              'Fecha: $fecha',
-              style: TextStyle(fontSize: 18, color: Colors.blue[800]),
-            ),
-            Text(
-              'Hora: $hora',
-              style: TextStyle(fontSize: 18, color: Colors.blue[800]),
-            ),
+            Text('Estrés: ${detalles['Estrés']}',
+                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
           ],
         ),
       ),
