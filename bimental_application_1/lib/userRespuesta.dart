@@ -183,11 +183,6 @@ class ResultadoDetalleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Resultados',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[800])),
             SizedBox(height: 24),
             Text('Ansiedad: ${detalles['Ansiedad']}',
                 style: TextStyle(fontSize: 20, color: Colors.blue[800])),
