@@ -1,28 +1,31 @@
+import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
-import 'JsonDbService.dart'; // Asegúrate de tener la clase JsonDbService
 
 class RegisterUserPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final JsonDbService _jsonDbService = JsonDbService();
 
   RegisterUserPage({Key? key}) : super(key: key);
 
-  void registrarUsuario(BuildContext context) async {
+  void registrarUsuario(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      List<Map<String, String>> usuarios = await _jsonDbService.readUsuarios();
-
-      usuarios.add({
+      // Agrega el usuario a la lista de usuarios registrados
+      final UserRepository userRepository = UserRepository();
+      userRepository.addUser({
         'nombre': _nameController.text,
         'email': _emailController.text,
-        'password': _passwordController.text,
-        'celular': _phoneController.text,
+        'password': _passwordController.text
       });
-
-      await _jsonDbService.writeUsuarios(usuarios);
+      // // FirebaseFirestore.instance
+      //     .collection('usuarios')
+      //     .snapshots()
+      //     .listen((snapshot) {
+      //   for (var doc in snapshot.docs) {
+      //     print("${doc.id} => ${doc.data()}");
+      //   }
+      // });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Usuario registrado exitosamente')),
@@ -107,30 +110,6 @@ class RegisterUserPage extends StatelessWidget {
                   }
                   if (value.length < 6) {
                     return 'La contraseña debe tener al menos 6 caracteres';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              // Nuevo SizedBox antes del campo de celular
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Celular',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-                cursorColor: const Color(0xFF1A119B),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, ingrese su número de celular';
-                  }
-                  if (!RegExp(r'^\d{9,15}$').hasMatch(value)) {
-                    return 'Por favor, ingrese un número de celular válido';
                   }
                   return null;
                 },
