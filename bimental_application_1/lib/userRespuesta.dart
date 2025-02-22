@@ -28,6 +28,12 @@ class HistorialResultadosScreen extends StatefulWidget {
 class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   List<Map<String, dynamic>> resultados = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _agregarResultado();
+  }
+
   void _agregarResultado() {
     List<int> respuestas = (ManageAnswers.getAnswers() as List<dynamic>)
         .map((e) => int.tryParse(e.toString()) ?? 0)
@@ -55,9 +61,9 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
 
     int calcularSuma(List<int> indices) {
       return indices
-          .where((i) => i - 1 < respuestas.length) // Filtra índices válidos
+          .where((i) => i - 1 < respuestas.length)
           .map((i) => respuestas[i - 1])
-          .fold(0, (a, b) => a + b); // Evita errores en listas vacías
+          .fold(0, (a, b) => a + b);
     }
 
     int sumaDepresion = calcularSuma(depresionIndices);
@@ -149,10 +155,6 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
                   );
                 },
               ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _agregarResultado,
-        child: Icon(Icons.add),
       ),
     );
   }
