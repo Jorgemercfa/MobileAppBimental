@@ -71,26 +71,26 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
     int sumaEstres = calcularSuma(estresIndices);
 
     String clasificarDepresion() {
-      if (sumaDepresion >= 14) return 'Depresión extremadamente severa';
-      if (sumaDepresion >= 11) return 'Depresión severa';
-      if (sumaDepresion >= 7) return 'Depresión moderada';
-      if (sumaDepresion >= 5) return 'Depresión leve';
+      if (sumaDepresion >= 14) return 'Extremadamente severa';
+      if (sumaDepresion >= 11) return 'Severa';
+      if (sumaDepresion >= 7) return 'Moderada';
+      if (sumaDepresion >= 5) return 'Leve';
       return 'Sin depresión';
     }
 
     String clasificarAnsiedad() {
-      if (sumaAnsiedad >= 10) return 'Ansiedad extremadamente severa';
-      if (sumaAnsiedad >= 8) return 'Ansiedad severa';
-      if (sumaAnsiedad >= 5) return 'Ansiedad moderada';
-      if (sumaAnsiedad >= 4) return 'Ansiedad leve';
+      if (sumaAnsiedad >= 10) return 'Extremadamente severa';
+      if (sumaAnsiedad >= 8) return 'Severa';
+      if (sumaAnsiedad >= 5) return 'Moderada';
+      if (sumaAnsiedad >= 4) return 'Leve';
       return 'Sin ansiedad';
     }
 
     String clasificarEstres() {
-      if (sumaEstres >= 17) return 'Estrés extremadamente severo';
-      if (sumaEstres >= 13) return 'Estrés severo';
-      if (sumaEstres >= 10) return 'Estrés moderado';
-      if (sumaEstres >= 8) return 'Estrés leve';
+      if (sumaEstres >= 17) return 'Extremadamente severo';
+      if (sumaEstres >= 13) return 'Severo';
+      if (sumaEstres >= 10) return 'Moderado';
+      if (sumaEstres >= 8) return 'Leve';
       return 'Sin estrés';
     }
 
@@ -106,9 +106,10 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Historial resultados',
-            style: TextStyle(color: Colors.blue[800])),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.blue[800]),
+            style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255))),
+        backgroundColor: const Color(0xFF1A119B),
+        iconTheme:
+            IconThemeData(color: const Color.fromARGB(255, 255, 255, 255)),
         elevation: 0,
       ),
       body: Padding(
@@ -137,7 +138,7 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 8.0),
                       decoration: BoxDecoration(
-                        color: Colors.blue[800],
+                        color: Color(0xFF1A119B),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(
@@ -175,9 +176,10 @@ class ResultadoDetalleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados', style: TextStyle(color: Colors.blue[800])),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.blue[800]),
+        title: Text('Resultados',
+            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
+        backgroundColor: Color(0xFF1A119B),
+        iconTheme: IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
         elevation: 0,
       ),
       body: Padding(
@@ -187,13 +189,13 @@ class ResultadoDetalleScreen extends StatelessWidget {
           children: [
             SizedBox(height: 24),
             Text('Ansiedad: ${detalles['Ansiedad']}',
-                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
+                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
             SizedBox(height: 16),
             Text('Depresión: ${detalles['Depresión']}',
-                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
+                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
             SizedBox(height: 16),
             Text('Estrés: ${detalles['Estrés']}',
-                style: TextStyle(fontSize: 20, color: Colors.blue[800])),
+                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
           ],
         ),
       ),
