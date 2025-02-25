@@ -35,9 +35,13 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Configuración'),
+        backgroundColor: const Color(0xFF1A119B),
+        title: Text(
+          'Configuración',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -78,7 +82,10 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                     ),
                   );
                 },
-                child: Text('Cambiar Datos'),
+                child: Text(
+                  'Cambiar Datos',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -87,10 +94,22 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
             ),
             SizedBox(height: 20),
             // Mostrar datos actuales
-            Text('Datos actuales:'),
-            Text('Nombres: ${datosUsuario['nombres']}'),
-            Text('Apellidos: ${datosUsuario['apellidos']}'),
-            Text('Teléfono: ${datosUsuario['telefono']}'),
+            Text(
+              'Datos actuales:',
+              style: TextStyle(color: Color(0xFF1A119B)),
+            ),
+            Text(
+              'Nombres: ${datosUsuario['nombres']}',
+              style: TextStyle(color: Color(0xFF1A119B)),
+            ),
+            Text(
+              'Apellidos: ${datosUsuario['apellidos']}',
+              style: TextStyle(color: Color(0xFF1A119B)),
+            ),
+            Text(
+              'Teléfono: ${datosUsuario['telefono']}',
+              style: TextStyle(color: Color(0xFF1A119B)),
+            ),
           ],
         ),
       ),
@@ -100,14 +119,16 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
 
 class CambiarDatosScreen extends StatelessWidget {
   final TextEditingController _nombresController = TextEditingController();
-  final TextEditingController _apellidosController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cambiar Datos'),
+        title: Text(
+          'Cambiar Datos',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -122,19 +143,19 @@ class CambiarDatosScreen extends StatelessWidget {
             TextField(
               controller: _nombresController,
               decoration: InputDecoration(
-                labelText: 'Nombres',
+                labelText: 'Nombre',
                 hintText: datosUsuario['nombres'],
               ),
             ),
             SizedBox(height: 10),
-            TextField(
-              controller: _apellidosController,
-              decoration: InputDecoration(
-                labelText: 'Apellidos',
-                hintText: datosUsuario['apellidos'],
-              ),
-            ),
-            SizedBox(height: 10),
+            // TextField(
+            //   controller: _apellidosController,
+            //   decoration: InputDecoration(
+            //     labelText: 'Apellidos',
+            //     hintText: datosUsuario['apellidos'],
+            //   ),
+            // ),
+            SizedBox(height: 16),
             TextField(
               controller: _telefonoController,
               decoration: InputDecoration(
@@ -150,10 +171,6 @@ class CambiarDatosScreen extends StatelessWidget {
                 datosUsuario['nombres'] = (_nombresController.text.isNotEmpty
                     ? _nombresController.text
                     : datosUsuario['nombres'])!;
-                datosUsuario['apellidos'] =
-                    (_apellidosController.text.isNotEmpty
-                        ? _apellidosController.text
-                        : datosUsuario['apellidos'])!;
                 datosUsuario['telefono'] = (_telefonoController.text.isNotEmpty
                     ? _telefonoController.text
                     : datosUsuario['telefono'])!;
@@ -164,7 +181,10 @@ class CambiarDatosScreen extends StatelessWidget {
 
                 Navigator.pop(context);
               },
-              child: Text('Realizar cambios'),
+              child: Text(
+                'Realizar cambios',
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1A119B),
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
