@@ -29,8 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'BiMental',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue, scaffoldBackgroundColor: Colors.white),
       initialRoute: '/',
       routes: {
         '/': (context) => LoginPage(),
