@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'ManageAnswers.dart';
 
 void main() {
@@ -31,30 +30,27 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   @override
   void initState() {
     super.initState();
-    _agregarResultado();
+    _cargarResultados();
   }
 
-  void _agregarResultado() {
-    List<List<String>> respuestasGuardadas = ManageAnswers.getAnswers();
+  void _cargarResultados() {
+    List<Map<String, dynamic>> respuestasGuardadas = ManageAnswers.getAnswers();
 
-    for (var respuestaSet in respuestasGuardadas) {
-      List<int> respuestas =
-          respuestaSet.map((e) => int.tryParse(e) ?? 0).toList();
-
-      final now = DateTime.now();
-      final formattedDate = DateFormat('dd/MM/yyyy').format(now);
-      final formattedTime = DateFormat('HH:mm:ss').format(now);
-
-      final resultado = {
-        'fecha': formattedDate,
-        'hora': formattedTime,
+    List<Map<String, dynamic>> nuevosResultados =
+        respuestasGuardadas.map((respuestaSet) {
+      List<int> respuestas = (respuestaSet['answers'] as List<dynamic>)
+          .map((e) => int.tryParse(e.toString()) ?? 0)
+          .toList();
+      return {
+        'fecha': respuestaSet['timestamp'].split(' ')[0],
+        'hora': respuestaSet['timestamp'].split(' ')[1],
         'detalles': calcularResultados(respuestas),
       };
+    }).toList();
 
-      setState(() {
-        resultados.add(resultado);
-      });
-    }
+    setState(() {
+      resultados = nuevosResultados;
+    });
   }
 
   Map<String, String> calcularResultados(List<int> respuestas) {
@@ -108,12 +104,10 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historial resultados',
-            style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255))),
+        title:
+            Text('Historial resultados', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF1A119B),
-        iconTheme:
-            IconThemeData(color: const Color.fromARGB(255, 255, 255, 255)),
-        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -179,11 +173,9 @@ class ResultadoDetalleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados',
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
+        title: Text('Resultados', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF1A119B),
-        iconTheme: IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
-        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

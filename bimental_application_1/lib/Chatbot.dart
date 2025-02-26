@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'dart:math'; // Para seleccionar preguntas aleatoriamente
 import 'openai_service.dart';
 import 'ManageAnswers.dart';
@@ -326,15 +327,22 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _finishQuestionnaire() {
+    String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss')
+        .format(DateTime.now()); // Obtener la fecha y hora actuales
+
     setState(() {
       _showQuestionnaire = false;
       _selectedQuestions = [];
     });
+
     _messages.add({
       'bot':
-          "Gracias por completar el cuestionario. Ahora puedes continuar chateando."
+          "Gracias por completar el cuestionario. Ahora puedes continuar chateando.\nFecha y hora de finalización: $timestamp"
     });
+
     ManageAnswers.saveAnswers(answers);
+
+// Guardar respuestas con timestamp
   }
 
   @override
