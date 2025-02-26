@@ -35,23 +35,26 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   }
 
   void _agregarResultado() {
-    List<int> respuestas = (ManageAnswers.getAnswers() as List<dynamic>)
-        .map((e) => int.tryParse(e.toString()) ?? 0)
-        .toList();
+    List<List<String>> respuestasGuardadas = ManageAnswers.getAnswers();
 
-    final now = DateTime.now();
-    final formattedDate = DateFormat('dd/MM/yyyy').format(now);
-    final formattedTime = DateFormat('HH:mm:ss').format(now);
+    for (var respuestaSet in respuestasGuardadas) {
+      List<int> respuestas =
+          respuestaSet.map((e) => int.tryParse(e) ?? 0).toList();
 
-    final resultado = {
-      'fecha': formattedDate,
-      'hora': formattedTime,
-      'detalles': calcularResultados(respuestas),
-    };
+      final now = DateTime.now();
+      final formattedDate = DateFormat('dd/MM/yyyy').format(now);
+      final formattedTime = DateFormat('HH:mm:ss').format(now);
 
-    setState(() {
-      resultados.add(resultado);
-    });
+      final resultado = {
+        'fecha': formattedDate,
+        'hora': formattedTime,
+        'detalles': calcularResultados(respuestas),
+      };
+
+      setState(() {
+        resultados.add(resultado);
+      });
+    }
   }
 
   Map<String, String> calcularResultados(List<int> respuestas) {

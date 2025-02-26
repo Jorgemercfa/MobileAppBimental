@@ -1,12 +1,12 @@
 class ManageAnswers {
-  static List<String> answers = [];
+  static List<List<String>> answersHistory = [];
 
-  static saveAnswers(List<String> _answers) {
-    answers = _answers;
+  static void saveAnswers(List<String> _answers) {
+    answersHistory.add(_answers);
     print("Se guardaron las respuestas");
   }
 
-  static getAnswers() {
-    return answers;
+  static List<List<String>> getAnswers() {
+    return answersHistory;
   }
 }
