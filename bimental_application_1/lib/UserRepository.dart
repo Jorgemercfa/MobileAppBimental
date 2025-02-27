@@ -7,13 +7,7 @@ class UserRepository {
 
   UserRepository._internal();
 
-  List<Map<String, String>> users = [
-    {
-      'nombre': 'jorge',
-      'email': 'cokijlmf@gmail.com',
-      'password': '123456',
-    }
-  ];
+  List<Map<String, String>> users = [];
 
   addUser(newUser) {
     users.add(newUser);
