@@ -1,21 +1,17 @@
-import 'package:bimental_application_1/firebase_options.dart';
+// import 'package:bimental_application_1/firebase_options.dart';
 import 'package:bimental_application_1/RegisterUserPage.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
 
 // Lista en memoria para almacenar los usuarios registrados
 
-
-
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-  
-  
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +88,8 @@ class LoginPage extends StatelessWidget {
                   if (_formKey.currentState!.validate()) {
                     bool usuarioEncontrado = false;
                     final UserRepository userRepository = UserRepository();
-                    List<Map<String, String>> usuariosRegistrados = userRepository.getUsers();
+                    List<Map<String, String>> usuariosRegistrados =
+                        userRepository.getUsers();
                     for (var usuario in usuariosRegistrados) {
                       if (usuario['email'] == _emailController.text &&
                           usuario['password'] == _passwordController.text) {
@@ -192,4 +189,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
