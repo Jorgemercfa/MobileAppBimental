@@ -144,7 +144,6 @@ class _UserResultsPageState extends State<UserResultsPage> {
           'Resultados Usuarios',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF1A119B),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -207,7 +206,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
                 ]);
               }).toList(),
               headingRowColor: MaterialStateProperty.all(Colors.green),
-              dataRowColor: MaterialStateProperty.all(Colors.blue.shade700),
+              dataRowColor: MaterialStateProperty.all(Color(0xFF1A119B)),
             ),
           ),
         ),
