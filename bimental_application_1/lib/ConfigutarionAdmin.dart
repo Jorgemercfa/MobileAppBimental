@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/main.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,17 +25,18 @@ class ConfiguracionAdministracionScreen extends StatefulWidget {
 
 class _ConfiguracionAdministracionScreenState
     extends State<ConfiguracionAdministracionScreen> {
-  bool _isDarkModeEnabled = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Configuración administración'),
+        backgroundColor: const Color(0xFF1A119B),
+        title: Text(
+          'Configuración',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Acción para volver atrás
             Navigator.pop(context);
           },
         ),
@@ -49,33 +51,42 @@ class _ConfiguracionAdministracionScreenState
               children: [
                 Text(
                   'Activar tema oscuro',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                    color: Color(0xFF1A119B),
+                    fontSize: 16,
+                  ),
                 ),
                 Switch(
-                  value: _isDarkModeEnabled,
-                  onChanged: (bool value) {
+                  value: isDarkModeEnabled.value,
+                  activeColor: Colors.green,
+                  onChanged: (value) {
                     setState(() {
-                      _isDarkModeEnabled = value;
+                      isDarkModeEnabled.value = value;
                     });
                   },
-                  activeColor: Colors.green,
-                  activeTrackColor: const Color(0xFF1A119B),
                 ),
               ],
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CambiarDatosScreen(),
-                  ),
-                );
-              },
-              child: Text('Cambiar Datos'),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B)),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CambiarDatosScreen(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Cambiar Datos',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+              ),
             ),
           ],
         ),
@@ -93,11 +104,14 @@ class CambiarDatosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cambiar Datos administrativos'),
+        backgroundColor: const Color(0xFF1A119B),
+        title: Text(
+          'Cambiar Datos',
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Acción para volver atrás
             Navigator.pop(context);
           },
         ),
@@ -123,15 +137,13 @@ class CambiarDatosScreen extends StatelessWidget {
             TextField(
               controller: _telefonoController,
               decoration: InputDecoration(
-                labelText: 'Numero telefonico',
+                labelText: 'Número telefónico',
               ),
               keyboardType: TextInputType.phone,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Lógica para guardar cambios
-                // Ejemplo de manejo de datos:
                 String nombres = _nombresController.text;
                 String apellidos = _apellidosController.text;
                 String telefono = _telefonoController.text;
@@ -142,9 +154,12 @@ class CambiarDatosScreen extends StatelessWidget {
                   SnackBar(content: Text('Cambios realizados con éxito')),
                 );
               },
-              child: Text('Realizar cambios'),
+              child: Text('Realizar cambios',
+                  style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B)),
+                backgroundColor: const Color(0xFF1A119B),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
             ),
           ],
         ),
