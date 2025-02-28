@@ -140,17 +140,20 @@ class _UserResultsPageState extends State<UserResultsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados Usuarios'),
-        backgroundColor: Colors.blue,
+        title: Text(
+          'Resultados Usuarios',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF1A119B),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Acción para regresar
+            Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_alt),
+            icon: Icon(Icons.filter_alt, color: Colors.white),
             onPressed: _showFilterDialog,
           ),
         ],
