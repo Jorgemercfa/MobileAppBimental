@@ -1,5 +1,5 @@
 import 'package:bimental_application_1/CofigurationUser.dart';
-import 'package:bimental_application_1/LoginPage';
+import 'package:bimental_application_1/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bimental_application_1/RegisterUserPage.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: isDark
-                ? const Color.fromARGB(255, 29, 29, 29)
+                ? const Color.fromARGB(255, 55, 55, 55)
                 : Colors.white, // Se actualiza dinámicamente
           ),
           initialRoute: '/',
