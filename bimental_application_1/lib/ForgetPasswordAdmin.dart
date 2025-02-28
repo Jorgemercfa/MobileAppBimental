@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'AdminRepository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,8 +21,47 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ForgetPasswordPageAdmin extends StatelessWidget {
+class ForgetPasswordPageAdmin extends StatefulWidget {
   const ForgetPasswordPageAdmin({Key? key}) : super(key: key);
+
+  @override
+  _ForgetPasswordPageAdminState createState() =>
+      _ForgetPasswordPageAdminState();
+}
+
+class _ForgetPasswordPageAdminState extends State<ForgetPasswordPageAdmin> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  void _changePassword() {
+    String email = _emailController.text;
+    String newPassword = _newPasswordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Las contraseñas no coinciden')),
+      );
+      return;
+    }
+
+    List<Map<String, String>> admins = AdminRepository.instance.getAdmins();
+    bool adminExists = admins.any((admin) => admin['email'] == email);
+
+    if (adminExists) {
+      AdminRepository.instance.addAdmin(email, newPassword);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Contraseña cambiada con éxito')),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Administrador no encontrado')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +69,12 @@ class ForgetPasswordPageAdmin extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Olvidé Contraseña',
-          style: TextStyle(color: Color(0xFF1A119B)), // Cambia color del texto
+          style: TextStyle(color: Color(0xFF1A119B)),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(
-            color: Color(0xFF1A119B)), // Color de los íconos
+        iconTheme: const IconThemeData(color: Color(0xFF1A119B)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -47,40 +86,37 @@ class ForgetPasswordPageAdmin extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A119B), // Cambia color del texto principal
+                color: Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 20),
-            const CustomTextField(
+            CustomTextField(
               labelText: 'Correo del usuario',
-              obscureText: true,
+              controller: _emailController,
             ),
             const SizedBox(height: 20),
-            const CustomTextField(
+            CustomTextField(
               labelText: 'Nueva Contraseña del usuario',
+              controller: _newPasswordController,
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            const CustomTextField(
+            CustomTextField(
               labelText: 'Confirmar Nueva Contraseña del usuario',
+              controller: _confirmPasswordController,
               obscureText: true,
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // Acción al presionar "Cambiar Contraseña"
-                Navigator.pop(context);
-              },
+              onPressed: _changePassword,
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    const Color(0xFF1A119B), // Cambia color de fondo del botón
+                backgroundColor: const Color(0xFF1A119B),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text(
                 'Cambiar Contraseña',
-                style:
-                    TextStyle(color: Colors.white), // Color del texto del botón
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -93,28 +129,30 @@ class ForgetPasswordPageAdmin extends StatelessWidget {
 class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
+  final TextEditingController controller;
 
   const CustomTextField({
     Key? key,
     required this.labelText,
     this.obscureText = false,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle:
-            const TextStyle(color: Color(0xFF1A119B)), // Cambia color del label
+        labelStyle: const TextStyle(color: Color(0xFF1A119B)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
         filled: true,
         fillColor: Colors.white,
       ),
-      cursorColor: const Color(0xFF1A119B), // Cambia color del cursor
+      cursorColor: const Color(0xFF1A119B),
     );
   }
 }
