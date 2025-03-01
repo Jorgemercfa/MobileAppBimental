@@ -1,5 +1,9 @@
+import 'package:uuid/uuid.dart';
+import 'User.dart';
+
 class UserRepository {
   static final UserRepository instance = UserRepository._internal();
+  final Uuid _uuid = Uuid(); // Instancia de UUID
 
   factory UserRepository() {
     return instance;
@@ -7,10 +11,15 @@ class UserRepository {
 
   UserRepository._internal();
 
-  List<Map<String, String>> users = [];
+  List<User> users = [];
 
-  addUser(newUser) {
+  addUser(User newUser) {
+    newUser.id = _generateUniqueId();
     users.add(newUser);
+  }
+
+  String _generateUniqueId() {
+    return _uuid.v4(); // Genera un UUID único
   }
 
   getUsers() {

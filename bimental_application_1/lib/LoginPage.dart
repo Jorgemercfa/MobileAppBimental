@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
+import 'User.dart';
 
 // Lista en memoria para almacenar los usuarios registrados
 
@@ -88,11 +89,10 @@ class LoginPage extends StatelessWidget {
                   if (_formKey.currentState!.validate()) {
                     bool usuarioEncontrado = false;
                     final UserRepository userRepository = UserRepository();
-                    List<Map<String, String>> usuariosRegistrados =
-                        userRepository.getUsers();
+                    List<User> usuariosRegistrados = userRepository.getUsers();
                     for (var usuario in usuariosRegistrados) {
-                      if (usuario['email'] == _emailController.text &&
-                          usuario['password'] == _passwordController.text) {
+                      if (usuario.email == _emailController.text &&
+                          usuario.password == _passwordController.text) {
                         usuarioEncontrado = true;
                         break;
                       }

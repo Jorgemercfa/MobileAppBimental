@@ -1,6 +1,8 @@
 import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
 
+import 'User.dart';
+
 class RegisterUserPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -13,11 +15,9 @@ class RegisterUserPage extends StatelessWidget {
     if (_formKey.currentState!.validate()) {
       // Agrega el usuario a la lista de usuarios registrados
       final UserRepository userRepository = UserRepository();
-      userRepository.addUser({
-        'nombre': _nameController.text,
-        'email': _emailController.text,
-        'password': _passwordController.text
-      });
+      User user = User("", _nameController.text, _emailController.text,
+          _passwordController.text, "");
+      userRepository.addUser(user);
       // // FirebaseFirestore.instance
       //     .collection('usuarios')
       //     .snapshots()
