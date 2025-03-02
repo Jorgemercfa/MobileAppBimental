@@ -8,6 +8,7 @@ class RegisterUserPage extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   RegisterUserPage({Key? key}) : super(key: key);
 
@@ -16,7 +17,7 @@ class RegisterUserPage extends StatelessWidget {
       // Agrega el usuario a la lista de usuarios registrados
       final UserRepository userRepository = UserRepository();
       User user = User("", _nameController.text, _emailController.text,
-          _passwordController.text, "");
+          _passwordController.text, _phoneController.text);
       userRepository.addUser(user);
       // // FirebaseFirestore.instance
       //     .collection('usuarios')
@@ -88,6 +89,24 @@ class RegisterUserPage extends StatelessWidget {
                   }
                   if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                     return 'Por favor, ingrese un correo válido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Numero de Celular',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su numero de celular';
                   }
                   return null;
                 },
