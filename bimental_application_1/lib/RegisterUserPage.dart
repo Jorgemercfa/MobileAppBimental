@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/PrivacyPolicyScreen.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +96,7 @@ class RegisterUserPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextFormField(
-                controller: _nameController,
+                controller: _phoneController,
                 decoration: const InputDecoration(
                   labelText: 'Numero de Celular',
                   labelStyle: TextStyle(color: Color(0xFF1A119B)),
@@ -106,7 +107,10 @@ class RegisterUserPage extends StatelessWidget {
                 cursorColor: const Color(0xFF1A119B),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Por favor, ingrese su numero de celular';
+                    return 'Por favor, ingrese su número de celular';
+                  }
+                  if (!RegExp(r'^\+?[0-9]{7,15}$').hasMatch(value)) {
+                    return 'Ingrese un número de celular válido';
                   }
                   return null;
                 },
@@ -132,6 +136,22 @@ class RegisterUserPage extends StatelessWidget {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PrivacyPolicyScreen()));
+                },
+                child: const Text(
+                  'Política de Privacidad',
+                  style: TextStyle(
+                    color: Color(0xFF1A119B),
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
               const SizedBox(height: 30),
               ElevatedButton(

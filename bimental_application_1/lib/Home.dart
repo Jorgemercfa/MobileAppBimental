@@ -1,4 +1,5 @@
 import 'package:bimental_application_1/CofigurationUser.dart';
+import 'package:bimental_application_1/PrivacyPolicyScreen.dart';
 import 'package:bimental_application_1/userRespuesta.dart';
 import 'package:flutter/material.dart';
 import 'Chatbot.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
           './Chatbot': (context) => ChatScreen(),
           './userRespuesta.dart': (context) => HistorialResultadosScreen(),
           './ConfigurationUser': (context) => ConfiguracionScreen(),
+          './PrivacyPolicyScreen.dart': (context) => PrivacyPolicyScreen(),
         });
   }
 }
@@ -106,6 +108,23 @@ class HomePage extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text('Configuración',
+                  style: TextStyle(color: Colors.white)),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Acción al presionar el botón de Pre diagnóstico
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyScreen()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1A119B),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
+              child: const Text('Política de Privacidad',
                   style: TextStyle(color: Colors.white)),
             ),
           ],
