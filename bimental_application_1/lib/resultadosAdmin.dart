@@ -144,6 +144,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
           'Resultados Usuarios',
           style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: const Color(0xFF1A119B),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -159,7 +160,6 @@ class _UserResultsPageState extends State<UserResultsPage> {
       ),
       body: Center(
         child: Container(
-          color: Colors.blue.shade900,
           padding: EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
