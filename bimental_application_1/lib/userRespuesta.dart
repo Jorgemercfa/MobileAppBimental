@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'AnswersUser.dart';
 import 'ManageAnswers.dart';
 
 void main() {
@@ -34,16 +35,16 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   }
 
   void _cargarResultados() {
-    List<Map<String, dynamic>> respuestasGuardadas = ManageAnswers.getAnswers();
+    List<AnswersUser> respuestasGuardadas = ManageAnswers.getAnswers();
 
     List<Map<String, dynamic>> nuevosResultados =
-        respuestasGuardadas.map((respuestaSet) {
-      List<int> respuestas = (respuestaSet['answers'] as List<dynamic>)
+        respuestasGuardadas.map((AnswersUser) {
+      List<int> respuestas = (AnswersUser.answers as List<dynamic>)
           .map((e) => int.tryParse(e.toString()) ?? 0)
           .toList();
       return {
-        'fecha': respuestaSet['timestamp'].split(' ')[0],
-        'hora': respuestaSet['timestamp'].split(' ')[1],
+        'fecha': AnswersUser.timestamp.split(' ')[0],
+        'hora': AnswersUser.timestamp.split(' ')[1],
         'detalles': calcularResultados(respuestas),
       };
     }).toList();

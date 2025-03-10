@@ -1,18 +1,22 @@
 import 'package:intl/intl.dart';
+import 'AnswersUser.dart';
+import 'package:uuid/uuid.dart';
 
 class ManageAnswers {
-  static List<Map<String, dynamic>> answersHistory = [];
+  static List<AnswersUser> answersHistory = [];
+  static final Uuid _uuid = Uuid();
 
   static void saveAnswers(List<String> answers) {
+    String id = _uuid.v4(); // Genera un ID único
     String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    answersHistory.add({
-      'timestamp': timestamp,
-      'answers': answers,
-    });
-    print("Se guardaron las respuestas");
+
+    AnswersUser newEntry = AnswersUser(id, timestamp, answers);
+    answersHistory.add(newEntry);
+
+    print("Se guardaron las respuestas con ID: $id");
   }
 
-  static List<Map<String, dynamic>> getAnswers() {
+  static List<AnswersUser> getAnswers() {
     return answersHistory;
   }
 }

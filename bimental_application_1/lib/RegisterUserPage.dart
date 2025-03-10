@@ -1,7 +1,6 @@
 import 'package:bimental_application_1/PrivacyPolicyScreen.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
-
 import 'User.dart';
 
 class RegisterUserPage extends StatelessWidget {
