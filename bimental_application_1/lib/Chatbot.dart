@@ -1,7 +1,9 @@
+import 'package:bimental_application_1/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math'; // Para seleccionar preguntas aleatoriamente
+import 'UserRepository.dart';
 import 'openai_service.dart';
 import 'ManageAnswers.dart';
 
@@ -340,7 +342,16 @@ class _ChatScreenState extends State<ChatScreen> {
           "Gracias por completar el cuestionario. Ahora puedes continuar chateando.\nFecha y hora de finalización: $timestamp"
     });
 
-    ManageAnswers.saveAnswers(answers);
+    User? currentUser = UserRepository.instance.getUsers().isNotEmpty
+        ? UserRepository.instance.getUsers().last
+        : null;
+
+    if (currentUser != null) {
+      String userId = currentUser.id;
+      ManageAnswers.saveAnswers(answers, userId);
+    } else {
+      print("Error: No hay usuario autenticado.");
+    }
 
 // Guardar respuestas con timestamp
   }
