@@ -407,11 +407,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   const Text(
                     'Responde a la siguiente pregunta con:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A119B)),
                   ),
                   const Text(
                     '0 No me sucedió\n1 Me sucedió un poco, o durante parte del tiempo\n2 Me sucedió bastante, o durante una buena parte del tiempo\n3 Me sucedió mucho, o la mayor parte del tiempo',
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 14, color: Color(0xFF1A119B)),
                   ),
                   const SizedBox(height: 8),
                   if (_selectedQuestions.isNotEmpty)
@@ -419,7 +422,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(
                         _selectedQuestions.first['texto']!,
-                        style: const TextStyle(fontSize: 16),
+                        style: const TextStyle(
+                            fontSize: 16, color: Color(0xFF1A119B)),
                       ),
                     ),
                   ElevatedButton(
