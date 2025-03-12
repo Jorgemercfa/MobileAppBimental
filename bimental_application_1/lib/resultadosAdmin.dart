@@ -48,74 +48,72 @@ class _UserResultsPageState extends State<UserResultsPage> {
             User('', 'Desconocido', 'N/A', '', 'N/A'), // Valor predeterminado
       );
 
+      // Convertir las respuestas de String a int
+      List<int> respuestasInt =
+          entry.answers.map((r) => int.tryParse(r) ?? 0).toList();
+
+      // Calcular los resultados
+      Map<String, String> resultados = calcularResultados(respuestasInt);
+
       return {
         'Nombre': user.name,
         'Correo': user.email,
         'Teléfono': user.phone,
         'Fecha': entry.timestamp.split(' ')[0],
-        'Depresión': calcularDepresion(entry.answers),
-        'Ansiedad': calcularAnsiedad(entry.answers),
-        'Estrés': calcularEstres(entry.answers),
+        'Depresión': resultados['Depresión']!,
+        'Ansiedad': resultados['Ansiedad']!,
+        'Estrés': resultados['Estrés']!,
       };
     }).toList();
 
     setState(() {});
   }
 
-  String calcularDepresion(List<String> respuestas) {
-    // Verificar que la lista tenga suficientes elementos
-    if (respuestas.length < 21) {
-      return 'Datos insuficientes para calcular depresión';
+  Map<String, String> calcularResultados(List<int> respuestas) {
+    List<int> depresionIndices = [3, 5, 10, 13, 16, 17, 21];
+    List<int> ansiedadIndices = [2, 4, 7, 9, 15, 19, 20];
+    List<int> estresIndices = [1, 6, 8, 11, 12, 14, 18];
+
+    int calcularSuma(List<int> indices) {
+      return indices
+          .where((i) => i - 1 < respuestas.length)
+          .map((i) => respuestas[i - 1])
+          .fold(0, (a, b) => a + b);
     }
 
-    List<int> indices = [3, 5, 10, 13, 16, 17, 21];
-    int suma = _calcularSuma(indices, respuestas);
-    if (suma >= 14) return 'Extremadamente severa';
-    if (suma >= 11) return 'Severa';
-    if (suma >= 7) return 'Moderada';
-    if (suma >= 5) return 'Leve';
-    return 'Sin depresión';
-  }
+    int sumaDepresion = calcularSuma(depresionIndices);
+    int sumaAnsiedad = calcularSuma(ansiedadIndices);
+    int sumaEstres = calcularSuma(estresIndices);
 
-  String calcularAnsiedad(List<String> respuestas) {
-    // Verificar que la lista tenga suficientes elementos
-    if (respuestas.length < 20) {
-      return 'Datos insuficientes para calcular ansiedad';
+    String clasificarDepresion() {
+      if (sumaDepresion >= 14) return 'Extremadamente severa';
+      if (sumaDepresion >= 11) return 'Severa';
+      if (sumaDepresion >= 7) return 'Moderada';
+      if (sumaDepresion >= 5) return 'Leve';
+      return 'Sin depresión';
     }
 
-    List<int> indices = [2, 4, 7, 9, 15, 19, 20];
-    int suma = _calcularSuma(indices, respuestas);
-    if (suma >= 10) return 'Extremadamente severa';
-    if (suma >= 8) return 'Severa';
-    if (suma >= 5) return 'Moderada';
-    if (suma >= 4) return 'Leve';
-    return 'Sin ansiedad';
-  }
-
-  String calcularEstres(List<String> respuestas) {
-    // Verificar que la lista tenga suficientes elementos
-    if (respuestas.length < 18) {
-      return 'Datos insuficientes para calcular estrés';
+    String clasificarAnsiedad() {
+      if (sumaAnsiedad >= 10) return 'Extremadamente severa';
+      if (sumaAnsiedad >= 8) return 'Severa';
+      if (sumaAnsiedad >= 5) return 'Moderada';
+      if (sumaAnsiedad >= 4) return 'Leve';
+      return 'Sin ansiedad';
     }
 
-    List<int> indices = [1, 6, 8, 11, 12, 14, 18];
-    int suma = _calcularSuma(indices, respuestas);
-    if (suma >= 17) return 'Extremadamente severo';
-    if (suma >= 13) return 'Severo';
-    if (suma >= 10) return 'Moderado';
-    if (suma >= 8) return 'Leve';
-    return 'Sin estrés';
-  }
+    String clasificarEstres() {
+      if (sumaEstres >= 17) return 'Extremadamente severo';
+      if (sumaEstres >= 13) return 'Severo';
+      if (sumaEstres >= 10) return 'Moderado';
+      if (sumaEstres >= 8) return 'Leve';
+      return 'Sin estrés';
+    }
 
-  int _calcularSuma(List<int> indices, List<String> respuestas) {
-    return indices.map((i) {
-      // Verificar que el índice esté dentro del rango de la lista
-      if (i - 1 < respuestas.length) {
-        return int.tryParse(respuestas[i - 1]) ?? 0;
-      } else {
-        return 0; // Si el índice está fuera de rango, devolver 0
-      }
-    }).fold(0, (a, b) => a + b);
+    return {
+      'Depresión': clasificarDepresion(),
+      'Ansiedad': clasificarAnsiedad(),
+      'Estrés': clasificarEstres(),
+    };
   }
 
   void _showFilterDialog() {
