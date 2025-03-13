@@ -1,12 +1,12 @@
 import 'package:intl/intl.dart';
 import 'AnswersUser.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 import 'UserRepository.dart';
 import 'User.dart';
 
 class ManageAnswers {
   static List<AnswersUser> answersHistory = [];
-  static final Uuid _uuid = Uuid();
+  // static final Uuid _uuid = Uuid();
 
   static void saveAnswers(List<String> answers, String userId) {
     // Verificar si el usuario existe en UserRepository
