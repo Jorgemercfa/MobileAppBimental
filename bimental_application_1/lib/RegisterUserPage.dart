@@ -19,14 +19,6 @@ class RegisterUserPage extends StatelessWidget {
       User user = User("", _nameController.text, _emailController.text,
           _passwordController.text, _phoneController.text);
       userRepository.addUser(user);
-      // // FirebaseFirestore.instance
-      //     .collection('usuarios')
-      //     .snapshots()
-      //     .listen((snapshot) {
-      //   for (var doc in snapshot.docs) {
-      //     print("${doc.id} => ${doc.data()}");
-      //   }
-      // });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Usuario registrado exitosamente')),

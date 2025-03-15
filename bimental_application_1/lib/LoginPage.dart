@@ -85,11 +85,12 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     bool usuarioEncontrado = false;
                     final UserRepository userRepository = UserRepository();
-                    List<User> usuariosRegistrados = userRepository.getUsers();
+                    List<User> usuariosRegistrados =
+                        await userRepository.getUsers();
                     for (var usuario in usuariosRegistrados) {
                       if (usuario.email == _emailController.text &&
                           usuario.password == _passwordController.text) {

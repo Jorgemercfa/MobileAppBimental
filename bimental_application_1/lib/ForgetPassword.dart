@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/User.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class ResetPasswordPage extends StatelessWidget {
         TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-    void cambiarContrasena(BuildContext context) {
+    Future<void> cambiarContrasena(BuildContext context) async {
       if (_formKey.currentState!.validate()) {
         // Obtener los datos ingresados por el usuario
         String email = emailController.text;
@@ -40,13 +41,13 @@ class ResetPasswordPage extends StatelessWidget {
 
         // Buscar el usuario en UserRepository
         UserRepository userRepository = UserRepository.instance;
-        List<Map<String, String>> users = userRepository.getUsers();
+        List<User> users = await userRepository.getUsers();
 
         // Verificar si el usuario existe
         bool userFound = false;
         for (var user in users) {
-          if (user["email"] == email) {
-            user["password"] = newPassword; // Actualizar la contraseña
+          if (user.email == email) {
+            user.password = newPassword; // Actualizar la contraseña
             userFound = true;
             break;
           }

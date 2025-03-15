@@ -328,7 +328,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void _finishQuestionnaire() {
+  Future<void> _finishQuestionnaire() async {
     String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss')
         .format(DateTime.now()); // Obtener la fecha y hora actuales
 
@@ -342,9 +342,8 @@ class _ChatScreenState extends State<ChatScreen> {
           "Gracias por completar el cuestionario. Ahora puedes continuar chateando.\nFecha y hora de finalización: $timestamp"
     });
 
-    User? currentUser = UserRepository.instance.getUsers().isNotEmpty
-        ? UserRepository.instance.getUsers().last
-        : null;
+    List<User> foundUsers = await UserRepository.instance.getUsers();
+    User? currentUser = foundUsers.isNotEmpty ? foundUsers.last : null;
 
     if (currentUser != null) {
       String userId = currentUser.id;
