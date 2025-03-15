@@ -48,4 +48,31 @@ class UserRepository {
     print(usersRegistered);
     return usersRegistered;
   }
+
+  Future<bool> updatePassword(String email, String newPassword) async {
+    try {
+      // Buscar usuario en Firestore por email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        String userId = querySnapshot.docs.first.id;
+
+        // Actualizar contraseña en Firestore
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(userId)
+            .update({"password": newPassword});
+
+        return true; // Contraseña actualizada correctamente
+      } else {
+        return false; // Usuario no encontrado
+      }
+    } catch (e) {
+      print("Error al actualizar la contraseña: $e");
+      return false;
+    }
+  }
 }

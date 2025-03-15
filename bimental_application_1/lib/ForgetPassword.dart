@@ -1,4 +1,3 @@
-import 'package:bimental_application_1/User.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 import 'package:flutter/material.dart';
 
@@ -35,25 +34,13 @@ class ResetPasswordPage extends StatelessWidget {
 
     Future<void> cambiarContrasena(BuildContext context) async {
       if (_formKey.currentState!.validate()) {
-        // Obtener los datos ingresados por el usuario
         String email = emailController.text;
         String newPassword = newPasswordController.text;
 
-        // Buscar el usuario en UserRepository
         UserRepository userRepository = UserRepository.instance;
-        List<User> users = await userRepository.getUsers();
+        bool success = await userRepository.updatePassword(email, newPassword);
 
-        // Verificar si el usuario existe
-        bool userFound = false;
-        for (var user in users) {
-          if (user.email == email) {
-            user.password = newPassword; // Actualizar la contraseña
-            userFound = true;
-            break;
-          }
-        }
-
-        if (userFound) {
+        if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text('Contraseña actualizada exitosamente')),
