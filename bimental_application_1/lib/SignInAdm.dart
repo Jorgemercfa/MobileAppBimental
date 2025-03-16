@@ -1,3 +1,4 @@
+import 'package:bimental_application_1/Administrators.dart';
 import 'package:flutter/material.dart';
 import 'ForgetPasswordAdmin.dart';
 import 'HomeAdmin.dart';
@@ -44,14 +45,15 @@ class _SignInAdminState extends State<SignInAdmin> {
 
   final AdminRepository adminRepository = AdminRepository();
 
-  void signIn() {
+  Future<void> signIn() async {
     if (_formKey.currentState!.validate()) {
       bool adminEncontrado = false;
-      List<Map<String, String>> adminsRegistrados = adminRepository.getAdmins();
+      List<Administrators> adminsRegistrados =
+          await adminRepository.getAdmins();
 
       for (var admin in adminsRegistrados) {
-        if (admin['email'] == emailController.text.trim() &&
-            admin['password'] == passwordController.text.trim()) {
+        if (admin.email == emailController.text.trim() &&
+            admin.password == passwordController.text.trim()) {
           adminEncontrado = true;
           break;
         }

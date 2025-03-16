@@ -35,30 +35,36 @@ class _ForgetPasswordPageAdminState extends State<ForgetPasswordPageAdmin> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  void _changePassword() {
-    String email = _emailController.text;
-    String newPassword = _newPasswordController.text;
-    String confirmPassword = _confirmPasswordController.text;
+  void _changePassword() async {
+    String email = _emailController.text.trim();
+    String newPassword = _newPasswordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
 
-    if (newPassword != confirmPassword) {
+    if (email.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Las contraseñas no coinciden')),
+        const SnackBar(content: Text('Todos los campos son obligatorios')),
       );
       return;
     }
 
-    List<Map<String, String>> admins = AdminRepository.instance.getAdmins();
-    bool adminExists = admins.any((admin) => admin['email'] == email);
-
-    if (adminExists) {
-      AdminRepository.instance.addAdmin(email, newPassword);
+    if (newPassword != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Contraseña cambiada con éxito')),
+        const SnackBar(content: Text('Las contraseñas no coinciden')),
+      );
+      return;
+    }
+
+    bool success =
+        await AdminRepository.instance.updatePassword(email, newPassword);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Contraseña cambiada con éxito')),
       );
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Administrador no encontrado')),
+        const SnackBar(content: Text('Administrador no encontrado')),
       );
     }
   }

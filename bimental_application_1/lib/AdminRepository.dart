@@ -1,3 +1,6 @@
+import 'package:bimental_application_1/Administrators.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class AdminRepository {
   static final AdminRepository instance = AdminRepository._internal();
 
@@ -8,19 +11,42 @@ class AdminRepository {
   AdminRepository._internal();
 
   // Inicializando la lista con credenciales predeterminadas
-  List<Map<String, String>> Admin = [
-    {
-      'email': 'admin1@bimental.com',
-      'password': '#wrb22ed',
-    }
-  ];
+  List<Administrators> administrators = [];
 
-  List<Map<String, String>> getAdmins() {
-    return Admin;
+  Future<List<Administrators>> getAdmins() async {
+    List<Administrators> AdminRegistered = [];
+    await FirebaseFirestore.instance
+        .collection("administrators")
+        .get()
+        .then((event) {
+      for (var doc in event.docs) {
+        var adminInfo = doc.data();
+        Administrators administrators = Administrators(
+            adminInfo["id"], adminInfo["email"], adminInfo["password"]);
+        print("${doc.id} => ${doc.data()}");
+
+        AdminRegistered.add(administrators);
+      }
+    });
+    return AdminRegistered;
   }
 
-  // Método para agregar nuevos administradores si lo necesitas
-  void addAdmin(String email, String password) {
-    Admin.add({'email': email, 'password': password});
+  Future<bool> updatePassword(String email, String newPassword) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection("administrators")
+        .where("email", isEqualTo: email)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final docId = querySnapshot.docs.first.id;
+
+      await FirebaseFirestore.instance
+          .collection("administrators")
+          .doc(docId)
+          .update({"password": newPassword});
+      return true;
+    } else {
+      return false;
+    }
   }
 }
