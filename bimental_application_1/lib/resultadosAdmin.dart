@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'AnswersUser.dart';
-import 'ManageAnswers.dart';
+// import 'ManageAnswers.dart';
 import 'UserRepository.dart';
 import 'User.dart';
+import 'AnswersRepository.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,6 +30,8 @@ class UserResultsPage extends StatefulWidget {
 class _UserResultsPageState extends State<UserResultsPage> {
   List<Map<String, String>> filteredData = [];
   List<User> users = [];
+  String selectedCriterion = 'Depresión';
+  String selectedValue = 'Extremadamente severa';
 
   @override
   void initState() {
@@ -38,91 +41,62 @@ class _UserResultsPageState extends State<UserResultsPage> {
 
   void _loadUserData() {
     users = UserRepository.instance.users;
-    List<AnswersUser> respuestasGuardadas = ManageAnswers.getAnswers();
+    List<AnswersUser> respuestasGuardadas = AnswersRepository.getAnswers();
 
     filteredData = respuestasGuardadas.map((entry) {
-      // Usar firstWhere con orElse para manejar el caso en que no se encuentre un usuario
       User user = users.firstWhere(
-        (u) => u.id == entry.id,
-        orElse: () =>
-            User('', 'Desconocido', 'N/A', '', 'N/A'), // Valor predeterminado
+        (u) => u.id == entry.userId,
+        orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A'),
       );
 
-      // Convertir las respuestas de String a int
-      List<int> respuestasInt =
-          entry.answers.map((r) => int.tryParse(r) ?? 0).toList();
-
-      // Calcular los resultados
-      Map<String, String> resultados = calcularResultados(respuestasInt);
+      // Clasificar los puntajes almacenados en AnswersUser
+      String clasificacionDepresion = _clasificarDepresion(entry.p_depresion);
+      String clasificacionAnsiedad = _clasificarAnsiedad(entry.p_ansiedad);
+      String clasificacionEstres = _clasificarEstres(entry.p_estres);
 
       return {
         'Nombre': user.name,
         'Correo': user.email,
         'Teléfono': user.phone,
         'Fecha': entry.timestamp.split(' ')[0],
-        'Depresión': resultados['Depresión']!,
-        'Ansiedad': resultados['Ansiedad']!,
-        'Estrés': resultados['Estrés']!,
+        'Depresión': clasificacionDepresion,
+        'Ansiedad': clasificacionAnsiedad,
+        'Estrés': clasificacionEstres,
       };
     }).toList();
 
     setState(() {});
   }
 
-  Map<String, String> calcularResultados(List<int> respuestas) {
-    List<int> depresionIndices = [3, 5, 10, 13, 16, 17, 21];
-    List<int> ansiedadIndices = [2, 4, 7, 9, 15, 19, 20];
-    List<int> estresIndices = [1, 6, 8, 11, 12, 14, 18];
+  // Funciones para clasificar los puntajes
+  String _clasificarDepresion(int score) {
+    if (score >= 14) return 'Extremadamente severa';
+    if (score >= 11) return 'Severa';
+    if (score >= 7) return 'Moderada';
+    if (score >= 5) return 'Leve';
+    return 'Sin depresión';
+  }
 
-    int calcularSuma(List<int> indices) {
-      return indices
-          .where((i) => i - 1 < respuestas.length)
-          .map((i) => respuestas[i - 1])
-          .fold(0, (a, b) => a + b);
-    }
+  String _clasificarAnsiedad(int score) {
+    if (score >= 10) return 'Extremadamente severa';
+    if (score >= 8) return 'Severa';
+    if (score >= 5) return 'Moderada';
+    if (score >= 4) return 'Leve';
+    return 'Sin ansiedad';
+  }
 
-    int sumaDepresion = calcularSuma(depresionIndices);
-    int sumaAnsiedad = calcularSuma(ansiedadIndices);
-    int sumaEstres = calcularSuma(estresIndices);
-
-    String clasificarDepresion() {
-      if (sumaDepresion >= 14) return 'Extremadamente severa';
-      if (sumaDepresion >= 11) return 'Severa';
-      if (sumaDepresion >= 7) return 'Moderada';
-      if (sumaDepresion >= 5) return 'Leve';
-      return 'Sin depresión';
-    }
-
-    String clasificarAnsiedad() {
-      if (sumaAnsiedad >= 10) return 'Extremadamente severa';
-      if (sumaAnsiedad >= 8) return 'Severa';
-      if (sumaAnsiedad >= 5) return 'Moderada';
-      if (sumaAnsiedad >= 4) return 'Leve';
-      return 'Sin ansiedad';
-    }
-
-    String clasificarEstres() {
-      if (sumaEstres >= 17) return 'Extremadamente severo';
-      if (sumaEstres >= 13) return 'Severo';
-      if (sumaEstres >= 10) return 'Moderado';
-      if (sumaEstres >= 8) return 'Leve';
-      return 'Sin estrés';
-    }
-
-    return {
-      'Depresión': clasificarDepresion(),
-      'Ansiedad': clasificarAnsiedad(),
-      'Estrés': clasificarEstres(),
-    };
+  String _clasificarEstres(int score) {
+    if (score >= 17) return 'Extremadamente severo';
+    if (score >= 13) return 'Severo';
+    if (score >= 10) return 'Moderado';
+    if (score >= 8) return 'Leve';
+    return 'Sin estrés';
   }
 
   void _showFilterDialog() {
     showDialog(
       context: context,
       builder: (context) {
-        String selectedCriterion = 'Depresión';
-        String selectedValue = 'Alto';
-
         return AlertDialog(
           title: Text('Seleccionar filtro'),
           content: Column(
@@ -132,10 +106,14 @@ class _UserResultsPageState extends State<UserResultsPage> {
                 value: selectedCriterion,
                 items: ['Depresión', 'Ansiedad', 'Estrés']
                     .map((criterion) => DropdownMenuItem(
-                        value: criterion, child: Text(criterion)))
+                          value: criterion,
+                          child: Text(criterion),
+                        ))
                     .toList(),
                 onChanged: (value) {
-                  setState(() => selectedCriterion = value ?? 'Depresión');
+                  setState(() {
+                    selectedCriterion = value ?? 'Depresión';
+                  });
                 },
               ),
               DropdownButton<String>(
@@ -149,11 +127,15 @@ class _UserResultsPageState extends State<UserResultsPage> {
                   'Sin ansiedad',
                   'Sin estrés'
                 ]
-                    .map((value) =>
-                        DropdownMenuItem(value: value, child: Text(value)))
+                    .map((value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ))
                     .toList(),
                 onChanged: (value) {
-                  setState(() => selectedValue = value ?? 'Alto');
+                  setState(() {
+                    selectedValue = value ?? 'Extremadamente severa';
+                  });
                 },
               ),
             ],
