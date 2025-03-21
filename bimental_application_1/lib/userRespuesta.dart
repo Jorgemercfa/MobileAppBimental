@@ -1,5 +1,6 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'AnswersUser.dart';
+// import 'AnswersUser.dart';
 import 'AnswersRepository.dart';
 
 void main() {
@@ -34,25 +35,29 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
     _cargarResultados();
   }
 
-  void _cargarResultados() {
-    List<AnswersUser> respuestasGuardadas = AnswersRepository.getAnswers();
+  void _cargarResultados() async {
+    final data = await AnswersRepository.getAllAnswersFromFirestore();
 
-    // Verificar que hay datos
-    print("Respuestas guardadas: ${respuestasGuardadas.length}");
+    List<Map<String, dynamic>> nuevosResultados = data.map((result) {
+      // Separar fecha y hora del timestamp
+      String fecha = '';
+      String hora = '';
+      if (result.timestamp.contains(' ')) {
+        fecha = result.timestamp.split(' ')[0];
+        hora = result.timestamp.split(' ')[1];
+      }
 
-    List<Map<String, dynamic>> nuevosResultados =
-        respuestasGuardadas.map((answersUser) {
-      // Usar los puntajes ya guardados en AnswersUser
       return {
-        'fecha': answersUser.timestamp.split(' ')[0], // Fecha
-        'hora': answersUser.timestamp.split(' ')[1], // Hora
-        'p_depresion': answersUser.p_depresion,
-        'p_ansiedad': answersUser.p_ansiedad,
-        'p_estres': answersUser.p_estres,
+        'usuario': result.userId,
+        'fecha': fecha,
+        'hora': hora,
+        'p_depresion': result.p_depresion,
+        'p_ansiedad': result.p_ansiedad,
+        'p_estres': result.p_estres,
         'clasificacion': {
-          'Depresión': _clasificarDepresion(answersUser.p_depresion),
-          'Ansiedad': _clasificarAnsiedad(answersUser.p_ansiedad),
-          'Estrés': _clasificarEstres(answersUser.p_estres),
+          'Depresión': _clasificarDepresion(result.p_depresion),
+          'Ansiedad': _clasificarAnsiedad(result.p_ansiedad),
+          'Estrés': _clasificarEstres(result.p_estres),
         },
       };
     }).toList();
