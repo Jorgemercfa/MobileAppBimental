@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math'; // Para seleccionar preguntas aleatoriamente
+import 'AnswersRepository.dart';
 import 'UserRepository.dart';
 import 'openai_service.dart';
-import 'ManageAnswers.dart';
+// import 'ManageAnswers.dart';
 
 void main() => runApp(const ChatBotApp());
 
@@ -260,7 +261,6 @@ class _ChatScreenState extends State<ChatScreen> {
   };
 
   List<Map<String, String>> _selectedQuestions = [];
-
   List<String> answers = [];
 
   // Método para generar una pregunta aleatoria de la categoría actual
@@ -290,18 +290,28 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
 
-    if (_showQuestionnaire == true) {
-      questionCategoryNumber++;
-      if (questionCategoryNumber <= _questions.length) {
-        setState(() {
-          _selectedQuestions = [_generateRandomQuestion()];
-        });
+    if (_showQuestionnaire) {
+      // Validar que la respuesta sea un número entre 0 y 3
+      if (RegExp(r'^[0-3]$').hasMatch(text)) {
+        answers.add(text); // Guardar la respuesta como String
+        questionCategoryNumber++;
+
+        if (questionCategoryNumber <= _questions.length) {
+          setState(() {
+            _selectedQuestions = [_generateRandomQuestion()];
+          });
+        } else {
+          _finishQuestionnaire();
+          return;
+        }
       } else {
-        _finishQuestionnaire();
+        // Mostrar un mensaje de error si la respuesta no es válida
+        setState(() {
+          _messages.add(
+              {'bot': "Por favor, ingresa un número válido (0, 1, 2 o 3)."});
+        });
         return;
       }
-
-      answers.add(text);
     }
     print(answers);
     setState(() {
@@ -328,9 +338,8 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> _finishQuestionnaire() async {
-    String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss')
-        .format(DateTime.now()); // Obtener la fecha y hora actuales
+  void _finishQuestionnaire() async {
+    String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     setState(() {
       _showQuestionnaire = false;
@@ -346,13 +355,14 @@ class _ChatScreenState extends State<ChatScreen> {
     User? currentUser = foundUsers.isNotEmpty ? foundUsers.last : null;
 
     if (currentUser != null) {
-      String userId = currentUser.id;
-      ManageAnswers.saveAnswers(answers, userId);
+      // Guardar las respuestas en AnswersRepository
+      AnswersRepository.saveAnswers(answers, currentUser.id);
     } else {
       print("Error: No hay usuario autenticado.");
     }
 
-// Guardar respuestas con timestamp
+    // Limpiar las respuestas para el próximo cuestionario
+    answers.clear();
   }
 
   @override

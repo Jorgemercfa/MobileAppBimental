@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'AnswersUser.dart';
-import 'ManageAnswers.dart';
+import 'AnswersRepository.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,17 +35,25 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
   }
 
   void _cargarResultados() {
-    List<AnswersUser> respuestasGuardadas = ManageAnswers.getAnswers();
+    List<AnswersUser> respuestasGuardadas = AnswersRepository.getAnswers();
+
+    // Verificar que hay datos
+    print("Respuestas guardadas: ${respuestasGuardadas.length}");
 
     List<Map<String, dynamic>> nuevosResultados =
-        respuestasGuardadas.map((AnswersUser) {
-      List<int> respuestas = (AnswersUser.answers as List<dynamic>)
-          .map((e) => int.tryParse(e.toString()) ?? 0)
-          .toList();
+        respuestasGuardadas.map((answersUser) {
+      // Usar los puntajes ya guardados en AnswersUser
       return {
-        'fecha': AnswersUser.timestamp.split(' ')[0],
-        'hora': AnswersUser.timestamp.split(' ')[1],
-        'detalles': calcularResultados(respuestas),
+        'fecha': answersUser.timestamp.split(' ')[0], // Fecha
+        'hora': answersUser.timestamp.split(' ')[1], // Hora
+        'p_depresion': answersUser.p_depresion,
+        'p_ansiedad': answersUser.p_ansiedad,
+        'p_estres': answersUser.p_estres,
+        'clasificacion': {
+          'Depresión': _clasificarDepresion(answersUser.p_depresion),
+          'Ansiedad': _clasificarAnsiedad(answersUser.p_ansiedad),
+          'Estrés': _clasificarEstres(answersUser.p_estres),
+        },
       };
     }).toList();
 
@@ -54,51 +62,29 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
     });
   }
 
-  Map<String, String> calcularResultados(List<int> respuestas) {
-    List<int> depresionIndices = [3, 5, 10, 13, 16, 17, 21];
-    List<int> ansiedadIndices = [2, 4, 7, 9, 15, 19, 20];
-    List<int> estresIndices = [1, 6, 8, 11, 12, 14, 18];
+  // Funciones para clasificar los puntajes
+  String _clasificarDepresion(int score) {
+    if (score >= 14) return 'Extremadamente severa';
+    if (score >= 11) return 'Severa';
+    if (score >= 7) return 'Moderada';
+    if (score >= 5) return 'Leve';
+    return 'Sin depresión';
+  }
 
-    int calcularSuma(List<int> indices) {
-      return indices
-          .where((i) => i - 1 < respuestas.length)
-          .map((i) => respuestas[i - 1])
-          .fold(0, (a, b) => a + b);
-    }
+  String _clasificarAnsiedad(int score) {
+    if (score >= 10) return 'Extremadamente severa';
+    if (score >= 8) return 'Severa';
+    if (score >= 5) return 'Moderada';
+    if (score >= 4) return 'Leve';
+    return 'Sin ansiedad';
+  }
 
-    int sumaDepresion = calcularSuma(depresionIndices);
-    int sumaAnsiedad = calcularSuma(ansiedadIndices);
-    int sumaEstres = calcularSuma(estresIndices);
-
-    String clasificarDepresion() {
-      if (sumaDepresion >= 14) return 'Extremadamente severa';
-      if (sumaDepresion >= 11) return 'Severa';
-      if (sumaDepresion >= 7) return 'Moderada';
-      if (sumaDepresion >= 5) return 'Leve';
-      return 'Sin depresión';
-    }
-
-    String clasificarAnsiedad() {
-      if (sumaAnsiedad >= 10) return 'Extremadamente severa';
-      if (sumaAnsiedad >= 8) return 'Severa';
-      if (sumaAnsiedad >= 5) return 'Moderada';
-      if (sumaAnsiedad >= 4) return 'Leve';
-      return 'Sin ansiedad';
-    }
-
-    String clasificarEstres() {
-      if (sumaEstres >= 17) return 'Extremadamente severo';
-      if (sumaEstres >= 13) return 'Severo';
-      if (sumaEstres >= 10) return 'Moderado';
-      if (sumaEstres >= 8) return 'Leve';
-      return 'Sin estrés';
-    }
-
-    return {
-      'Depresión': clasificarDepresion(),
-      'Ansiedad': clasificarAnsiedad(),
-      'Estrés': clasificarEstres(),
-    };
+  String _clasificarEstres(int score) {
+    if (score >= 17) return 'Extremadamente severo';
+    if (score >= 13) return 'Severo';
+    if (score >= 10) return 'Moderado';
+    if (score >= 8) return 'Leve';
+    return 'Sin estrés';
   }
 
   @override
@@ -126,7 +112,7 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
                           builder: (context) => ResultadoDetalleScreen(
                             fecha: resultado['fecha'],
                             hora: resultado['hora'],
-                            detalles: resultado['detalles'],
+                            detalles: resultado,
                           ),
                         ),
                       );
@@ -162,7 +148,7 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
 class ResultadoDetalleScreen extends StatelessWidget {
   final String fecha;
   final String hora;
-  final Map<String, String> detalles;
+  final Map<String, dynamic> detalles;
 
   ResultadoDetalleScreen({
     required this.fecha,
@@ -172,6 +158,8 @@ class ResultadoDetalleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final clasificacion = detalles['clasificacion'] as Map<String, dynamic>;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Resultados', style: TextStyle(color: Colors.white)),
@@ -184,14 +172,20 @@ class ResultadoDetalleScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 24),
-            Text('Ansiedad: ${detalles['Ansiedad']}',
-                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
+            Text(
+              'Ansiedad: ${detalles['p_ansiedad']} puntos - ${clasificacion['Ansiedad']}',
+              style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
+            ),
             SizedBox(height: 16),
-            Text('Depresión: ${detalles['Depresión']}',
-                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
+            Text(
+              'Depresión: ${detalles['p_depresion']} puntos - ${clasificacion['Depresión']}',
+              style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
+            ),
             SizedBox(height: 16),
-            Text('Estrés: ${detalles['Estrés']}',
-                style: TextStyle(fontSize: 20, color: Color(0xFF1A119B))),
+            Text(
+              'Estrés: ${detalles['p_estres']} puntos - ${clasificacion['Estrés']}',
+              style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
+            ),
           ],
         ),
       ),
