@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-
-Map<String, String> datosUsuario = {
-  'nombres': 'Nombre por defecto',
-  'email': 'Correo por defecto',
-  'telefono': 'Número por defecto',
-};
+import 'UserRepository.dart'; // Importar UserRepository
 
 class CambiarDatosScreenUser extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -14,22 +9,27 @@ class CambiarDatosScreenUser extends StatelessWidget {
 
   CambiarDatosScreenUser({Key? key}) : super(key: key);
 
-  void actualizarDatos(BuildContext context) {
+  void actualizarDatos(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      datosUsuario['nombres'] = (_nombresController.text.isNotEmpty
-          ? _nombresController.text
-          : datosUsuario['nombres'])!;
-      datosUsuario['email'] = (_emailController.text.isNotEmpty
-          ? _emailController.text
-          : datosUsuario['email'])!;
-      datosUsuario['telefono'] = (_telefonoController.text.isNotEmpty
-          ? _telefonoController.text
-          : datosUsuario['telefono'])!;
+      final UserRepository userRepository = UserRepository();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Datos actualizados correctamente')),
+      // Actualizar datos en Firestore
+      bool success = await userRepository.updateUserData(
+        _emailController.text,
+        _nombresController.text,
+        _telefonoController.text,
       );
-      Navigator.pop(context);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Datos actualizados correctamente')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al actualizar los datos')),
+        );
+      }
     }
   }
 

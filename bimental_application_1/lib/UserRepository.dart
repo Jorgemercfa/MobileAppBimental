@@ -75,4 +75,36 @@ class UserRepository {
       return false;
     }
   }
+
+  Future<bool> updateUserData(String email, String name, String phone) async {
+    try {
+      print("Buscando usuario con email: $email");
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        String userId = querySnapshot.docs.first.id;
+        print("Usuario encontrado con ID: $userId");
+
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(userId)
+            .update({
+          "name": name,
+          "phone": phone,
+        });
+
+        print("Datos actualizados correctamente");
+        return true; // Datos actualizados correctamente
+      } else {
+        print("Usuario no encontrado");
+        return false; // Usuario no encontrado
+      }
+    } catch (e) {
+      print("Error al actualizar los datos: $e");
+      return false;
+    }
+  }
 }
