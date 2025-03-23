@@ -1,21 +1,9 @@
-import 'package:bimental_application_1/main.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: ConfiguracionAdministracionScreen(),
-    );
-  }
-}
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:bimental_application_1/main.dart'; // Aquí está el ValueNotifier
+import 'NotificationService.dart';
 
 class ConfiguracionAdministracionScreen extends StatefulWidget {
   @override
@@ -25,145 +13,143 @@ class ConfiguracionAdministracionScreen extends StatefulWidget {
 
 class _ConfiguracionAdministracionScreenState
     extends State<ConfiguracionAdministracionScreen> {
+  bool recibirNotificaciones = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarPreferencias();
+    _inicializarFCM();
+  }
+
+  Future<void> _cargarPreferencias() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      recibirNotificaciones = prefs.getBool('recibirNotificaciones') ?? false;
+      isDarkModeEnabled.value = prefs.getBool('isDarkModeEnabled') ?? false;
+    });
+  }
+
+  Future<void> _inicializarFCM() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    await messaging.requestPermission();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        NotificationService().showNotification(
+          message.notification!.title ?? 'Nueva notificación',
+          message.notification!.body ?? 'Tienes un nuevo mensaje',
+        );
+      }
+    });
+  }
+
+  void _toggleNotificaciones(bool value) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      recibirNotificaciones = value;
+    });
+
+    await prefs.setBool('recibirNotificaciones', value);
+
+    if (!kIsWeb) {
+      if (value) {
+        await messaging.subscribeToTopic('admin_notifications');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Suscrito a notificaciones')),
+        );
+      } else {
+        await messaging.unsubscribeFromTopic('admin_notifications');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No recibirás más notificaciones')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text('La suscripción a temas no está disponible en la web')),
+      );
+    }
+  }
+
+  void _toggleDarkMode(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    isDarkModeEnabled.value = value;
+    await prefs.setBool('isDarkModeEnabled', value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1A119B),
-        title: Text(
-          'Configuración',
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ValueListenableBuilder<bool>(
+      valueListenable: isDarkModeEnabled,
+      builder: (context, isDark, _) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF1A119B),
+            title: Text(
+              'Configuración',
+              style: TextStyle(color: Colors.white),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Activar tema oscuro',
-                  style: TextStyle(
-                    color: Color(0xFF1A119B),
-                    fontSize: 16,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Activar tema oscuro',
+                      style: TextStyle(
+                        color: Color(0xFF1A119B),
+                        fontSize: 16,
+                      ),
+                    ),
+                    Switch(
+                      value: isDark,
+                      activeColor: Colors.green,
+                      onChanged: (value) {
+                        _toggleDarkMode(value);
+                      },
+                    ),
+                  ],
                 ),
-                Switch(
-                  value: isDarkModeEnabled.value,
-                  activeColor: Colors.green,
-                  onChanged: (value) {
-                    setState(() {
-                      isDarkModeEnabled.value = value;
-                    });
-                  },
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recibir notificaciones',
+                      style: TextStyle(
+                        color: Color(0xFF1A119B),
+                        fontSize: 16,
+                      ),
+                    ),
+                    Switch(
+                      value: recibirNotificaciones,
+                      activeColor: Colors.green,
+                      onChanged: (value) {
+                        _toggleNotificaciones(value);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CambiarDatosScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Cambiar Datos',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CambiarDatosScreen extends StatelessWidget {
-  final TextEditingController _nombresController = TextEditingController();
-  final TextEditingController _apellidosController = TextEditingController();
-  final TextEditingController _telefonoController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1A119B),
-        title: Text(
-          'Cambiar Datos',
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nombresController,
-              decoration: InputDecoration(
-                labelText: 'Nombres',
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _apellidosController,
-              decoration: InputDecoration(
-                labelText: 'Apellidos',
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _telefonoController,
-              decoration: InputDecoration(
-                labelText: 'Número telefónico',
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                String nombres = _nombresController.text;
-                String apellidos = _apellidosController.text;
-                String telefono = _telefonoController.text;
-
-                print('Datos guardados: $nombres $apellidos $telefono');
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Cambios realizados con éxito')),
-                );
-              },
-              child: Text('Realizar cambios',
-                  style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1A119B),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

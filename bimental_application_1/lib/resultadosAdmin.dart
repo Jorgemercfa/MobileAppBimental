@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'AnswersUser.dart';
 import 'UserRepository.dart';
 import 'User.dart';
 import 'AnswersRepository.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Resultados Usuarios',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: UserResultsPage(),
-    );
-  }
-}
+import 'NotificationService.dart';
 
 class UserResultsPage extends StatefulWidget {
   @override
@@ -31,47 +17,54 @@ class _UserResultsPageState extends State<UserResultsPage> {
   List<User> users = [];
   String selectedCriterion = 'Depresión';
   String selectedValue = 'Extremadamente severa';
-  bool isLoading = true; // Indicador de carga
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _setupFCM();
   }
 
-  // Cargar datos desde Firestore
+  Future<void> _setupFCM() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool recibirNotificaciones =
+        prefs.getBool('recibirNotificaciones') ?? false;
+
+    if (recibirNotificaciones) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        if (message.notification != null) {
+          NotificationService().showNotification(
+            message.notification!.title ?? 'Nueva notificación',
+            message.notification!.body ?? 'Tienes un nuevo mensaje',
+          );
+        }
+      });
+    }
+  }
+
   Future<void> _loadUserData() async {
     setState(() {
-      isLoading = true; // Mostrar indicador de carga
+      isLoading = true;
     });
 
-    // Obtener usuarios desde Firestore
     users = await UserRepository.instance.getUsers();
-
-    // Obtener respuestas desde Firestore
     List<AnswersUser> respuestasGuardadas =
         await AnswersRepository.getAllAnswersFromFirestore();
 
-    // Verificar que hay datos de usuarios y respuestas
-    print("Usuarios cargados: ${users.length}");
-    print("Respuestas guardadas: ${respuestasGuardadas.length}");
-
     filteredData = respuestasGuardadas.map((entry) {
-      // Buscar el usuario correspondiente
       User user = users.firstWhere(
         (u) => u.id == entry.userId,
         orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A'),
       );
 
-      // Verificar si se encontró el usuario
-      if (user.name.isEmpty) {
-        print("Advertencia: Usuario no encontrado para el ID: ${entry.userId}");
-      }
-
-      // Clasificar los puntajes almacenados en AnswersUser
       String clasificacionDepresion = _clasificarDepresion(entry.p_depresion);
       String clasificacionAnsiedad = _clasificarAnsiedad(entry.p_ansiedad);
       String clasificacionEstres = _clasificarEstres(entry.p_estres);
+
+      // Verificar si hay casos severos o extremadamente severos
+      _verificarNotificaciones(clasificacionDepresion, clasificacionAnsiedad,
+          clasificacionEstres, user);
 
       return {
         'Nombre': user.name,
@@ -85,11 +78,38 @@ class _UserResultsPageState extends State<UserResultsPage> {
     }).toList();
 
     setState(() {
-      isLoading = false; // Ocultar indicador de carga
+      isLoading = false;
     });
   }
 
-  // Funciones para clasificar los puntajes
+  void _verificarNotificaciones(
+      String depresion, String ansiedad, String estres, User user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool recibirNotificaciones =
+        prefs.getBool('recibirNotificaciones') ?? false;
+
+    if (recibirNotificaciones) {
+      if (depresion == 'Extremadamente severa' || depresion == 'Severa') {
+        NotificationService().showNotification(
+          'Alerta de Depresión',
+          '${user.name} tiene un nivel de depresión: $depresion',
+        );
+      }
+      if (ansiedad == 'Extremadamente severa' || ansiedad == 'Severa') {
+        NotificationService().showNotification(
+          'Alerta de Ansiedad',
+          '${user.name} tiene un nivel de ansiedad: $ansiedad',
+        );
+      }
+      if (estres == 'Extremadamente severo' || estres == 'Severo') {
+        NotificationService().showNotification(
+          'Alerta de Estrés',
+          '${user.name} tiene un nivel de estrés: $estres',
+        );
+      }
+    }
+  }
+
   String _clasificarDepresion(int score) {
     if (score >= 14) return 'Extremadamente severa';
     if (score >= 11) return 'Severa';
@@ -208,57 +228,62 @@ class _UserResultsPageState extends State<UserResultsPage> {
       ),
       body: Center(
         child: isLoading
-            ? CircularProgressIndicator() // Indicador de carga
-            : Container(
-                padding: EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: [
-                      DataColumn(
-                          label: Text('Nombre',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Correo',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Teléfono',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Fecha',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Depresión',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Ansiedad',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Estrés',
-                              style: TextStyle(color: Colors.white))),
-                    ],
-                    rows: filteredData.map((user) {
-                      return DataRow(cells: [
-                        DataCell(Text(user['Nombre']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Correo']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Teléfono']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Fecha']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Depresión']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Ansiedad']!,
-                            style: TextStyle(color: Colors.white))),
-                        DataCell(Text(user['Estrés']!,
-                            style: TextStyle(color: Colors.white))),
-                      ]);
-                    }).toList(),
-                    headingRowColor: MaterialStateProperty.all(Colors.green),
-                    dataRowColor: MaterialStateProperty.all(Color(0xFF1A119B)),
+            ? CircularProgressIndicator()
+            : Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columns: [
+                          DataColumn(
+                              label: Text('Nombre',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Correo',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Teléfono',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Fecha',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Depresión',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Ansiedad',
+                                  style: TextStyle(color: Colors.white))),
+                          DataColumn(
+                              label: Text('Estrés',
+                                  style: TextStyle(color: Colors.white))),
+                        ],
+                        rows: filteredData.map((user) {
+                          return DataRow(cells: [
+                            DataCell(Text(user['Nombre']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Correo']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Teléfono']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Fecha']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Depresión']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Ansiedad']!,
+                                style: TextStyle(color: Colors.white))),
+                            DataCell(Text(user['Estrés']!,
+                                style: TextStyle(color: Colors.white))),
+                          ]);
+                        }).toList(),
+                        headingRowColor:
+                            MaterialStateProperty.all(Colors.green),
+                        dataRowColor:
+                            MaterialStateProperty.all(Color(0xFF1A119B)),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
       ),
     );

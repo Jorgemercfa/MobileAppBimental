@@ -19,6 +19,8 @@ dependencies:
   firebase_auth: ^5.4.2 # o la versión más recient
   cloud_firestore: ^5.6.5
   uuid: ^4.1.0
+  flutter_local_notifications: ^19.0.0
+  firebase_messaging: ^15.2.4
 
 dev_dependencies:
   flutter_test:
