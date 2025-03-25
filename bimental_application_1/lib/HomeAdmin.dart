@@ -61,37 +61,45 @@ class HomePageAdmin extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                // Acción al presionar el botón de Chatbot
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UserResultsPage()));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1A119B),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+            SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Acción al presionar el botón de Chatbot
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserResultsPage()));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
+                child: const Text('Resultados',
+                    style: TextStyle(color: Colors.white)),
               ),
-              child: const Text('Resultados',
-                  style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                // Acción al presionar el botón de Chatbot
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ConfiguracionAdministracionScreen()));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1A119B),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+            SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Acción al presionar el botón de Chatbot
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ConfiguracionAdministracionScreen()));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
+                child: const Text('Configuraciones',
+                    style: TextStyle(color: Colors.white)),
               ),
-              child: const Text('Configuraciones',
-                  style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 20),
           ],
