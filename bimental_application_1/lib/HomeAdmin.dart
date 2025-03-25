@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental administrativo',
+      title: 'BiMental Administración',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -37,6 +37,7 @@ class HomePageAdmin extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: Colors.green),
@@ -52,7 +53,7 @@ class HomePageAdmin extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'BiMental adminstrativo',
+              'BiMental Administración',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental administrativo',
+      title: 'BiMental Administración',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -88,7 +88,7 @@ class _ForgetPasswordPageAdminState extends State<ForgetPasswordPageAdmin> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'BiMental',
+              'BiMental Administración',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiMental Administrativo',
+      title: 'BiMental Administración',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -94,7 +94,7 @@ class _SignInAdminState extends State<SignInAdmin> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'BiMental Administrativo',
+                'BiMental Administración',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
