@@ -97,18 +97,18 @@ class _ForgetPasswordPageAdminState extends State<ForgetPasswordPageAdmin> {
             ),
             const SizedBox(height: 20),
             CustomTextField(
-              labelText: 'Correo del usuario',
+              labelText: 'Correo del administrador',
               controller: _emailController,
             ),
             const SizedBox(height: 20),
             CustomTextField(
-              labelText: 'Nueva Contraseña del usuario',
+              labelText: 'Nueva Contraseña del administrador',
               controller: _newPasswordController,
               obscureText: true,
             ),
             const SizedBox(height: 20),
             CustomTextField(
-              labelText: 'Confirmar Nueva Contraseña del usuario',
+              labelText: 'Confirmar Nueva Contraseña del administrador',
               controller: _confirmPasswordController,
               obscureText: true,
             ),
