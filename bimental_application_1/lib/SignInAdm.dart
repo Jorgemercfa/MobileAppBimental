@@ -126,7 +126,7 @@ class _SignInAdminState extends State<SignInAdmin> {
               ),
               const SizedBox(height: 30),
               SizedBox(
-                width: 250,
+                width: 170,
                 child: ElevatedButton(
                   onPressed: signIn,
                   style: ElevatedButton.styleFrom(
@@ -142,7 +142,7 @@ class _SignInAdminState extends State<SignInAdmin> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                width: 250,
+                width: 170,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
