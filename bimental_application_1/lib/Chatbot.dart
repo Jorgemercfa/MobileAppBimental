@@ -461,22 +461,43 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: "Escribe un texto",
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none,
-                        ),
+                    child: Container(
+                      color: const Color(0xFF1A119B), // Color de fondo azul
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment
+                            .center, // Asegura que los elementos se centren verticalmente
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 50, // Ajusta la altura del TextField
+                              alignment: Alignment
+                                  .center, // Centra el contenido dentro del contenedor
+                              child: TextField(
+                                controller: _controller,
+                                style: TextStyle(
+                                    fontSize: 18.0), // Tamaño del texto
+                                decoration: InputDecoration(
+                                  hintText: "Escribe un texto",
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 15,
+                                      horizontal:
+                                          16), // Ajusta el padding interno
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.send, color: Colors.green),
                     onPressed: _sendMessage,
