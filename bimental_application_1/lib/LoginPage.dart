@@ -1,4 +1,6 @@
 // import 'package:bimental_application_1/firebase_options.dart';
+// import 'dart:math';
+
 import 'package:bimental_application_1/RegisterUserPage.dart';
 import 'package:bimental_application_1/UserRepository.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +10,7 @@ import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
 import 'User.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Lista en memoria para almacenar los usuarios registrados
 
@@ -19,6 +22,14 @@ class LoginPage extends StatelessWidget {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final TextEditingController _emailController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
+
+    Future<void> saveUserSession(String id, String email) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_email', email);
+      await prefs.setString('user_id', id); // Guarda el ID del usuario
+      print(email);
+      print(id);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -84,105 +95,127 @@ class LoginPage extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    bool usuarioEncontrado = false;
-                    final UserRepository userRepository = UserRepository();
-                    List<User> usuariosRegistrados =
-                        await userRepository.getUsers();
-                    for (var usuario in usuariosRegistrados) {
-                      if (usuario.email == _emailController.text &&
-                          usuario.password == _passwordController.text) {
-                        usuarioEncontrado = true;
-                        break;
+              SizedBox(
+                width: 170,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      String id = '';
+                      bool usuarioEncontrado = false;
+                      final UserRepository userRepository = UserRepository();
+                      List<User> usuariosRegistrados =
+                          await userRepository.getUsers();
+                      for (var usuario in usuariosRegistrados) {
+                        id = usuario.id;
+                        if (usuario.email == _emailController.text &&
+                            usuario.password == _passwordController.text) {
+                          usuarioEncontrado = true;
+                          break;
+                        }
+                      }
+
+                      if (usuarioEncontrado) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Correo o contraseña incorrectos')),
+                        );
+                      }
+                      if (usuarioEncontrado) {
+                        await saveUserSession(
+                          _emailController.text,
+                          id,
+                        ); // Guardar sesión
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        );
                       }
                     }
-
-                    if (usuarioEncontrado) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Correo o contraseña incorrectos')),
-                      );
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  minimumSize: const Size(200, 50),
-                ),
-                child: const Text(
-                  'Iniciar Sesión',
-                  style: TextStyle(color: Colors.white),
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A119B),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                  ),
+                  child: const Text(
+                    'Iniciar Sesión',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ResetPasswordPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  minimumSize: const Size(200, 50),
-                ),
-                child: const Text(
-                  'Olvidé contraseña',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterUserPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  minimumSize: const Size(200, 50),
-                ),
-                child: const Text(
-                  'Registrar usuario',
-                  style: TextStyle(color: Colors.white),
+              SizedBox(
+                width: 170,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ResetPasswordPage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A119B),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                  ),
+                  child: const Text(
+                    'Olvidé contraseña',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignInAdmin()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  minimumSize: const Size(200, 50),
-                ),
-                child: const Text(
-                  'Administrativo',
-                  style: TextStyle(color: Colors.white),
+              SizedBox(
+                width: 170,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RegisterUserPage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A119B),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                  ),
+                  child: const Text(
+                    'Registrar usuario',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 170,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignInAdmin()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1A119B),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                  ),
+                  child: const Text(
+                    'Administrativo',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
             ],
           ),
         ),
