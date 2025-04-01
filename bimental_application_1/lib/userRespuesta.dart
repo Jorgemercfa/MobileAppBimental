@@ -1,6 +1,4 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'AnswersUser.dart';
 import 'AnswersRepository.dart';
 
 void main() {
@@ -178,17 +176,17 @@ class ResultadoDetalleScreen extends StatelessWidget {
           children: [
             SizedBox(height: 24),
             Text(
-              'Ansiedad: ${detalles['p_ansiedad']} puntos - ${clasificacion['Ansiedad']}',
+              'Ansiedad: ${clasificacion['Ansiedad']}',
               style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
             ),
             SizedBox(height: 16),
             Text(
-              'Depresión: ${detalles['p_depresion']} puntos - ${clasificacion['Depresión']}',
+              'Depresión: ${clasificacion['Depresión']}',
               style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
             ),
             SizedBox(height: 16),
             Text(
-              'Estrés: ${detalles['p_estres']} puntos - ${clasificacion['Estrés']}',
+              'Estrés: ${clasificacion['Estrés']}',
               style: TextStyle(fontSize: 20, color: Color(0xFF1A119B)),
             ),
           ],
