@@ -92,7 +92,6 @@ class _ForgetPasswordPageAdminState extends State<ForgetPasswordPageAdmin> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 20),
@@ -149,6 +148,8 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: obscureText,
+      style: const TextStyle(
+          color: Color(0xFF1A119B)), // Color del texto ingresado
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: const TextStyle(color: Color(0xFF1A119B)),

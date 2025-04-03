@@ -66,8 +66,16 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: isDark
-                ? const Color.fromARGB(255, 55, 55, 55)
+                ? const Color.fromARGB(255, 0, 0, 0)
                 : Colors.white, // Se actualiza dinámicamente
+            textTheme: TextTheme(
+              bodyLarge:
+                  TextStyle(color: isDark ? Colors.white : Color(0xFF1A119B)),
+              bodyMedium:
+                  TextStyle(color: isDark ? Colors.white : Color(0xFF1A119B)),
+              bodySmall:
+                  TextStyle(color: isDark ? Colors.white : Color(0xFF1A119B)),
+            ),
           ),
           initialRoute: '/',
           routes: {

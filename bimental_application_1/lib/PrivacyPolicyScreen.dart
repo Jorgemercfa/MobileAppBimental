@@ -97,9 +97,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF1A119B)),
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -109,7 +109,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
         text,
-        style: TextStyle(fontSize: 16, color: const Color(0xFF1A119B)),
+        style: TextStyle(fontSize: 16),
       ),
     );
   }

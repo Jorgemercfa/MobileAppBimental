@@ -55,9 +55,12 @@ class CambiarDatosScreenUser extends StatelessWidget {
             children: [
               TextFormField(
                 controller: _nombresController,
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto ingresado
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  labelStyle:
+                      TextStyle(color: Color(0xFF1A119B)), // Color del label
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -73,9 +76,12 @@ class CambiarDatosScreenUser extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto ingresado
                 decoration: const InputDecoration(
                   labelText: 'Correo electrónico',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  labelStyle:
+                      TextStyle(color: Color(0xFF1A119B)), // Color del label
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -94,9 +100,12 @@ class CambiarDatosScreenUser extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _telefonoController,
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto ingresado
                 decoration: const InputDecoration(
                   labelText: 'Número telefónico',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  labelStyle:
+                      TextStyle(color: Color(0xFF1A119B)), // Color del label
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,

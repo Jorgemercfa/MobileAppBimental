@@ -52,7 +52,6 @@ class RegisterUserPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A119B),
                 ),
               ),
               const SizedBox(height: 20),
@@ -66,6 +65,8 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su nombre';
@@ -84,6 +85,8 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su correo electrónico';
@@ -98,13 +101,15 @@ class RegisterUserPage extends StatelessWidget {
               TextFormField(
                 controller: _phoneController,
                 decoration: const InputDecoration(
-                  labelText: 'Numero de Celular',
+                  labelText: 'Número de Celular',
                   labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su número de celular';
@@ -127,6 +132,8 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su contraseña';

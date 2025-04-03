@@ -35,7 +35,6 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                 Text(
                   'Activar tema oscuro',
                   style: TextStyle(
-                    color: Color(0xFF1A119B),
                     fontSize: 16,
                   ),
                 ),

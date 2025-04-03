@@ -427,14 +427,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   const Text(
                     'Responde a la siguiente pregunta con:',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A119B)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const Text(
                     '0 No me sucedió\n1 Me sucedió un poco, o durante parte del tiempo\n2 Me sucedió bastante, o durante una buena parte del tiempo\n3 Me sucedió mucho, o la mayor parte del tiempo',
-                    style: TextStyle(fontSize: 14, color: Color(0xFF1A119B)),
+                    style: TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 8),
                   if (_selectedQuestions.isNotEmpty)
@@ -442,8 +439,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(
                         _selectedQuestions.first['texto']!,
-                        style: const TextStyle(
-                            fontSize: 16, color: Color(0xFF1A119B)),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                   ElevatedButton(
@@ -471,28 +467,29 @@ class _ChatScreenState extends State<ChatScreen> {
                         children: [
                           Expanded(
                             child: Container(
-                              height: 50, // Ajusta la altura del TextField
-                              alignment: Alignment
-                                  .center, // Centra el contenido dentro del contenedor
-                              child: TextField(
-                                controller: _controller,
-                                style: TextStyle(
-                                    fontSize: 18.0), // Tamaño del texto
-                                decoration: InputDecoration(
-                                  hintText: "Escribe un texto",
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 15,
-                                      horizontal:
-                                          16), // Ajusta el padding interno
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: BorderSide.none,
+                                height: 50, // Ajusta la altura del TextField
+                                alignment: Alignment
+                                    .center, // Centra el contenido dentro del contenedor
+                                child: TextField(
+                                  controller: _controller,
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Color(0xFF1A119B), // Color del texto
                                   ),
-                                ),
-                              ),
-                            ),
+                                  decoration: InputDecoration(
+                                    hintText: "Escribe un texto",
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 15,
+                                      horizontal: 16,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                )),
                           ),
                         ],
                       ),

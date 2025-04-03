@@ -77,7 +77,6 @@ class ResetPasswordPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A119B),
                 ),
               ),
               const SizedBox(height: 20),
@@ -91,6 +90,8 @@ class ResetPasswordPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su correo electrónico';
@@ -113,6 +114,8 @@ class ResetPasswordPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese la nueva contraseña';
@@ -135,6 +138,8 @@ class ResetPasswordPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, confirme la nueva contraseña';

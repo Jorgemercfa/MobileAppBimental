@@ -57,7 +57,6 @@ class HomePageAdmin extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 50),
@@ -65,7 +64,6 @@ class HomePageAdmin extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  // Acción al presionar el botón de Chatbot
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -85,7 +83,6 @@ class HomePageAdmin extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  // Acción al presionar el botón de Chatbot
                   Navigator.push(
                       context,
                       MaterialPageRoute(

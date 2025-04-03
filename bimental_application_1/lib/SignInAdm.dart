@@ -98,7 +98,6 @@ class _SignInAdminState extends State<SignInAdmin> {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A119B),
                 ),
               ),
               const SizedBox(height: 20),
@@ -198,6 +197,7 @@ class CustomTextField extends StatelessWidget {
         fillColor: Colors.white,
       ),
       cursorColor: const Color(0xFF1A119B),
+      style: const TextStyle(color: Color(0xFF1A119B)), // Color del texto
       validator: validator,
     );
   }

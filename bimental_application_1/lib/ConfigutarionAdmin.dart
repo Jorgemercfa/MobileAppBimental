@@ -112,7 +112,6 @@ class _ConfiguracionAdministracionScreenState
                     Text(
                       'Activar tema oscuro',
                       style: TextStyle(
-                        color: Color(0xFF1A119B),
                         fontSize: 16,
                       ),
                     ),
@@ -132,7 +131,6 @@ class _ConfiguracionAdministracionScreenState
                     Text(
                       'Recibir notificaciones',
                       style: TextStyle(
-                        color: Color(0xFF1A119B),
                         fontSize: 16,
                       ),
                     ),

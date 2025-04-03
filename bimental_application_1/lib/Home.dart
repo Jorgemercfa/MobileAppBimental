@@ -63,7 +63,6 @@ class HomePage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A119B),
               ),
             ),
             const SizedBox(height: 50),

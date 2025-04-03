@@ -54,15 +54,17 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A119B),
                 ),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto ingresado
                 decoration: const InputDecoration(
-                  labelText: 'Correo Electronico',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  labelText: 'Correo Electrónico',
+                  labelStyle:
+                      TextStyle(color: Color(0xFF1A119B)), // Color del label
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -79,9 +81,12 @@ class LoginPage extends StatelessWidget {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto ingresado
                 decoration: const InputDecoration(
                   labelText: 'Contraseña',
-                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  labelStyle:
+                      TextStyle(color: Color(0xFF1A119B)), // Color del label
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
