@@ -46,7 +46,7 @@ class AnswersRepository {
 
     User? user = UserRepository.instance.users.firstWhere(
       (u) => u.id == userId,
-      orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A'),
+      orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A', ''),
     );
 
     List<int> respuestas = answers.map((e) => int.tryParse(e) ?? 0).toList();

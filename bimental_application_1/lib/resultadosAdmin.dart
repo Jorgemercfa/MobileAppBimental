@@ -55,7 +55,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
     filteredData = respuestasGuardadas.map((entry) {
       User user = users.firstWhere(
         (u) => u.id == entry.userId,
-        orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A'),
+        orElse: () => User('', 'Desconocido', 'N/A', '', 'N/A', ''),
       );
 
       String clasificacionDepresion = _clasificarDepresion(entry.p_depresion);

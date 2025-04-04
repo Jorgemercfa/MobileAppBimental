@@ -4,6 +4,8 @@ import 'UserRepository.dart'; // Importar UserRepository
 class CambiarDatosScreenUser extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nombresController = TextEditingController();
+  final TextEditingController _apellidosController =
+      TextEditingController(); // Nuevo controlador
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
 
@@ -17,6 +19,7 @@ class CambiarDatosScreenUser extends StatelessWidget {
       bool success = await userRepository.updateUserData(
         _emailController.text,
         _nombresController.text,
+        _apellidosController.text, // Nuevo campo
         _telefonoController.text,
       );
 
@@ -55,12 +58,10 @@ class CambiarDatosScreenUser extends StatelessWidget {
             children: [
               TextFormField(
                 controller: _nombresController,
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto ingresado
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  labelStyle:
-                      TextStyle(color: Color(0xFF1A119B)), // Color del label
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -74,14 +75,32 @@ class CambiarDatosScreenUser extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
+              // Nuevo campo para el apellido
+              TextFormField(
+                controller: _apellidosController,
+                style: const TextStyle(color: Color(0xFF1A119B)),
+                decoration: const InputDecoration(
+                  labelText: 'Apellido',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su apellido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto ingresado
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 decoration: const InputDecoration(
                   labelText: 'Correo electrónico',
-                  labelStyle:
-                      TextStyle(color: Color(0xFF1A119B)), // Color del label
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -100,12 +119,10 @@ class CambiarDatosScreenUser extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _telefonoController,
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto ingresado
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 decoration: const InputDecoration(
                   labelText: 'Número telefónico',
-                  labelStyle:
-                      TextStyle(color: Color(0xFF1A119B)), // Color del label
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,

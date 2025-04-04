@@ -4,7 +4,7 @@ import 'User.dart';
 
 class UserRepository {
   static final UserRepository instance = UserRepository._internal();
-  final Uuid _uuid = Uuid(); // Instancia de UUID
+  final Uuid _uuid = Uuid();
 
   factory UserRepository() {
     return instance;
@@ -14,96 +14,113 @@ class UserRepository {
 
   List<User> users = [];
 
-  Future<void> addUser(User newUser) async {
-    newUser.id = _generateUniqueId();
-    // users.add(newUser);
-    DocumentReference docRef =
-        await FirebaseFirestore.instance.collection('users').add({
-      'id': newUser.id,
-      'name': newUser.name,
-      'email': newUser.email,
-      'phone': newUser.phone,
-      'password': newUser.password
-    });
-    print("Se ha registrado el usuario: ${docRef.id}, ");
+  Future<String> addUser(User newUser) async {
+    try {
+      final userId = _generateUniqueId();
+      final userData = {
+        'id': userId,
+        'name': newUser.name,
+        'lastName': newUser.lastName,
+        'email': newUser.email,
+        'phone': newUser.phone,
+        'password': newUser.password
+      };
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .set(userData);
+
+      print("Usuario registrado con ID: $userId");
+      return userId;
+    } catch (e) {
+      print("Error al registrar usuario: $e");
+      throw Exception("Error al registrar usuario: $e");
+    }
   }
 
   String _generateUniqueId() {
-    return _uuid.v4(); // Genera un UUID único
+    return _uuid.v4();
   }
 
   Future<List<User>> getUsers() async {
-    // return users;
     List<User> usersRegistered = [];
-    await FirebaseFirestore.instance.collection("users").get().then((event) {
-      for (var doc in event.docs) {
-        var userInfo = doc.data();
-        User user = User(userInfo["id"], userInfo["name"], userInfo["email"],
-            userInfo["password"], userInfo["phone"]);
-        print("${doc.id} => ${doc.data()}");
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection("users").get();
 
+      for (var doc in snapshot.docs) {
+        final userInfo = doc.data() as Map<String, dynamic>;
+
+        // Validación completa de campos
+        final user = User(
+          _validateField(userInfo['id']),
+          _validateField(userInfo['name'], defaultValue: 'Desconocido'),
+          _validateField(userInfo['lastName']),
+          _validateField(userInfo['email']),
+          _validateField(userInfo['password']),
+          _validateField(userInfo['phone']),
+        );
+
+        print("Usuario recuperado: ${user.toString()}");
         usersRegistered.add(user);
       }
-    });
-    print(usersRegistered);
+    } catch (e) {
+      print("Error al obtener usuarios: $e");
+      throw Exception("Error al obtener usuarios: $e");
+    }
     return usersRegistered;
+  }
+
+  // Método auxiliar para validar campos
+  String _validateField(dynamic value, {String defaultValue = ''}) {
+    if (value == null) return defaultValue;
+    return value.toString();
   }
 
   Future<bool> updatePassword(String email, String newPassword) async {
     try {
-      // Buscar usuario en Firestore por email
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      if (email.isEmpty || newPassword.isEmpty) {
+        throw Exception("Email y contraseña son requeridos");
+      }
+
+      final querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .where("email", isEqualTo: email)
+          .limit(1)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        String userId = querySnapshot.docs.first.id;
+      if (querySnapshot.docs.isEmpty) return false;
 
-        // Actualizar contraseña en Firestore
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .update({"password": newPassword});
+      await querySnapshot.docs.first.reference
+          .update({"password": newPassword});
 
-        return true; // Contraseña actualizada correctamente
-      } else {
-        return false; // Usuario no encontrado
-      }
+      return true;
     } catch (e) {
-      print("Error al actualizar la contraseña: $e");
+      print("Error al actualizar contraseña: $e");
       return false;
     }
   }
 
-  Future<bool> updateUserData(String email, String name, String phone) async {
+  Future<bool> updateUserData(
+      String email, String name, String lastName, String phone) async {
     try {
-      print("Buscando usuario con email: $email");
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      if (email.isEmpty) throw Exception("Email es requerido");
+
+      final querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .where("email", isEqualTo: email)
+          .limit(1)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        String userId = querySnapshot.docs.first.id;
-        print("Usuario encontrado con ID: $userId");
+      if (querySnapshot.docs.isEmpty) return false;
 
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(userId)
-            .update({
-          "name": name,
-          "phone": phone,
-        });
+      await querySnapshot.docs.first.reference
+          .update({"name": name, "lastName": lastName, "phone": phone});
 
-        print("Datos actualizados correctamente");
-        return true; // Datos actualizados correctamente
-      } else {
-        print("Usuario no encontrado");
-        return false; // Usuario no encontrado
-      }
+      return true;
     } catch (e) {
-      print("Error al actualizar los datos: $e");
+      print("Error al actualizar datos: $e");
       return false;
     }
   }

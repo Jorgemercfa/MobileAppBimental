@@ -6,6 +6,8 @@ import 'User.dart';
 class RegisterUserPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController =
+      TextEditingController(); // Nuevo controlador
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -16,10 +18,14 @@ class RegisterUserPage extends StatelessWidget {
 
   void registrarUsuario(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // Agrega el usuario a la lista de usuarios registrados
       final UserRepository userRepository = UserRepository();
-      User user = User("", _nameController.text, _emailController.text,
-          _passwordController.text, _phoneController.text);
+      User user = User(
+          "",
+          _nameController.text,
+          _lastNameController.text, // Nuevo campo
+          _emailController.text,
+          _passwordController.text,
+          _phoneController.text);
       userRepository.addUser(user);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,11 +73,30 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su nombre';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              // Nuevo campo para el apellido
+              TextFormField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Apellido',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(color: Color(0xFF1A119B)),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingrese su apellido';
                   }
                   return null;
                 },
@@ -87,8 +112,7 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su correo electrónico';
@@ -110,8 +134,7 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su número de celular';
@@ -134,8 +157,7 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingrese su contraseña';
@@ -158,8 +180,7 @@ class RegisterUserPage extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, confirme su contraseña';
