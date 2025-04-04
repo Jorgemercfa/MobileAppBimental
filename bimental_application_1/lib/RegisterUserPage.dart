@@ -8,6 +8,8 @@ class RegisterUserPage extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
   RegisterUserPage({Key? key}) : super(key: key);
@@ -140,6 +142,30 @@ class RegisterUserPage extends StatelessWidget {
                   }
                   if (value.length < 6) {
                     return 'La contraseña debe tener al menos 6 caracteres';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirmar Contraseña',
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                cursorColor: const Color(0xFF1A119B),
+                style: const TextStyle(
+                    color: Color(0xFF1A119B)), // Color del texto
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, confirme su contraseña';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Las contraseñas no coinciden';
                   }
                   return null;
                 },
