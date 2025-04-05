@@ -176,17 +176,17 @@ class ResultadoDetalleScreen extends StatelessWidget {
           children: [
             SizedBox(height: 24),
             Text(
-              'Ansiedad: ${clasificacion['Ansiedad']}',
+              'Nivel de ansiedad: ${clasificacion['Ansiedad']}',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 16),
             Text(
-              'Depresión: ${clasificacion['Depresión']}',
+              'Nivel de depresión: ${clasificacion['Depresión']}',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 16),
             Text(
-              'Estrés: ${clasificacion['Estrés']}',
+              'Nivel de estrés: ${clasificacion['Estrés']}',
               style: TextStyle(fontSize: 20),
             ),
           ],
