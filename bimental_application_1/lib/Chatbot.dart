@@ -425,27 +425,27 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      _selectedQuestions.first['texto']!,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
                   const Text(
                     'Responde a la siguiente pregunta con:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const Text(
                     '0 No me sucedió\n1 Me sucedió un poco, o durante parte del tiempo\n2 Me sucedió bastante, o durante una buena parte del tiempo\n3 Me sucedió mucho, o la mayor parte del tiempo',
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   if (_selectedQuestions.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        _selectedQuestions.first['texto']!,
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                    ElevatedButton(
+                      onPressed: _finishQuestionnaire,
+                      child: const Text("Finalizar Cuestionario"),
                     ),
-                  ElevatedButton(
-                    onPressed: _finishQuestionnaire,
-                    child: const Text("Finalizar Cuestionario"),
-                  ),
                 ],
               ),
             ),
