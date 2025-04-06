@@ -25,14 +25,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildSectionText(
                 '- Respuestas al cuestionario DASS-21: Datos ingresados por el usuario durante la evaluación.'),
             _buildSectionText(
-                '- Resultados de la evaluación: Nivel de depresión, ansiedad y estrés según el procesamiento del modelo de Machine Learning.'),
+                '- Resultados de la evaluación: Nivel de depresión, ansiedad y estrés según el procesamiento del modelo de Machine Learning. Los resultados son aproximados y no constituyen un diagnóstico médico profesional.'),
             _buildSectionText(
                 '- Datos de actividad: Registros de uso de la aplicación con fines de monitoreo.'),
             _buildSectionTitle('3. Uso de la Información'),
             _buildSectionText(
                 'Los datos recopilados serán utilizados con los siguientes propósitos:'),
             _buildSectionText(
-                '- Procesar las respuestas suministradas y generar resultados de triaje.'),
+                '- Procesar las respuestas suministradas y generar resultados de triaje. Estos resultados son indicativos y deben ser interpretados por un profesional de salud mental.'),
             _buildSectionText(
                 '- Proporcionar recomendaciones de contacto en caso de resultados positivos.'),
             _buildSectionText(
