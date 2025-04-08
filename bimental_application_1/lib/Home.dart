@@ -1,43 +1,24 @@
 import 'package:bimental_application_1/CofigurationUser.dart';
+import 'package:bimental_application_1/LoginPage.dart';
 import 'package:bimental_application_1/PrivacyPolicyScreen.dart';
+import 'package:bimental_application_1/session_service.dart';
 import 'package:bimental_application_1/userRespuesta.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'Chatbot.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'BiMental',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-        ),
-        initialRoute: './',
-        routes: {
-          './': (context) => HomePage(),
-          './Chatbot': (context) => ChatScreen(),
-          './userRespuesta.dart': (context) => HistorialResultadosScreen(),
-          './ConfigurationUser': (context) => ConfiguracionScreen(),
-          './PrivacyPolicyScreen.dart': (context) => PrivacyPolicyScreen(),
-        });
-  }
-}
+// Servicio de sesión integrado
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   Future<void> logout(BuildContext context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_email'); // Eliminar sesión
-    Navigator.pop(context); // Volver a la pantalla anterior o salir de la app
+    await SessionService.clearSession();
+    // Navegación segura sin dependencia de nombre de ruta
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -46,10 +27,10 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        automaticallyImplyLeading: false, // Elimina la flecha de regreso
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.green),
+            icon: const Icon(Icons.logout, color: Colors.green),
             onPressed: () => logout(context),
           ),
         ],
@@ -70,16 +51,20 @@ class HomePage extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                child: const Text('Chatbot',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Chatbot',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -88,17 +73,20 @@ class HomePage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HistorialResultadosScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HistorialResultadosScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                child: const Text('Resultado',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Resultado',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -107,17 +95,20 @@ class HomePage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ConfiguracionScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ConfiguracionScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                child: const Text('Configuración',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Configuración',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -126,17 +117,20 @@ class HomePage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PrivacyPolicyScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                child: const Text('Política de Privacidad',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Política de Privacidad',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
