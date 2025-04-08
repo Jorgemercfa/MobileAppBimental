@@ -1,18 +1,11 @@
-// import 'package:bimental_application_1/firebase_options.dart';
-// import 'dart:math';
-
+import 'package:flutter/material.dart';
 import 'package:bimental_application_1/RegisterUserPage.dart';
 import 'package:bimental_application_1/UserRepository.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
 import 'User.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-// Lista en memoria para almacenar los usuarios registrados
+import 'session_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,12 +16,44 @@ class LoginPage extends StatelessWidget {
     final TextEditingController _emailController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
 
-    Future<void> saveUserSession(String id, String email) async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_email', email);
-      await prefs.setString('user_id', id); // Guarda el ID del usuario
-      print(email);
-      print(id);
+    Future<void> _handleLogin() async {
+      if (_formKey.currentState!.validate()) {
+        try {
+          final UserRepository userRepository = UserRepository();
+          List<User> usuariosRegistrados = await userRepository.getUsers();
+
+          User? usuarioAutenticado;
+          for (var usuario in usuariosRegistrados) {
+            if (usuario.email == _emailController.text &&
+                usuario.password == _passwordController.text) {
+              usuarioAutenticado = usuario;
+              break;
+            }
+          }
+
+          if (usuarioAutenticado != null) {
+            await SessionService.saveUserSession(
+              id: usuarioAutenticado.id,
+              email: usuarioAutenticado.email,
+              name: usuarioAutenticado.name,
+              lastName: usuarioAutenticado.lastName,
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Credenciales incorrectas')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${e.toString()}')),
+          );
+        }
+      }
     }
 
     return Scaffold(
@@ -59,12 +84,10 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto ingresado
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 decoration: const InputDecoration(
                   labelText: 'Correo Electrónico',
-                  labelStyle:
-                      TextStyle(color: Color(0xFF1A119B)), // Color del label
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -81,12 +104,10 @@ class LoginPage extends StatelessWidget {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                style: const TextStyle(
-                    color: Color(0xFF1A119B)), // Color del texto ingresado
+                style: const TextStyle(color: Color(0xFF1A119B)),
                 decoration: const InputDecoration(
                   labelText: 'Contraseña',
-                  labelStyle:
-                      TextStyle(color: Color(0xFF1A119B)), // Color del label
+                  labelStyle: TextStyle(color: Color(0xFF1A119B)),
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
@@ -103,47 +124,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 width: 170,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      String id = '';
-                      bool usuarioEncontrado = false;
-                      final UserRepository userRepository = UserRepository();
-                      List<User> usuariosRegistrados =
-                          await userRepository.getUsers();
-                      for (var usuario in usuariosRegistrados) {
-                        id = usuario.id;
-                        if (usuario.email == _emailController.text &&
-                            usuario.password == _passwordController.text) {
-                          usuarioEncontrado = true;
-                          break;
-                        }
-                      }
-
-                      if (usuarioEncontrado) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Correo o contraseña incorrectos')),
-                        );
-                      }
-                      if (usuarioEncontrado) {
-                        await saveUserSession(
-                          _emailController.text,
-                          id,
-                        ); // Guardar sesión
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                      }
-                    }
-                  },
+                  onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1A119B),
                     padding: const EdgeInsets.symmetric(
