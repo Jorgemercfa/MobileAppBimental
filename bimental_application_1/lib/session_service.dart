@@ -39,4 +39,6 @@ class SessionService {
     final userId = await getUserId();
     return userId != null;
   }
+
+  static isAdmin() {}
 }
