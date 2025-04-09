@@ -1,12 +1,11 @@
-import 'package:bimental_application_1/User.dart';
+import 'package:bimental_application_1/session_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:math'; // Para seleccionar preguntas aleatoriamente
+import 'dart:math';
 import 'AnswersRepository.dart';
-import 'UserRepository.dart';
+
 import 'openai_service.dart';
-// import 'ManageAnswers.dart';
 
 void main() => runApp(const ChatBotApp());
 
@@ -36,7 +35,6 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _showQuestionnaire = false;
   int questionCategoryNumber = 1;
 
-  // Map de preguntas por categoría
   final Map<String, List<Map<String, String>>> _questions = {
     "1": [
       {"id": "1.1", "texto": "Me costó mucho relajarme"},
@@ -263,17 +261,12 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Map<String, String>> _selectedQuestions = [];
   List<String> answers = [];
 
-  // Método para generar una pregunta aleatoria de la categoría actual
   Map<String, String> _generateRandomQuestion() {
     final random = Random();
     final group = _questions[questionCategoryNumber.toString()];
-
-    // Retorna una pregunta aleatoria del grupo correspondiente
-    if (group != null && group.isNotEmpty) {
-      return group[random.nextInt(group.length)];
-    } else {
-      return {"id": "N/A", "texto": "No hay más preguntas disponibles"};
-    }
+    return group != null && group.isNotEmpty
+        ? group[random.nextInt(group.length)]
+        : {"id": "N/A", "texto": "No hay más preguntas disponibles"};
   }
 
   void _sendMessage() async {
@@ -281,19 +274,30 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.isEmpty) return;
 
     if (text.toLowerCase() == 'cuestionario') {
+      final userId = await SessionService.getUserId();
+      if (userId == null) {
+        setState(() {
+          _messages.add({
+            'bot':
+                "Debes iniciar sesión para realizar el cuestionario. Por favor, inicia sesión primero."
+          });
+        });
+        return;
+      }
+
       setState(() {
         _showQuestionnaire = true;
         _selectedQuestions = [_generateRandomQuestion()];
         _controller.clear();
         questionCategoryNumber = 1;
+        answers.clear();
       });
       return;
     }
 
     if (_showQuestionnaire) {
-      // Validar que la respuesta sea un número entre 0 y 3
       if (RegExp(r'^[0-3]$').hasMatch(text)) {
-        answers.add(text); // Guardar la respuesta como String
+        answers.add(text);
         questionCategoryNumber++;
 
         if (questionCategoryNumber <= _questions.length) {
@@ -302,67 +306,73 @@ class _ChatScreenState extends State<ChatScreen> {
           });
         } else {
           _finishQuestionnaire();
-          return;
         }
       } else {
-        // Mostrar un mensaje de error si la respuesta no es válida
         setState(() {
           _messages.add(
               {'bot': "Por favor, ingresa un número válido (0, 1, 2 o 3)."});
         });
-        return;
       }
+      return;
     }
-    print(answers);
+
     setState(() {
       _messages.add({'user': text});
       _controller.clear();
     });
 
-    if (!_showQuestionnaire) {
-      try {
-        final response = await _openAIService.obtenerRespuesta(text);
-        setState(() {
-          _messages.add({'bot': response});
+    try {
+      final response = await _openAIService.obtenerRespuesta(text);
+      setState(() {
+        _messages.add({'bot': response});
+      });
+    } catch (e) {
+      if (kDebugMode) print("Error al obtener respuesta de OpenAI: $e");
+      setState(() {
+        _messages.add({
+          'bot': "Lo siento, ocurrió un error. Por favor, intenta de nuevo."
         });
-      } catch (e) {
-        if (kDebugMode) {
-          print("Error al obtener respuesta de OpenAI: $e");
-        }
-        setState(() {
-          _messages.add({
-            'bot': "Lo siento, ocurrió un error. Por favor, intenta de nuevo."
-          });
-        });
-      }
+      });
     }
   }
 
   void _finishQuestionnaire() async {
-    String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-
-    setState(() {
-      _showQuestionnaire = false;
-      _selectedQuestions = [];
-    });
-
-    _messages.add({
-      'bot':
-          "Gracias por completar el cuestionario. Ahora puedes continuar chateando.\nFecha y hora de finalización: $timestamp"
-    });
-
-    List<User> foundUsers = await UserRepository.instance.getUsers();
-    User? currentUser = foundUsers.isNotEmpty ? foundUsers.last : null;
-
-    if (currentUser != null) {
-      // Guardar las respuestas en AnswersRepository
-      AnswersRepository.saveAnswers(answers, currentUser.id);
-    } else {
-      print("Error: No hay usuario autenticado.");
+    final userId = await SessionService.getUserId();
+    if (userId == null) {
+      setState(() {
+        _messages.add({
+          'bot': "Error: Sesión no válida. No se guardarán las respuestas."
+        });
+        _showQuestionnaire = false;
+        _selectedQuestions = [];
+        answers.clear();
+      });
+      return;
     }
 
-    // Limpiar las respuestas para el próximo cuestionario
-    answers.clear();
+    try {
+      await AnswersRepository.saveAnswers(answers, userId);
+      final timestamp =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      setState(() {
+        _messages.add({
+          'bot':
+              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp"
+        });
+        _showQuestionnaire = false;
+        _selectedQuestions = [];
+      });
+    } catch (e) {
+      setState(() {
+        _messages.add({
+          'bot':
+              "❌ Error al guardar el cuestionario. Por favor, intenta nuevamente."
+        });
+      });
+    } finally {
+      answers.clear();
+      print("El id del usuario que realizo el cuestionario es: $userId");
+    }
   }
 
   @override
@@ -372,9 +382,7 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: const Color(0xFF1A119B),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Para activar el cuestionario, escriba "cuestionario"',
@@ -441,11 +449,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
-                  if (_selectedQuestions.isNotEmpty)
-                    ElevatedButton(
-                      onPressed: _finishQuestionnaire,
-                      child: const Text("Finalizar Cuestionario"),
-                    ),
+                  ElevatedButton(
+                    onPressed: _finishQuestionnaire,
+                    child: const Text("Finalizar Cuestionario"),
+                  ),
                 ],
               ),
             ),
@@ -458,38 +465,37 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      color: const Color(0xFF1A119B), // Color de fondo azul
+                      color: const Color(0xFF1A119B),
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 16),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment
-                            .center, // Asegura que los elementos se centren verticalmente
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
                             child: Container(
-                                height: 50, // Ajusta la altura del TextField
-                                alignment: Alignment
-                                    .center, // Centra el contenido dentro del contenedor
-                                child: TextField(
-                                  controller: _controller,
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Color(0xFF1A119B), // Color del texto
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: TextField(
+                                controller: _controller,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Color(0xFF1A119B),
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Escribe un texto",
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 15,
+                                    horizontal: 16,
                                   ),
-                                  decoration: InputDecoration(
-                                    hintText: "Escribe un texto",
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 15,
-                                      horizontal: 16,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide.none,
-                                    ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide.none,
                                   ),
-                                )),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
