@@ -19,11 +19,21 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController(); // NUEVO
 
   bool _termsAccepted = false;
 
   void registrarUsuario(BuildContext context) {
     if (_formKey.currentState!.validate() && _termsAccepted) {
+      final edad = int.tryParse(_ageController.text);
+      if (edad != null && edad < 18) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Debes tener al menos 18 años para registrarte')),
+        );
+        return;
+      }
+
       final UserRepository userRepository = UserRepository();
       User user = User(
         "",
@@ -49,6 +59,18 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _phoneController.dispose();
+    _ageController.dispose(); // NUEVO
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -70,10 +92,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
               children: [
                 const Text(
                   'BiMental',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -109,6 +128,30 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, ingrese su apellido';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _ageController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Edad',
+                    labelStyle: TextStyle(color: Color(0xFF1A119B)),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  cursorColor: const Color(0xFF1A119B),
+                  style: const TextStyle(color: Color(0xFF1A119B)),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese su edad';
+                    }
+                    final edad = int.tryParse(value);
+                    if (edad == null || edad < 18) {
+                      return 'Debes tener al menos 18 años para registrarte';
                     }
                     return null;
                   },
@@ -215,7 +258,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                             _termsAccepted = val ?? false;
                           });
                         },
-                        activeColor: Color(0xFF1A119B),
+                        activeColor: const Color(0xFF1A119B),
                       ),
                       GestureDetector(
                         onTap: () {
