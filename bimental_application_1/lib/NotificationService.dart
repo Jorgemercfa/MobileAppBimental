@@ -1,81 +1,147 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    // Configuración para Android
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const InitializationSettings initializationSettings =
+    // Configuración para iOS solo si no es web
+    final DarwinInitializationSettings? initializationSettingsIOS =
+        (!kIsWeb && Platform.isIOS)
+            ? DarwinInitializationSettings(
+                requestAlertPermission: true,
+                requestBadgePermission: true,
+                requestSoundPermission: true,
+                notificationCategories: [
+                  DarwinNotificationCategory(
+                    'admin_category',
+                    actions: [
+                      DarwinNotificationAction.plain(
+                        'id_1',
+                        'Abrir',
+                      ),
+                      DarwinNotificationAction.plain(
+                        'id_2',
+                        'Cerrar',
+                        options: {
+                          DarwinNotificationActionOption.destructive,
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : null;
+
+    final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+      macOS: initializationSettingsIOS,
     );
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Manejar la acción cuando el usuario toca la notificación
         print('Notificación tocada: ${response.payload}');
-        print(
-            'Acción seleccionada: ${response.actionId}'); // Muestra la acción seleccionada
-        // Aquí puedes agregar lógica adicional, como navegar a una pantalla específica
+        print('Acción seleccionada: ${response.actionId}');
       },
     );
 
-    print('Servicio de notificaciones inicializado'); // Mensaje de depuración
+    // Configuración específica para iOS (solo si no es web)
+    if (!kIsWeb && Platform.isIOS) {
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+
+    print('Servicio de notificaciones inicializado');
   }
 
   Future<void> showNotification(String title, String body) async {
+    // Configuración para Android
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'admin_channel', // ID del canal
-      'Administrador', // Nombre del canal
+      'admin_channel',
+      'Administrador',
       importance: Importance.max,
       priority: Priority.high,
       channelDescription: 'Canal para notificaciones de administración',
-      icon:
-          '@mipmap/ic_notification', // Ícono personalizado para la notificación
+      icon: '@mipmap/ic_notification',
       actions: [
         AndroidNotificationAction(
           'id_1',
-          'Abrir', // Texto del botón de acción
+          'Abrir',
         ),
         AndroidNotificationAction(
           'id_2',
-          'Cerrar', // Texto del botón de acción
-          cancelNotification:
-              true, // Cierra la notificación al tocar esta acción
+          'Cerrar',
+          cancelNotification: true,
         ),
       ],
     );
 
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    // Configuración para iOS
+    const DarwinNotificationDetails iosPlatformChannelSpecifics =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      badgeNumber: 1,
+      threadIdentifier: 'thread_id',
+      categoryIdentifier: 'admin_category',
+    );
+
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iosPlatformChannelSpecifics,
+    );
 
     await flutterLocalNotificationsPlugin.show(
       0,
       title,
       body,
       platformChannelSpecifics,
-      payload:
-          'payload_data', // Datos adicionales que puedes usar al tocar la notificación
+      payload: 'payload_data',
     );
 
-    print(
-        'Notificación mostrada: Título: $title, Cuerpo: $body'); // Mensaje de depuración
+    print('Notificación mostrada: Título: $title, Cuerpo: $body');
   }
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
     if (message.notification != null) {
       print(
-          'Notificación recibida en segundo plano: ${message.notification!.title}'); // Mensaje de depuración
+          'Notificación recibida en segundo plano: ${message.notification!.title}');
       await showNotification(
         message.notification!.title ?? 'Nueva notificación',
         message.notification!.body ?? 'Tienes un nuevo mensaje',
       );
     }
+  }
+
+  Future<bool> requestIOSPermissions() async {
+    if (Platform.isIOS && !kIsWeb) {
+      final bool? result = await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+
+      return result ?? false;
+    }
+    return false;
   }
 }
