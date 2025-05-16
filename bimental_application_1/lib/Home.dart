@@ -4,17 +4,13 @@ import 'package:bimental_application_1/PrivacyPolicyScreen.dart';
 import 'package:bimental_application_1/session_service.dart';
 import 'package:bimental_application_1/userRespuesta.dart';
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'Chatbot.dart';
-
-// Servicio de sesión integrado
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   Future<void> logout(BuildContext context) async {
     await SessionService.clearSession();
-    // Navegación segura sin dependencia de nombre de ruta
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false,
@@ -39,6 +35,13 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Imagen del logo
+            Image.asset(
+              'assets/images/logo_bimental.png', // Asegúrate de que el archivo esté en esta ruta
+              width: 120,
+              height: 120,
+            ),
+            const SizedBox(height: 20),
             const Text(
               'BiMental',
               style: TextStyle(

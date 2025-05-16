@@ -52,6 +52,12 @@ class HomePageAdmin extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              'assets/images/logo_bimental.png', // Asegúrate de que el archivo esté en esta ruta
+              width: 120,
+              height: 120,
+            ),
+            const SizedBox(height: 20),
             const Text(
               'BiMental Administración',
               style: TextStyle(

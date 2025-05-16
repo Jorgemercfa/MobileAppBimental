@@ -9,14 +9,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.2.2 # Para hacer llamadas HTTP
+  http: ^1.2.2
   font_awesome_flutter: ^10.2.1
   provider: ^6.1.2
   shared_preferences: ^2.3.3
-  intl: ^0.18.0  # Usa la versión más reciente disponible.
+  intl: ^0.18.0
   path_provider: ^2.0.11
   firebase_core: ^3.11.0
-  firebase_auth: ^5.4.2 # o la versión más recient
+  firebase_auth: ^5.4.2
   cloud_firestore: ^5.6.5
   uuid: ^4.1.0
   flutter_local_notifications: ^19.0.0
@@ -29,3 +29,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/logo_bimental.png
