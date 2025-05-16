@@ -38,7 +38,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildSectionText(
                 '- Almacenar los resultados en la base de datos para monitoreo y generación de reportes por parte del administrador.'),
             _buildSectionText(
-                '- Permitir que el administrador pueda contactar a los usuarios con resultados de nivel medio y/o grave.'),
+                '- Permitir que el administrador pueda contactar a los usuarios con resultados de nivel severo y/o extremadamente severo.'),
             _buildSectionText(
                 '- Mejorar la funcionalidad de la aplicación y realizar análisis estadísticos anonimizados.'),
             _buildSectionTitle('4. Compartición de Datos'),
@@ -68,7 +68,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Nos reservamos el derecho de modificar esta política en cualquier momento. Cualquier cambio será notificado a los usuarios mediante la aplicación o correo electrónico.'),
             _buildSectionTitle('8. Contacto'),
             _buildSectionText(
-                'Si tienes preguntas sobre esta política, puedes contactarnos a través de [correo electrónico de soporte].'),
+                'Si tienes preguntas sobre esta política, puedes contactarnos a través de serviciocliente@bimental.com.'),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
