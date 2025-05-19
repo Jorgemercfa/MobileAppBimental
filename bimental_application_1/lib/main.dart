@@ -47,7 +47,7 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Inicializar el servicio de notificaciones locales
-  await NotificationService().init();
+  await NotificationService();
 
   runApp(MyApp());
 }

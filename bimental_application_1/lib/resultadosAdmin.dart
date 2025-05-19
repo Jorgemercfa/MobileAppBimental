@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'AnswersUser.dart';
 import 'UserRepository.dart';
 import 'User.dart';
 import 'AnswersRepository.dart';
-import 'NotificationService.dart';
 
 class UserResultsPage extends StatefulWidget {
   @override
@@ -13,6 +10,7 @@ class UserResultsPage extends StatefulWidget {
 }
 
 class _UserResultsPageState extends State<UserResultsPage> {
+  List<Map<String, String>> allData = [];
   List<Map<String, String>> filteredData = [];
   List<User> users = [];
   String selectedCriterion = 'Depresión';
@@ -23,36 +21,16 @@ class _UserResultsPageState extends State<UserResultsPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _setupFCM();
-  }
-
-  Future<void> _setupFCM() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool recibirNotificaciones =
-        prefs.getBool('recibirNotificaciones') ?? false;
-
-    if (recibirNotificaciones) {
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        if (message.notification != null) {
-          NotificationService().showNotification(
-            message.notification!.title ?? 'Nueva notificación',
-            message.notification!.body ?? 'Tienes un nuevo mensaje',
-          );
-        }
-      });
-    }
   }
 
   Future<void> _loadUserData() async {
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
 
     users = await UserRepository.instance.getUsers();
     List<AnswersUser> respuestasGuardadas =
         await AnswersRepository.getAllAnswersFromFirestore();
 
-    filteredData = respuestasGuardadas.map((entry) {
+    List<Map<String, String>> tempData = respuestasGuardadas.map((entry) {
       User user = users.firstWhere(
         (u) => u.id == entry.userId,
         orElse: () => User('', 'Desconocido', 'N/A', '', '', 'N/A'),
@@ -62,52 +40,25 @@ class _UserResultsPageState extends State<UserResultsPage> {
       String clasificacionAnsiedad = _clasificarAnsiedad(entry.p_ansiedad);
       String clasificacionEstres = _clasificarEstres(entry.p_estres);
 
-      _verificarNotificaciones(clasificacionDepresion, clasificacionAnsiedad,
-          clasificacionEstres, user);
-
       return {
         'Nombre': user.name,
-        'Apellido': user.lastName, // Nuevo campo añadido
+        'Apellido': user.lastName,
         'Correo': user.email,
         'Teléfono': user.phone,
         'Fecha': entry.timestamp.split(' ')[0],
         'Depresión': clasificacionDepresion,
         'Ansiedad': clasificacionAnsiedad,
         'Estrés': clasificacionEstres,
+        'UserId': user.id,
+        'Timestamp': entry.timestamp,
       };
     }).toList();
 
     setState(() {
+      allData = tempData;
+      filteredData = List<Map<String, String>>.from(allData);
       isLoading = false;
     });
-  }
-
-  void _verificarNotificaciones(
-      String depresion, String ansiedad, String estres, User user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool recibirNotificaciones =
-        prefs.getBool('recibirNotificaciones') ?? false;
-
-    if (recibirNotificaciones) {
-      if (depresion == 'Extremadamente severa' || depresion == 'Severa') {
-        NotificationService().showNotification(
-          'Alerta de Depresión',
-          '${user.name} ${user.lastName} tiene un nivel de depresión: $depresion', // Apellido añadido
-        );
-      }
-      if (ansiedad == 'Extremadamente severa' || ansiedad == 'Severa') {
-        NotificationService().showNotification(
-          'Alerta de Ansiedad',
-          '${user.name} ${user.lastName} tiene un nivel de ansiedad: $ansiedad', // Apellido añadido
-        );
-      }
-      if (estres == 'Extremadamente severo' || estres == 'Severo') {
-        NotificationService().showNotification(
-          'Alerta de Estrés',
-          '${user.name} ${user.lastName} tiene un nivel de estrés: $estres', // Apellido añadido
-        );
-      }
-    }
   }
 
   String _clasificarDepresion(int score) {
@@ -135,6 +86,30 @@ class _UserResultsPageState extends State<UserResultsPage> {
   }
 
   void _showFilterDialog() {
+    final Map<String, List<String>> options = {
+      'Depresión': [
+        'Extremadamente severa',
+        'Severa',
+        'Moderada',
+        'Leve',
+        'Sin depresión'
+      ],
+      'Ansiedad': [
+        'Extremadamente severa',
+        'Severa',
+        'Moderada',
+        'Leve',
+        'Sin ansiedad'
+      ],
+      'Estrés': [
+        'Extremadamente severo',
+        'Severo',
+        'Moderado',
+        'Leve',
+        'Sin estrés'
+      ],
+    };
+
     showDialog(
       context: context,
       builder: (context) {
@@ -154,21 +129,14 @@ class _UserResultsPageState extends State<UserResultsPage> {
                 onChanged: (value) {
                   setState(() {
                     selectedCriterion = value ?? 'Depresión';
+                    selectedValue = options[selectedCriterion]!.first;
                   });
                 },
               ),
               SizedBox(height: 16),
               DropdownButton<String>(
                 value: selectedValue,
-                items: [
-                  'Extremadamente severa',
-                  'Severa',
-                  'Moderada',
-                  'Leve',
-                  'Sin depresión',
-                  'Sin ansiedad',
-                  'Sin estrés'
-                ]
+                items: options[selectedCriterion]!
                     .map((value) => DropdownMenuItem(
                           value: value,
                           child: Text(value),
@@ -176,7 +144,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
                     .toList(),
                 onChanged: (value) {
                   setState(() {
-                    selectedValue = value ?? 'Extremadamente severa';
+                    selectedValue = value ?? options[selectedCriterion]!.first;
                   });
                 },
               ),
@@ -186,7 +154,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  filteredData = filteredData
+                  filteredData = allData
                       .where((user) => user[selectedCriterion] == selectedValue)
                       .toList();
                 });
@@ -196,7 +164,8 @@ class _UserResultsPageState extends State<UserResultsPage> {
             ),
             TextButton(
               onPressed: () {
-                setState(() => _loadUserData());
+                setState(() =>
+                    filteredData = List<Map<String, String>>.from(allData));
                 Navigator.of(context).pop();
               },
               child: Text('Reiniciar'),
@@ -238,10 +207,10 @@ class _UserResultsPageState extends State<UserResultsPage> {
                       color: Color(0xFF1A119B),
                     ),
                     child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(
-                          Color(0xFF4CAF50)), // Color verde del encabezado
-                      dataRowColor: MaterialStateProperty.all(Color(
-                          0xFF1A119B)), // Color azul oscuro para las filas
+                      headingRowColor:
+                          MaterialStateProperty.all(Color(0xFF4CAF50)),
+                      dataRowColor:
+                          MaterialStateProperty.all(Color(0xFF1A119B)),
                       columns: [
                         DataColumn(
                           label: Text('Nombre',
@@ -250,7 +219,6 @@ class _UserResultsPageState extends State<UserResultsPage> {
                                   fontWeight: FontWeight.bold)),
                         ),
                         DataColumn(
-                          // Nueva columna para el apellido
                           label: Text('Apellido',
                               style: TextStyle(
                                   color: Colors.white,
@@ -298,9 +266,7 @@ class _UserResultsPageState extends State<UserResultsPage> {
                           cells: [
                             DataCell(Text(user['Nombre']!,
                                 style: TextStyle(color: Colors.white))),
-                            DataCell(Text(
-                                user[
-                                    'Apellido']!, // Nueva celda para el apellido
+                            DataCell(Text(user['Apellido']!,
                                 style: TextStyle(color: Colors.white))),
                             DataCell(Text(user['Correo']!,
                                 style: TextStyle(color: Colors.white))),

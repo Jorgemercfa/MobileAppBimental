@@ -8,9 +8,11 @@
     
     <!-- Permisos para notificaciones en segundo plano -->
     <key>UIBackgroundModes</key>
-    <array>
-        <string>remote-notification</string>
-    </array>
+<array>
+  <string>remote-notification</string>
+</array>
+<key>NSFirebaseMessagingUsageDescription</key>
+<string>Esta app usa notificaciones para avisos importantes.</string>
     
     <!-- Configuración básica de la aplicación -->
     <key>CFBundleDevelopmentRegion</key>

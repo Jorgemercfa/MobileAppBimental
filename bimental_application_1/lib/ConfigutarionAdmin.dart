@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:bimental_application_1/main.dart'; // Aquí está el ValueNotifier
-import 'NotificationService.dart';
+import 'package:bimental_application_1/main.dart'; // ValueNotifier isDarkModeEnabled
+// import 'NotificationService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConfiguracionAdministracionScreen extends StatefulWidget {
   @override
@@ -19,7 +20,6 @@ class _ConfiguracionAdministracionScreenState
   void initState() {
     super.initState();
     _cargarPreferencias();
-    _inicializarFCM();
   }
 
   Future<void> _cargarPreferencias() async {
@@ -30,19 +30,16 @@ class _ConfiguracionAdministracionScreenState
     });
   }
 
-  Future<void> _inicializarFCM() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    await messaging.requestPermission();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        NotificationService().showNotification(
-          message.notification!.title ?? 'Nueva notificación',
-          message.notification!.body ?? 'Tienes un nuevo mensaje',
-        );
-      }
-    });
+  Future<void> _saveAdminToken(String adminId, String? token) async {
+    if (token != null) {
+      await FirebaseFirestore.instance
+          .collection('admin_tokens')
+          .doc(adminId)
+          .set({
+        'token': token,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    }
   }
 
   void _toggleNotificaciones(bool value) async {
@@ -55,8 +52,16 @@ class _ConfiguracionAdministracionScreenState
 
     await prefs.setBool('recibirNotificaciones', value);
 
+    // Tu lógica de autenticación debe proveer el adminId actual, aquí lo simulamos:
+    final String adminId =
+        "admin_id_actual"; // <-- Corrige esto con tu lógica real
+
     if (!kIsWeb) {
       if (value) {
+        // Guarda el token FCM en Firestore para notificaciones push reales
+        String? token = await messaging.getToken();
+        await _saveAdminToken(adminId, token);
+
         await messaging.subscribeToTopic('admin_notifications');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Suscrito a notificaciones')),
@@ -66,6 +71,7 @@ class _ConfiguracionAdministracionScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No recibirás más notificaciones')),
         );
+        // Si quieres, elimina el token de Firestore aquí
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
