@@ -1,14 +1,39 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+plugins {
+    id "com.android.application" version "7.3.0" apply false
+    id "com.android.library" version "7.3.0" apply false
+    id "org.jetbrains.kotlin.android" version "1.7.10" apply false
+    // Considera agregar el plugin de Google Services aquí si es usado en múltiples módulos
+    id "com.google.gms.google-services" version "4.3.15" apply false
+}
+
 buildscript {
-    ext.kotlin_version = '1.7.10' // Versión de Kotlin
+    ext {
+        // Centraliza todas las versiones aquí
+        kotlin_version = '1.7.10'
+        gradle_version = '7.3.0'
+        google_services_version = '4.3.15'
+
+        // Agrega otras versiones comunes que puedas necesitar:
+        hilt_version = '2.44' // Ejemplo si usas Hilt
+    }
+
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
+        // Considera agregar el repositorio de Firebase si usas sus SDKs
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0' // Versión de Android Gradle Plugin
+        classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.15' // Agrega el classpath de Google Services
+        classpath "com.google.gms:google-services:$google_services_version"
+
+        // Ejemplo de otros classpaths comunes:
+        // classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
 
@@ -16,17 +41,46 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        // Repositorios adicionales recomendados:
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+
+    // Configuración común para todos los proyectos
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+        }
     }
 }
 
-rootProject.buildDir = '../build'
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+    // Limpieza adicional para asegurar builds limpios
+    delete fileTree(project.rootDir) {
+        include '**/*.apk', '**/*.ap_', '**/*.dex'
+    }
 }
 
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    // Configuración más robusta para dependencias entre módulos
+    afterEvaluate {
+        if (project.hasProperty('android')) {
+            android {
+                compileSdkVersion 33
+                defaultConfig {
+                    minSdkVersion 21
+                    targetSdkVersion 33
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+                }
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+            }
+        }
+    }
 }
