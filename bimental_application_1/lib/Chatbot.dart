@@ -1,11 +1,11 @@
 import 'package:bimental_application_1/session_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'dart:convert'; // Añadido para json
+import 'package:flutter/services.dart'; // Añadido para rootBundle
 import 'AnswersRepository.dart';
-
-import 'openai_service.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 void main() => runApp(const ChatBotApp());
 
@@ -29,11 +29,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final OpenAIService _openAIService = OpenAIService();
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
   int questionCategoryNumber = 1;
+  late DASS21Predictor _predictor;
+  bool _modelLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _predictor = DASS21Predictor();
+    _loadModel();
+  }
+
+  Future<void> _loadModel() async {
+    try {
+      await _predictor.loadModelAndTokenizer();
+      setState(() {
+        _modelLoaded = true;
+      });
+    } catch (e) {
+      print("Error loading model: $e");
+    }
+  }
 
   final Map<String, List<Map<String, String>>> _questions = {
     "1": [
@@ -321,16 +340,29 @@ class _ChatScreenState extends State<ChatScreen> {
       _controller.clear();
     });
 
-    try {
-      final response = await _openAIService.obtenerRespuesta(text);
-      setState(() {
-        _messages.add({'bot': response});
-      });
-    } catch (e) {
-      if (kDebugMode) print("Error al obtener respuesta de OpenAI: $e");
+    if (_modelLoaded) {
+      try {
+        final prediction = await _predictor.predict(text);
+        // Aquí puedes procesar la predicción y mostrar un mensaje adecuado
+        setState(() {
+          _messages.add({
+            'bot':
+                "Análisis completado. Resultados: Depresión: ${prediction[0].toStringAsFixed(2)}, Ansiedad: ${prediction[1].toStringAsFixed(2)}, Estrés: ${prediction[2].toStringAsFixed(2)}"
+          });
+        });
+      } catch (e) {
+        setState(() {
+          _messages.add({
+            'bot':
+                "Lo siento, ocurrió un error al analizar tu mensaje. Por favor, intenta de nuevo."
+          });
+        });
+      }
+    } else {
       setState(() {
         _messages.add({
-          'bot': "Lo siento, ocurrió un error. Por favor, intenta de nuevo."
+          'bot':
+              "El modelo de análisis aún no está cargado. Por favor, espera un momento e intenta nuevamente."
         });
       });
     }
@@ -512,5 +544,47 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+}
+
+class DASS21Predictor {
+  late Interpreter _interpreter;
+  late Map<String, dynamic> _tokenizer;
+  final int _maxLen = 100;
+
+  Future<void> loadModelAndTokenizer() async {
+    // Cargar modelo
+    _interpreter =
+        await Interpreter.fromAsset('assets/model/lstm_daas21_model.tflite');
+
+    // Cargar tokenizer
+    final tokenizerData =
+        await rootBundle.loadString('assets/model/tokenizer_daas21.json');
+    _tokenizer = json.decode(tokenizerData)['config']['word_index'];
+  }
+
+  List<int> tokenizeInput(String input) {
+    final words = input.toLowerCase().split(' ');
+    final tokens = words.map((w) => _tokenizer[w] ?? 0).toList();
+
+    // Padding
+    if (tokens.length < _maxLen) {
+      tokens.addAll(List.filled(_maxLen - tokens.length, 0));
+    } else if (tokens.length > _maxLen) {
+      tokens.removeRange(_maxLen, tokens.length);
+    }
+
+    return tokens.cast<int>();
+  }
+
+  Future<List<double>> predict(String text) async {
+    final input = tokenizeInput(text);
+    final inputTensor = [input];
+
+    var output = List.filled(1 * 3, 0).reshape([1, 3]);
+
+    _interpreter.run(inputTensor, output);
+
+    return List<double>.from(output[0]);
   }
 }
