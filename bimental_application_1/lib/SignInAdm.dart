@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'ForgetPasswordAdmin.dart';
 import 'HomeAdmin.dart';
 import 'AdminRepository.dart';
-import 'package:firebase_messaging/firebase_messaging.dart'; // <-- IMPORTANTE
+// Eliminado: import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,12 +61,7 @@ class _SignInAdminState extends State<SignInAdmin> {
       }
 
       if (adminEncontrado != null) {
-        // Obtener y guardar el token FCM tras login exitoso
-        String? token = await FirebaseMessaging.instance.getToken();
-        if (token != null) {
-          await adminRepository.updateAdminFcmToken(adminEncontrado.id, token);
-        }
-
+        // Eliminado: obtención y actualización del token FCM
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePageAdmin()),

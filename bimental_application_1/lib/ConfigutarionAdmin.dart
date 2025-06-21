@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:bimental_application_1/main.dart'; // ValueNotifier isDarkModeEnabled
-// import 'NotificationService.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConfiguracionAdministracionScreen extends StatefulWidget {
   @override
@@ -30,20 +26,10 @@ class _ConfiguracionAdministracionScreenState
     });
   }
 
-  Future<void> _saveAdminToken(String adminId, String? token) async {
-    if (token != null) {
-      await FirebaseFirestore.instance
-          .collection('admin_tokens')
-          .doc(adminId)
-          .set({
-        'token': token,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    }
-  }
+  // Elimina métodos relacionados con Firebase Messaging y Firestore
+  // Elimina _saveAdminToken y lógica de tokens
 
   void _toggleNotificaciones(bool value) async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
@@ -52,32 +38,16 @@ class _ConfiguracionAdministracionScreenState
 
     await prefs.setBool('recibirNotificaciones', value);
 
-    // Tu lógica de autenticación debe proveer el adminId actual, aquí lo simulamos:
-    final String adminId =
-        "admin_id_actual"; // <-- Corrige esto con tu lógica real
-
-    if (!kIsWeb) {
-      if (value) {
-        // Guarda el token FCM en Firestore para notificaciones push reales
-        String? token = await messaging.getToken();
-        await _saveAdminToken(adminId, token);
-
-        await messaging.subscribeToTopic('admin_notifications');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Suscrito a notificaciones')),
-        );
-      } else {
-        await messaging.unsubscribeFromTopic('admin_notifications');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No recibirás más notificaciones')),
-        );
-        // Si quieres, elimina el token de Firestore aquí
-      }
+    // Simple feedback sin lógica de notificaciones push
+    if (value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Opción de notificaciones activada (sin efecto)')),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content:
-                Text('La suscripción a temas no está disponible en la web')),
+            content: Text('Opción de notificaciones desactivada (sin efecto)')),
       );
     }
   }

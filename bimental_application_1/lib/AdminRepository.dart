@@ -21,29 +21,13 @@ class AdminRepository {
         .then((event) {
       for (var doc in event.docs) {
         var adminInfo = doc.data();
-        // Usa fromMap para asignar todos los campos, incluido fcmToken
+        // Usa fromMap para asignar los campos
         Administrators admin = Administrators.fromMap(adminInfo);
         print("${doc.id} => ${doc.data()}");
         adminRegistered.add(admin);
       }
     });
     return adminRegistered;
-  }
-
-  /// Actualiza el token FCM del administrador
-  Future<void> updateAdminFcmToken(String adminId, String token) async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection("administrators")
-        .where("id", isEqualTo: adminId)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      final docId = querySnapshot.docs.first.id;
-      await FirebaseFirestore.instance
-          .collection("administrators")
-          .doc(docId)
-          .update({'fcmToken': token});
-    }
   }
 
   /// Actualiza la contraseña del administrador por correo
