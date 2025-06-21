@@ -10,8 +10,6 @@ class ConfiguracionAdministracionScreen extends StatefulWidget {
 
 class _ConfiguracionAdministracionScreenState
     extends State<ConfiguracionAdministracionScreen> {
-  bool recibirNotificaciones = false;
-
   @override
   void initState() {
     super.initState();
@@ -21,35 +19,8 @@ class _ConfiguracionAdministracionScreenState
   Future<void> _cargarPreferencias() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      recibirNotificaciones = prefs.getBool('recibirNotificaciones') ?? false;
       isDarkModeEnabled.value = prefs.getBool('isDarkModeEnabled') ?? false;
     });
-  }
-
-  // Elimina métodos relacionados con Firebase Messaging y Firestore
-  // Elimina _saveAdminToken y lógica de tokens
-
-  void _toggleNotificaciones(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      recibirNotificaciones = value;
-    });
-
-    await prefs.setBool('recibirNotificaciones', value);
-
-    // Simple feedback sin lógica de notificaciones push
-    if (value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Opción de notificaciones activada (sin efecto)')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Opción de notificaciones desactivada (sin efecto)')),
-      );
-    }
   }
 
   void _toggleDarkMode(bool value) async {
@@ -96,25 +67,6 @@ class _ConfiguracionAdministracionScreenState
                       activeColor: Colors.green,
                       onChanged: (value) {
                         _toggleDarkMode(value);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Recibir notificaciones',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Switch(
-                      value: recibirNotificaciones,
-                      activeColor: Colors.green,
-                      onChanged: (value) {
-                        _toggleNotificaciones(value);
                       },
                     ),
                   ],

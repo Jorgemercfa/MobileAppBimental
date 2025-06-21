@@ -1,14 +1,13 @@
 import 'package:bimental_application_1/CofigurationUser.dart';
 import 'package:bimental_application_1/LoginPage.dart';
 import 'package:flutter/material.dart';
-// Eliminado: import 'package:firebase_core/firebase_core.dart';
-// Eliminado: import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
+// Si tienes el archivo generado por FlutterFire CLI, descomenta la siguiente línea y asegúrate de tener el archivo:
+// import 'package:bimental_application_1/firebase_options.dart';
 import 'package:bimental_application_1/RegisterUserPage.dart';
-// Eliminado: import 'package:bimental_application_1/firebase_options.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
-// Eliminado: import 'NotificationService.dart';
 
 // Lista en memoria para almacenar los usuarios registrados
 List<Map<String, String>> usuariosRegistrados = [];
@@ -16,12 +15,13 @@ List<Map<String, String>> usuariosRegistrados = [];
 // Notificador global para manejar el tema oscuro
 ValueNotifier<bool> isDarkModeEnabled = ValueNotifier(false);
 
-// Eliminados: función y lógica relacionadas con el manejo de notificaciones en segundo plano y servicios locales
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Eliminado: inicialización de Firebase y configuración de notificaciones
-
+  // Inicialización de Firebase
+  await Firebase.initializeApp(
+      // Si tienes firebase_options.dart, utiliza la opción de abajo:
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   runApp(MyApp());
 }
 

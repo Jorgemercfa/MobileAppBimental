@@ -46,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '381340908284',
     projectId: 'bimental-eecd7',
     authDomain: 'bimental-eecd7.firebaseapp.com',
-    storageBucket: 'bimental-eecd7.firebasestorage.app',
+    storageBucket: 'bimental-eecd7.appspot.com', // <--- corregido
     measurementId: 'G-HDXLY1SKLV',
   );
 
@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:381340908284:android:56ada9d6ea63b5098ab579',
     messagingSenderId: '381340908284',
     projectId: 'bimental-eecd7',
-    storageBucket: 'bimental-eecd7.firebasestorage.app',
+    storageBucket: 'bimental-eecd7.appspot.com', // <--- corregido
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:381340908284:ios:6a49d6477f43efc88ab579',
     messagingSenderId: '381340908284',
     projectId: 'bimental-eecd7',
-    storageBucket: 'bimental-eecd7.firebasestorage.app',
+    storageBucket: 'bimental-eecd7.appspot.com', // <--- corregido
     iosBundleId: 'com.example.bimentalApplication1',
   );
 
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     appId: '1:381340908284:ios:6a49d6477f43efc88ab579',
     messagingSenderId: '381340908284',
     projectId: 'bimental-eecd7',
-    storageBucket: 'bimental-eecd7.firebasestorage.app',
+    storageBucket: 'bimental-eecd7.appspot.com', // <--- corregido
     iosBundleId: 'com.example.bimentalApplication1',
   );
 
@@ -82,7 +82,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '381340908284',
     projectId: 'bimental-eecd7',
     authDomain: 'bimental-eecd7.firebaseapp.com',
-    storageBucket: 'bimental-eecd7.firebasestorage.app',
+    storageBucket: 'bimental-eecd7.appspot.com', // <--- corregido
     measurementId: 'G-G2GZTQHWBJ',
   );
 }

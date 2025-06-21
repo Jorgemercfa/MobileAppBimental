@@ -1,11 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bimental_application_1"> <!-- Cambia por el nombre de tu paquete -->
 
-    <!-- Permisos necesarios para Firebase y notificaciones -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Necesario para Android 13+ -->
-
     <application
         android:label="bimental_application_1"
         android:name="${applicationName}"

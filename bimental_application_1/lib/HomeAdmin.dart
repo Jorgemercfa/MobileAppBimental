@@ -1,5 +1,6 @@
 import 'package:bimental_application_1/ConfigutarionAdmin.dart';
 import 'package:bimental_application_1/resultadosAdmin.dart';
+import 'package:bimental_application_1/DashboardScreen.dart'; // <--- Importa tu dashboard aquí
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
         './Chatbot': (context) => UserResultsPage(),
         './ConfigurationAdmin': (context) =>
             ConfiguracionAdministracionScreen(),
+        './Dashboard': (context) =>
+            DashboardScreen(), // <--- Ruta para Dashboard
       },
     );
   }
@@ -84,7 +87,7 @@ class HomePageAdmin extends StatelessWidget {
                     style: TextStyle(color: Colors.white)),
               ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             SizedBox(
               width: 200,
               child: ElevatedButton(
@@ -101,6 +104,23 @@ class HomePageAdmin extends StatelessWidget {
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
                 child: const Text('Configuraciones',
+                    style: TextStyle(color: Colors.white)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Nuevo botón para Dashboard
+            SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, './Dashboard');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A119B),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
+                child: const Text('Dashboard',
                     style: TextStyle(color: Colors.white)),
               ),
             ),
