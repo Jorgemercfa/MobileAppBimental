@@ -2,26 +2,24 @@ import 'package:bimental_application_1/CofigurationUser.dart';
 import 'package:bimental_application_1/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-// Si tienes el archivo generado por FlutterFire CLI, descomenta la siguiente línea y asegúrate de tener el archivo:
-// import 'package:bimental_application_1/firebase_options.dart';
+import 'package:bimental_application_1/firebase_options.dart'; // ✅ Descomentado
 import 'package:bimental_application_1/RegisterUserPage.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
 
-// Lista en memoria para almacenar los usuarios registrados
 List<Map<String, String>> usuariosRegistrados = [];
 
-// Notificador global para manejar el tema oscuro
 ValueNotifier<bool> isDarkModeEnabled = ValueNotifier(false);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Inicialización de Firebase
+
+  // ✅ Inicialización con firebase_options
   await Firebase.initializeApp(
-      // Si tienes firebase_options.dart, utiliza la opción de abajo:
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(MyApp());
 }
 
@@ -38,9 +36,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: isDark
-                ? const Color.fromARGB(255, 0, 0, 0)
-                : Colors.white, // Se actualiza dinámicamente
+            scaffoldBackgroundColor:
+                isDark ? const Color.fromARGB(255, 0, 0, 0) : Colors.white,
             textTheme: TextTheme(
               bodyLarge:
                   TextStyle(color: isDark ? Colors.white : Color(0xFF1A119B)),

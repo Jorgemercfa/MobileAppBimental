@@ -1,7 +1,8 @@
 import 'package:bimental_application_1/ConfigutarionAdmin.dart';
 import 'package:bimental_application_1/resultadosAdmin.dart';
-import 'package:bimental_application_1/DashboardScreen.dart'; // <--- Importa tu dashboard aquí
 import 'package:flutter/material.dart';
+
+import 'DashboardScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,17 +16,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BiMental Administración',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
+      theme: ThemeData(primarySwatch: Colors.purple),
       initialRoute: './',
       routes: {
         './': (context) => HomePageAdmin(),
         './Chatbot': (context) => UserResultsPage(),
         './ConfigurationAdmin': (context) =>
             ConfiguracionAdministracionScreen(),
-        './Dashboard': (context) =>
-            DashboardScreen(), // <--- Ruta para Dashboard
       },
     );
   }
@@ -63,10 +60,7 @@ class HomePageAdmin extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               'BiMental Administración',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 50),
             SizedBox(
@@ -74,17 +68,21 @@ class HomePageAdmin extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserResultsPage()));
+                    context,
+                    MaterialPageRoute(builder: (context) => UserResultsPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 20,
+                  ),
                 ),
-                child: const Text('Resultados',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Resultados',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -93,35 +91,46 @@ class HomePageAdmin extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ConfiguracionAdministracionScreen()));
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 20,
+                  ),
                 ),
-                child: const Text('Configuraciones',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Dashboard',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            // Nuevo botón para Dashboard
             SizedBox(
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, './Dashboard');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConfiguracionAdministracionScreen(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 20,
+                  ),
                 ),
-                child: const Text('Dashboard',
-                    style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Configuraciones',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
