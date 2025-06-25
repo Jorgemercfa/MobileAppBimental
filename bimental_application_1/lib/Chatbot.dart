@@ -305,7 +305,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    // ALERTA de texto vacío
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor, escribe un texto antes de enviar.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     if (text.toLowerCase() == 'cuestionario') {
       final userId = await SessionService.getUserId();
@@ -467,6 +477,17 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      "Pregunta ${questionCategoryNumber} de ${_questions.length}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Text(
