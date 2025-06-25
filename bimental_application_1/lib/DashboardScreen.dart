@@ -155,7 +155,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: _KpiCard(
                             label: 'Alta Ansiedad',
                             value: '$usuariosAltoAnsiedad',
-                            icon: Icons.warning_amber,
+                            icon: Icons.warning_amber_rounded,
                             color: Colors.green,
                           ),
                         ),
@@ -178,7 +178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: _KpiCard(
                             label: 'Alto Estrés',
                             value: '$usuariosAltoEstres',
-                            icon: Icons.warning,
+                            icon: Icons.warning_amber_rounded,
                             color: Colors.green,
                           ),
                         ),
