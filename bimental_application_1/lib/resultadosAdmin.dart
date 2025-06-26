@@ -113,64 +113,73 @@ class _UserResultsPageState extends State<UserResultsPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Seleccionar filtro'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButton<String>(
-                value: selectedCriterion,
-                items: ['Depresión', 'Ansiedad', 'Estrés']
-                    .map((criterion) => DropdownMenuItem(
-                          value: criterion,
-                          child: Text(criterion),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedCriterion = value ?? 'Depresión';
-                    selectedValue = options[selectedCriterion]!.first;
-                  });
-                },
+        String tempCriterion = selectedCriterion;
+        String tempValue = selectedValue;
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: Text('Seleccionar filtro'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButton<String>(
+                    value: tempCriterion,
+                    items: ['Depresión', 'Ansiedad', 'Estrés']
+                        .map((criterion) => DropdownMenuItem(
+                              value: criterion,
+                              child: Text(criterion),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setStateDialog(() {
+                        tempCriterion = value ?? 'Depresión';
+                        tempValue = options[tempCriterion]!.first;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  DropdownButton<String>(
+                    value: tempValue,
+                    items: options[tempCriterion]!
+                        .map((value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setStateDialog(() {
+                        tempValue = value ?? options[tempCriterion]!.first;
+                      });
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-              DropdownButton<String>(
-                value: selectedValue,
-                items: options[selectedCriterion]!
-                    .map((value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = value ?? options[selectedCriterion]!.first;
-                  });
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  filteredData = allData
-                      .where((user) => user[selectedCriterion] == selectedValue)
-                      .toList();
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Aplicar'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() =>
-                    filteredData = List<Map<String, String>>.from(allData));
-                Navigator.of(context).pop();
-              },
-              child: Text('Reiniciar'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedCriterion = tempCriterion;
+                      selectedValue = tempValue;
+                      filteredData = allData
+                          .where((user) =>
+                              user[selectedCriterion] == selectedValue)
+                          .toList();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Aplicar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() =>
+                        filteredData = List<Map<String, String>>.from(allData));
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Reiniciar'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
