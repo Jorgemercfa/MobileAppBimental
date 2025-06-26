@@ -1,12 +1,8 @@
 import 'package:bimental_application_1/AnswersUser.dart';
 import 'package:bimental_application_1/session_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'; // Para kDebugMode
+import 'package:flutter/foundation.dart';
 import 'AnswersRepository.dart';
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
@@ -68,6 +64,7 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
           hora = result.timestamp.split(' ')[1];
         }
 
+        // Usar la misma clasificación que la API/servidor, si viene guardada
         return {
           'fecha': fecha,
           'hora': hora,

@@ -1,10 +1,10 @@
+import 'package:bimental_application_1/dass_21_api.dart';
 import 'package:bimental_application_1/session_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 import 'AnswersRepository.dart';
-
 import 'openai_service.dart';
 
 void main() => runApp(const ChatBotApp());
@@ -293,7 +293,8 @@ class _ChatScreenState extends State<ChatScreen> {
   };
 
   List<Map<String, String>> _selectedQuestions = [];
-  List<String> answers = [];
+  List<String> userAnswers =
+      []; // <--- Usamos userAnswers como lista de Strings
 
   Map<String, String> _generateRandomQuestion() {
     final random = Random();
@@ -334,16 +335,15 @@ class _ChatScreenState extends State<ChatScreen> {
         _selectedQuestions = [_generateRandomQuestion()];
         _controller.clear();
         questionCategoryNumber = 1;
-        answers.clear();
+        userAnswers.clear();
       });
       return;
     }
 
     if (_showQuestionnaire) {
-      if (RegExp(r'^[0-3]$').hasMatch(text)) {
-        answers.add(text);
+      if (userAnswers.length < _questions.length) {
+        userAnswers.add(text);
         questionCategoryNumber++;
-
         if (questionCategoryNumber <= _questions.length) {
           setState(() {
             _selectedQuestions = [_generateRandomQuestion()];
@@ -351,13 +351,9 @@ class _ChatScreenState extends State<ChatScreen> {
         } else {
           _finishQuestionnaire();
         }
-      } else {
-        setState(() {
-          _messages.add(
-              {'bot': "Por favor, ingresa un número válido (0, 1, 2 o 3)."});
-        });
+        _controller.clear();
+        return;
       }
-      return;
     }
 
     setState(() {
@@ -389,19 +385,21 @@ class _ChatScreenState extends State<ChatScreen> {
         });
         _showQuestionnaire = false;
         _selectedQuestions = [];
-        answers.clear();
+        userAnswers.clear();
       });
       return;
     }
 
     try {
-      await AnswersRepository.saveAnswers(answers, userId);
+      final dass21Results = await Dass21Api().processAnswers(userAnswers);
+      await AnswersRepository.saveDass21Results(dass21Results, userId);
+
       final timestamp =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
       setState(() {
         _messages.add({
           'bot':
-              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp"
+              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp\n\nResultados:\nDepresión: ${dass21Results['depresion']}\nAnsiedad: ${dass21Results['ansiedad']}\nEstrés: ${dass21Results['estres']}"
         });
         _showQuestionnaire = false;
         _selectedQuestions = [];
@@ -410,11 +408,11 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         _messages.add({
           'bot':
-              "❌ Error al guardar el cuestionario. Por favor, intenta nuevamente."
+              "❌ Error al guardar el cuestionario o calcular resultados. Por favor, intenta nuevamente."
         });
       });
     } finally {
-      answers.clear();
+      userAnswers.clear();
       print("El id del usuario que realizo el cuestionario es: $userId");
     }
   }
@@ -496,12 +494,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   const Text(
-                    'Responde a la siguiente pregunta con:',
+                    'Responde a la siguiente pregunta con tu texto.',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const Text(
-                    '0 No me sucedió\n1 Me sucedió un poco, o durante parte del tiempo\n2 Me sucedió bastante, o durante una buena parte del tiempo\n3 Me sucedió mucho, o la mayor parte del tiempo',
-                    style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
