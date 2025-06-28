@@ -399,7 +399,7 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         _messages.add({
           'bot':
-              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp\n\nResultados:\nDepresión: ${dass21Results['depresion']}\nAnsiedad: ${dass21Results['ansiedad']}\nEstrés: ${dass21Results['estres']}"
+              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp"
         });
         _showQuestionnaire = false;
         _selectedQuestions = [];
