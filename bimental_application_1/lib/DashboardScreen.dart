@@ -129,7 +129,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: azulBimental,
                     ),
                   ),
                 ),
@@ -146,7 +145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             label: 'Evaluaciones',
                             value: '$totalEvaluaciones',
                             icon: Icons.assignment_turned_in,
-                            color: Colors.green,
+                            color: Color(0xFF4CAF50),
                           ),
                         ),
                         const SizedBox(width: 14),
@@ -155,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             label: 'Alta Ansiedad',
                             value: '$usuariosAltoAnsiedad',
                             icon: Icons.warning_amber_rounded,
-                            color: Colors.green,
+                            color: Color(0xFF4CAF50),
                           ),
                         ),
                       ],
@@ -169,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             label: 'Alta Depresión',
                             value: '$usuariosAltoDepresion',
                             icon: Icons.warning_amber_rounded,
-                            color: Colors.green,
+                            color: Color(0xFF4CAF50),
                           ),
                         ),
                         const SizedBox(width: 14),
@@ -178,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             label: 'Alto Estrés',
                             value: '$usuariosAltoEstres',
                             icon: Icons.warning_amber_rounded,
-                            color: Colors.green,
+                            color: Color(0xFF4CAF50),
                           ),
                         ),
                       ],
@@ -198,10 +197,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Evolución de evaluaciones en el tiempo',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: azulBimental),
                         ),
                         const SizedBox(height: 16),
                         SizedBox(
@@ -216,7 +217,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     reservedSize: 28,
                                     getTitlesWidget: (value, meta) {
                                       return Text(value.toInt().toString(),
-                                          style: const TextStyle(fontSize: 12));
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: azulBimental));
                                     },
                                   ),
                                 ),
@@ -231,7 +234,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         return const SizedBox();
                                       }
                                       return Text(meses[value.toInt()],
-                                          style: const TextStyle(fontSize: 12));
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: azulBimental));
                                     },
                                   ),
                                 ),
