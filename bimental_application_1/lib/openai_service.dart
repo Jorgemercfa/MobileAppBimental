@@ -39,7 +39,9 @@ class OpenAIService {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        // Decodifica la respuesta como UTF-8 para evitar problemas de caracteres
+        final decodedBody = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedBody);
         if (data['choices'] != null && data['choices'].isNotEmpty) {
           return data['choices'][0]['message']['content'].toString();
         } else {
