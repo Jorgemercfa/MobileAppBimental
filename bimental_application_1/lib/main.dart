@@ -2,11 +2,14 @@ import 'package:bimental_application_1/CofigurationUser.dart';
 import 'package:bimental_application_1/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:bimental_application_1/firebase_options.dart'; // ✅ Descomentado
+import 'package:bimental_application_1/firebase_options.dart';
 import 'package:bimental_application_1/RegisterUserPage.dart';
 import 'ForgetPassword.dart';
 import 'Home.dart';
 import 'SignInAdm.dart';
+
+// 🔒 Importar flutter_secure_storage
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 List<Map<String, String>> usuariosRegistrados = [];
 
@@ -18,6 +21,13 @@ void main() async {
   // ✅ Inicialización con firebase_options
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // ✅ Guardar la API Key de OpenAI en almacenamiento seguro
+  const storage = FlutterSecureStorage();
+  await storage.write(
+    key: "OPENAI_API_KEY",
+    value: "",
   );
 
   runApp(MyApp());

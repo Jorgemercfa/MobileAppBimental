@@ -191,7 +191,7 @@ class _ChatScreenState extends State<ChatScreen> {
       {
         "id": "14.3",
         "texto":
-            "1) No pude soportar situaciones que afectaran mi ritmo de trabajo"
+            "14) No pude soportar situaciones que afectaran mi ritmo de trabajo"
       },
       {
         "id": "14.4",
@@ -293,8 +293,7 @@ class _ChatScreenState extends State<ChatScreen> {
   };
 
   List<Map<String, String>> _selectedQuestions = [];
-  List<String> userAnswers =
-      []; // <--- Usamos userAnswers como lista de Strings
+  List<String> userAnswers = [];
 
   Map<String, String> _generateRandomQuestion() {
     final random = Random();
@@ -306,7 +305,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     final text = _controller.text.trim();
-    // ALERTA de texto vacío
+
+    // Validación de texto vacío (siempre aplica)
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -316,6 +316,23 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       );
       return;
+    }
+
+    // Validación de 100 palabras SOLO durante el cuestionario
+    if (_showQuestionnaire) {
+      final wordCount =
+          text.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).length;
+      if (wordCount > 100) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Por favor, escribe un texto de máximo 100 palabras.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        return;
+      }
     }
 
     if (text.toLowerCase() == 'cuestionario') {

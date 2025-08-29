@@ -1,53 +1,56 @@
-// Importa la librería para codificar y decodificar datos JSON
 import 'dart:convert';
-
-// Importa la librería 'http' para hacer solicitudes HTTP
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-// Clase que encapsula el servicio para comunicarse con la API de OpenAI
 class OpenAIService {
-  // Clave de API de OpenAI (IMPORTANTE: nunca expongas esta clave en producción)
-  final String _apiKey =
-      'sk-proj-...'; // <-- Recorta la clave en producción o muévela a variables de entorno
-
-  // URL del endpoint de OpenAI para crear respuestas del modelo de chat
+  // Almacenamiento seguro
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final String _apiUrl = 'https://api.openai.com/v1/chat/completions';
 
-  // Método asíncrono que envía un mensaje a la API de OpenAI y obtiene la respuesta generada
+  /// Guardar la API Key en el almacenamiento seguro (haz esto una sola vez, por ejemplo en el login)
+  Future<void> guardarApiKey(String apiKey) async {
+    await _storage.write(key: "OPENAI_API_KEY", value: apiKey);
+  }
+
+  /// Obtener respuesta de OpenAI
   Future<String> obtenerRespuesta(String mensaje) async {
     try {
-      // Realiza una solicitud POST al endpoint de OpenAI
+      // Leer la API key desde el almacenamiento seguro
+      final String? apiKey = await _storage.read(key: "OPENAI_API_KEY");
+
+      if (apiKey == null || apiKey.isEmpty) {
+        throw Exception('No se encontró la API Key en el dispositivo');
+      }
+
       final response = await http.post(
-        Uri.parse(_apiUrl), // Convierte la URL en objeto URI
+        Uri.parse(_apiUrl),
         headers: {
-          'Content-Type': 'application/json', // Indica que el contenido es JSON
-          'Authorization':
-              'Bearer $_apiKey', // Autenticación con la clave de API
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $apiKey',
         },
         body: json.encode({
-          'model': 'gpt-3.5-turbo', // Especifica el modelo de lenguaje a usar
+          'model': 'gpt-4o-mini', // modelo recomendado
           'messages': [
-            {
-              'role': 'user',
-              'content': mensaje
-            } // Mensaje enviado por el usuario
+            {'role': 'user', 'content': mensaje}
           ],
-          'max_tokens': 150, // Límite de tokens en la respuesta
-          'temperature': 0.7, // Nivel de creatividad de la respuesta
+          'max_tokens': 300,
+          'temperature': 0.7,
         }),
       );
 
-      // Verifica si la respuesta fue exitosa (código 200)
       if (response.statusCode == 200) {
-        final data = json.decode(response.body); // Decodifica la respuesta JSON
-        // Extrae y retorna el contenido de la respuesta del modelo
-        return data['choices'][0]['message']['content'].toString();
+        final data = json.decode(response.body);
+        if (data['choices'] != null && data['choices'].isNotEmpty) {
+          return data['choices'][0]['message']['content'].toString();
+        } else {
+          throw Exception('No se encontró respuesta en la API');
+        }
       } else {
-        // Lanza una excepción si el servidor responde con un error
-        throw Exception('Error en la solicitud: ${response.statusCode}');
+        throw Exception(
+          'Error en la solicitud: ${response.statusCode} - ${response.body}',
+        );
       }
     } catch (e) {
-      // Captura y lanza cualquier otro error que ocurra en la solicitud
       throw Exception('Error al procesar la solicitud: $e');
     }
   }

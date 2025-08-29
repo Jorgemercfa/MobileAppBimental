@@ -35,7 +35,7 @@ class HomePageAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF1A119B),
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
