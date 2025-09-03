@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
 import 'AnswersRepository.dart';
-import 'openai_service.dart';
+import 'chatbot_api.dart';
 
 void main() => runApp(const ChatBotApp());
 
@@ -29,7 +29,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final OpenAIService _openAIService = OpenAIService();
+  final ChatbotService _chatbotService = ChatbotService();
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
@@ -379,12 +379,13 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     try {
-      final response = await _openAIService.obtenerRespuesta(text);
+      final response = await _chatbotService.obtenerRespuesta(text);
+
       setState(() {
         _messages.add({'bot': response});
       });
     } catch (e) {
-      if (kDebugMode) print("Error al obtener respuesta de OpenAI: $e");
+      if (kDebugMode) print("Error al obtener respuesta de Chatbot: $e");
       setState(() {
         _messages.add({
           'bot': "Lo siento, ocurrió un error. Por favor, intenta de nuevo."
