@@ -13,8 +13,7 @@ class ChatbotService {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          "mensaje":
-              mensaje, // el body debe coincidir con lo que definimos en FastAPI
+          "message": mensaje, // CORREGIDO: el campo ahora se llama 'message'
         }),
       );
 
