@@ -33,6 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
   int questionCategoryNumber = 1;
+  bool _hasShownDisclaimer =
+      false; // Nueva variable para controlar que solo se muestre una vez
 
   final Map<String, List<Map<String, String>>> _questions = {
     "1": [
@@ -66,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
       {
         "id": "8.1",
         "texto":
-            "8)  He sentido que estaba gastando una gran cantidad de energía"
+            "8) He sentido que estaba gastando una gran cantidad de energía"
       },
     ],
     "9": [
@@ -79,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
     "10": [
       {
         "id": "10.1",
-        "texto": "10) Sentí que no tenía nada por lo que ilusionarme"
+        "texto": "10) He sentido que no había nada que me ilusionara"
       },
     ],
     "11": [
@@ -131,11 +133,82 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Map<String, String>> _selectedQuestions = [];
   List<String> userAnswers = [];
 
+  @override
+  void initState() {
+    super.initState();
+    // Mostrar el popup cuando se inicializa la pantalla
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showDisclaimerPopup();
+    });
+  }
+
   Map<String, String> _getQuestion() {
     final group = _questions[questionCategoryNumber.toString()];
     return group != null && group.isNotEmpty
         ? group[0] // Always get the first (and only) question
         : {"id": "N/A", "texto": "No hay más preguntas disponibles"};
+  }
+
+  // Función para mostrar el popup de disclaimer
+  void _showDisclaimerPopup() {
+    if (_hasShownDisclaimer) return; // Evitar que se muestre múltiples veces
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        _hasShownDisclaimer = true; // Marcar como mostrado
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: Colors.white,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 50),
+              SizedBox(height: 10),
+              Text(
+                "Aviso",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A119B),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          content: const Text(
+            "Los resultados del cuestionario son solo una referencia y "
+            "no reemplazan la evaluación de un profesional de salud mental.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1A119B),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                "Entendido",
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _sendMessage() async {
