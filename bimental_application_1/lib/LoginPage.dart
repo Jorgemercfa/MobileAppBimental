@@ -192,7 +192,7 @@ class LoginPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1A119B),
+                    backgroundColor: Colors.green[600],
                     padding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 20),
                   ),
