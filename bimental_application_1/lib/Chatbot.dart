@@ -97,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
       {
         "id": "14.1",
         "texto":
-            "14) No toleré nada que no me permitiera continuar con lo que estaba haciendo"
+            "14) No toleré nada que me no permitiera continuar con lo que estaba haciendo"
       },
     ],
     "15": [
@@ -415,7 +415,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 4.0, right: 8.0),
                         child: CircleAvatar(
                           radius: 20,
-                          backgroundColor: const Color(0xFF1A119B),
+                          backgroundColor: Colors.blue[200],
                           child: const Icon(Icons.person, color: Colors.white),
                         ),
                       ),
@@ -428,7 +428,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
@@ -439,18 +439,25 @@ class _ChatScreenState extends State<ChatScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      _selectedQuestions.first['texto']!,
-                      style: const TextStyle(fontSize: 18),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: 400), // Opcional: ancho máximo
+                      child: Text(
+                        _selectedQuestions.first['texto']!,
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   const Text(
                     'Responde a la siguiente pregunta con tu texto.',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
