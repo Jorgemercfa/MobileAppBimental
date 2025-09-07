@@ -208,90 +208,94 @@ class _UserResultsPageState extends State<UserResultsPage> {
           : Container(
               padding: EdgeInsets.all(16),
               child: Center(
+                // Scroll horizontal externo, scroll vertical interno
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xFF1A119B),
-                    ),
-                    child: DataTable(
-                      headingRowColor:
-                          MaterialStateProperty.all(Color(0xFF4CAF50)),
-                      dataRowColor:
-                          MaterialStateProperty.all(Color(0xFF1A119B)),
-                      columns: [
-                        DataColumn(
-                          label: Text('Nombre',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Apellido',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Correo',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Teléfono',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Fecha',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Depresión',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Ansiedad',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('Estrés',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                      rows: filteredData.map((user) {
-                        return DataRow(
-                          cells: [
-                            DataCell(Text(user['Nombre']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Apellido']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Correo']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Teléfono']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Fecha']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Depresión']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Ansiedad']!,
-                                style: TextStyle(color: Colors.white))),
-                            DataCell(Text(user['Estrés']!,
-                                style: TextStyle(color: Colors.white))),
-                          ],
-                        );
-                      }).toList(),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xFF1A119B),
+                      ),
+                      child: DataTable(
+                        headingRowColor:
+                            MaterialStateProperty.all(Color(0xFF4CAF50)),
+                        dataRowColor:
+                            MaterialStateProperty.all(Color(0xFF1A119B)),
+                        columns: [
+                          DataColumn(
+                            label: Text('Nombre',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Apellido',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Correo',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Teléfono',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Fecha',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Depresión',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Ansiedad',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          DataColumn(
+                            label: Text('Estrés',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                        rows: filteredData.map((user) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(user['Nombre']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Apellido']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Correo']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Teléfono']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Fecha']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Depresión']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Ansiedad']!,
+                                  style: TextStyle(color: Colors.white))),
+                              DataCell(Text(user['Estrés']!,
+                                  style: TextStyle(color: Colors.white))),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),
