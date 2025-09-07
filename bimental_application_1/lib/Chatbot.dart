@@ -33,9 +33,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
   int questionCategoryNumber = 1;
-  bool _hasShownDisclaimer =
-      false; // Nueva variable para controlar que solo se muestre una vez
+  bool _hasShownDisclaimer = false;
 
+  // Preguntas actualizadas según lo solicitado
   final Map<String, List<Map<String, String>>> _questions = {
     "1": [
       {"id": "1.1", "texto": "1) Me ha costado mucho descargar la tensión"},
@@ -366,31 +366,60 @@ class _ChatScreenState extends State<ChatScreen> {
               itemBuilder: (context, index) {
                 final message = _messages[index];
                 final isUserMessage = message.containsKey('user');
-                return Align(
-                  alignment: isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.7),
-                    decoration: BoxDecoration(
-                      color:
-                          isUserMessage ? Colors.green[600] : Colors.green[300],
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(12),
-                        topRight: const Radius.circular(12),
-                        bottomLeft: Radius.circular(isUserMessage ? 12 : 0),
-                        bottomRight: Radius.circular(isUserMessage ? 0 : 12),
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: isUserMessage
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+                  children: [
+                    if (!isUserMessage) // Avatar del bot (a la izquierda)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundImage:
+                              AssetImage('assets/images/logo_bimental.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.65,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isUserMessage
+                              ? Colors.green[600]
+                              : Colors.green[300],
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(12),
+                            topRight: const Radius.circular(12),
+                            bottomLeft: Radius.circular(isUserMessage ? 12 : 0),
+                            bottomRight:
+                                Radius.circular(isUserMessage ? 0 : 12),
+                          ),
+                        ),
+                        child: Text(
+                          isUserMessage ? message['user']! : message['bot']!,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
                       ),
                     ),
-                    child: Text(
-                      isUserMessage ? message['user']! : message['bot']!,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
+                    if (isUserMessage) // Avatar del usuario (a la derecha)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: const Color(0xFF1A119B),
+                          child: const Icon(Icons.person, color: Colors.white),
+                        ),
+                      ),
+                  ],
                 );
               },
             ),
