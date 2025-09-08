@@ -1,7 +1,7 @@
 name: bimental_application_1
-description: A new Flutter project.
+description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.0.2 <4.0.0'
@@ -19,8 +19,9 @@ dependencies:
   firebase_auth: ^5.4.2
   cloud_firestore: ^5.6.5
   uuid: ^4.1.0
-  fl_chart: ^1.0.0
+  fl_chart: ^0.69.0
   flutter_secure_storage: ^9.2.4
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +30,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
   assets:
     - assets/images/logo_bimental.png
+
+dependency_overrides:
+  vector_math: 2.1.2
