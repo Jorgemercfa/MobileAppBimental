@@ -437,7 +437,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: const Color(0xFF1A119B),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -460,9 +460,28 @@ class _ChatScreenState extends State<ChatScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: _finishQuestionnaire,
-                    child: const Text("Finalizar Cuestionario"),
+                  SizedBox(
+                    width:
+                        220, // Ajusta este valor según el ancho que prefieras
+                    child: ElevatedButton(
+                      onPressed: _finishQuestionnaire,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF2516B0), // Azul intenso
+                        foregroundColor: Colors.white, // Texto blanco
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(30), // Bordes redondeados
+                        ),
+                        minimumSize: Size(220, 36), // ancho y alto mínimo
+                      ),
+                      child: const Text(
+                        "Finalizar Cuestionario",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
