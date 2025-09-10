@@ -425,6 +425,8 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           if (_showQuestionnaire) ...[
+            // CENTRAR verticalmente el bloque del cuestionario
+            Spacer(), // <- Esto empuja el bloque hacia el centro
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -437,7 +439,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF1A119B),
+                        color: Color(0xFF1A119B),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -445,8 +447,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: 400), // Opcional: ancho máximo
+                      constraints: BoxConstraints(maxWidth: 400),
                       child: Text(
                         _selectedQuestions.first['texto']!,
                         style: const TextStyle(fontSize: 18),
@@ -461,18 +462,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    width:
-                        220, // Ajusta este valor según el ancho que prefieras
+                    width: 220,
                     child: ElevatedButton(
                       onPressed: _finishQuestionnaire,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF2516B0), // Azul intenso
-                        foregroundColor: Colors.white, // Texto blanco
+                        backgroundColor: Color(0xFF2516B0),
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(30), // Bordes redondeados
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        minimumSize: Size(220, 36), // ancho y alto mínimo
+                        minimumSize: Size(220, 36),
                       ),
                       child: const Text(
                         "Finalizar Cuestionario",
@@ -486,6 +485,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
             ),
+            Spacer(), // <- Esto ayuda a centrar el bloque, puedes quitar si quieres que esté más arriba
           ],
           Padding(
             padding: const EdgeInsets.all(8.0),
