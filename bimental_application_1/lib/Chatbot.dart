@@ -136,7 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    // Mostrar el popup cuando se inicializa la pantalla
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showDisclaimerPopup();
     });
@@ -145,19 +144,18 @@ class _ChatScreenState extends State<ChatScreen> {
   Map<String, String> _getQuestion() {
     final group = _questions[questionCategoryNumber.toString()];
     return group != null && group.isNotEmpty
-        ? group[0] // Always get the first (and only) question
+        ? group[0]
         : {"id": "N/A", "texto": "No hay más preguntas disponibles"};
   }
 
-  // Función para mostrar el popup de disclaimer
   void _showDisclaimerPopup() {
-    if (_hasShownDisclaimer) return; // Evitar que se muestre múltiples veces
+    if (_hasShownDisclaimer) return;
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        _hasShownDisclaimer = true; // Marcar como mostrado
+        _hasShownDisclaimer = true;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -214,7 +212,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendMessage() async {
     final text = _controller.text.trim();
 
-    // Validación de texto vacío (siempre aplica)
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -226,7 +223,6 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
 
-    // Validación de 100 palabras SOLO durante el cuestionario
     if (_showQuestionnaire) {
       final wordCount =
           text.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).length;
@@ -256,6 +252,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       setState(() {
+        _messages.clear(); // Limpiar conversación al iniciar cuestionario
         _showQuestionnaire = true;
         _selectedQuestions = [_getQuestion()];
         _controller.clear();
@@ -288,7 +285,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       final response = await _chatbotService.obtenerRespuesta(text);
-
       setState(() {
         _messages.add({'bot': response});
       });
@@ -360,133 +356,136 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                final isUserMessage = message.containsKey('user');
+          if (!_showQuestionnaire)
+            Expanded(
+              child: ListView.builder(
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  final isUserMessage = message.containsKey('user');
 
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: isUserMessage
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.start,
-                  children: [
-                    if (!isUserMessage) // Avatar del bot (a la izquierda)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 4.0),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              AssetImage('assets/images/logo_bimental.png'),
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.65,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isUserMessage
-                              ? Colors.green[600]
-                              : Colors.green[300],
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(12),
-                            topRight: const Radius.circular(12),
-                            bottomLeft: Radius.circular(isUserMessage ? 12 : 0),
-                            bottomRight:
-                                Radius.circular(isUserMessage ? 0 : 12),
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: isUserMessage
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: [
+                      if (!isUserMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                AssetImage('assets/images/logo_bimental.png'),
+                            backgroundColor: Colors.transparent,
                           ),
                         ),
-                        child: Text(
-                          isUserMessage ? message['user']! : message['bot']!,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.65,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isUserMessage
+                                ? Colors.green[600]
+                                : Colors.green[300],
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(12),
+                              topRight: const Radius.circular(12),
+                              bottomLeft:
+                                  Radius.circular(isUserMessage ? 12 : 0),
+                              bottomRight:
+                                  Radius.circular(isUserMessage ? 0 : 12),
+                            ),
+                          ),
+                          child: Text(
+                            isUserMessage ? message['user']! : message['bot']!,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16),
+                          ),
                         ),
                       ),
-                    ),
-                    if (isUserMessage) // Avatar del usuario (a la derecha)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0, right: 8.0),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.blue[200],
-                          child: const Icon(Icons.person, color: Colors.white),
+                      if (isUserMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.blue[200],
+                            child:
+                                const Icon(Icons.person, color: Colors.white),
+                          ),
                         ),
-                      ),
-                  ],
-                );
-              },
-            ),
-          ),
-          if (_showQuestionnaire) ...[
-            // CENTRAR verticalmente el bloque del cuestionario
-            Spacer(), // <- Esto empuja el bloque hacia el centro
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      "Pregunta ${questionCategoryNumber} de ${_questions.length}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A119B),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 400),
-                      child: Text(
-                        _selectedQuestions.first['texto']!,
-                        style: const TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    'Responde a la siguiente pregunta con tu texto.',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: 220,
-                    child: ElevatedButton(
-                      onPressed: _finishQuestionnaire,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF2516B0),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        minimumSize: Size(220, 36),
-                      ),
-                      child: const Text(
-                        "Finalizar Cuestionario",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
             ),
-            Spacer(), // <- Esto ayuda a centrar el bloque, puedes quitar si quieres que esté más arriba
-          ],
+          if (_showQuestionnaire)
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Pregunta ${questionCategoryNumber} de ${_questions.length}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A119B),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 400),
+                          child: Text(
+                            _selectedQuestions.first['texto']!,
+                            style: const TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Responde a la siguiente pregunta con tu texto.',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: 220,
+                          child: ElevatedButton(
+                            onPressed: _finishQuestionnaire,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF2516B0),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              minimumSize: Size(220, 36),
+                            ),
+                            child: const Text(
+                              "Finalizar Cuestionario",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
