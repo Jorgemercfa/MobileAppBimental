@@ -102,6 +102,7 @@ class UserRepository {
     }
   }
 
+  /// 🔹 Método clásico: requiere todos los campos
   Future<bool> updateUserData(
       String email, String name, String lastName, String phone) async {
     try {
@@ -121,6 +122,37 @@ class UserRepository {
       return true;
     } catch (e) {
       print("Error al actualizar datos: $e");
+      return false;
+    }
+  }
+
+  /// 🔹 Nuevo método: solo actualiza los campos enviados en [nuevosDatos]
+  Future<bool> updateUserDataMap(Map<String, dynamic> nuevosDatos) async {
+    try {
+      if (nuevosDatos.isEmpty || !nuevosDatos.containsKey("email")) {
+        throw Exception(
+            "Se requiere al menos el email para identificar al usuario");
+      }
+
+      final email = nuevosDatos["email"];
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) return false;
+
+      // Quitamos el email del mapa si no lo quieres sobreescribir en Firestore
+      Map<String, dynamic> datosActualizados = Map.from(nuevosDatos);
+      datosActualizados.remove("email");
+
+      await querySnapshot.docs.first.reference.update(datosActualizados);
+
+      return true;
+    } catch (e) {
+      print("Error al actualizar datos con mapa: $e");
       return false;
     }
   }
