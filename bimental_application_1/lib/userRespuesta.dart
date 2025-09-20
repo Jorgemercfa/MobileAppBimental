@@ -1,8 +1,8 @@
-import 'package:bimental_application_1/AnswersUser.dart';
 import 'package:bimental_application_1/session_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'AnswersRepository.dart';
+import 'AnswersUser.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -41,7 +41,6 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
         errorMessage = null;
       });
 
-      // Verificar primero si hay usuario autenticado
       final userId = await SessionService.getUserId();
       if (userId == null) {
         setState(() {
@@ -51,30 +50,45 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
         return;
       }
 
-      // Obtener solo los resultados del usuario actual
-      List<AnswersUser> data =
+      // <-- Aquí obtenemos List<AnswersUser> y la convertimos a List<Map<String,dynamic>>
+      List<AnswersUser> respuestasGuardadas =
           await AnswersRepository.getAnswersFromFirestore(userId);
 
-      List<Map<String, dynamic>> nuevosResultados = data.map((result) {
-        // Separar fecha y hora del timestamp
+      List<Map<String, dynamic>> nuevosResultados =
+          respuestasGuardadas.map((entry) {
+        // timestamp ya viene formateado por AnswersRepository (si es el caso)
+        final timestamp = entry.timestamp ?? '';
         String fecha = '';
         String hora = '';
-        if (result.timestamp.contains(' ')) {
-          fecha = result.timestamp.split(' ')[0];
-          hora = result.timestamp.split(' ')[1];
+
+        if (timestamp.isNotEmpty && timestamp.contains(' ')) {
+          final parts = timestamp.split(' ');
+          fecha = parts.isNotEmpty ? parts[0] : '';
+          hora = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+        } else {
+          // Si no tiene espacio, ponemos todo en fecha
+          fecha = timestamp;
+          hora = '';
         }
 
-        // Usar la misma clasificación que la API/servidor, si viene guardada
+        final clasificacionDepresion =
+            AnswersRepository.clasificarDepresion(entry.p_depresion);
+        final clasificacionAnsiedad =
+            AnswersRepository.clasificarAnsiedad(entry.p_ansiedad);
+        final clasificacionEstres =
+            AnswersRepository.clasificarEstres(entry.p_estres);
+
         return {
+          'timestamp': timestamp,
           'fecha': fecha,
           'hora': hora,
-          'p_depresion': result.p_depresion,
-          'p_ansiedad': result.p_ansiedad,
-          'p_estres': result.p_estres,
+          'p_depresion': entry.p_depresion,
+          'p_ansiedad': entry.p_ansiedad,
+          'p_estres': entry.p_estres,
           'clasificacion': {
-            'Depresión': _clasificarDepresion(result.p_depresion),
-            'Ansiedad': _clasificarAnsiedad(result.p_ansiedad),
-            'Estrés': _clasificarEstres(result.p_estres),
+            'Depresión': clasificacionDepresion,
+            'Ansiedad': clasificacionAnsiedad,
+            'Estrés': clasificacionEstres,
           },
         };
       }).toList();
@@ -93,31 +107,6 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
         }
       });
     }
-  }
-
-  // Funciones para clasificar los puntajes
-  String _clasificarDepresion(int score) {
-    if (score >= 14) return 'Extremadamente severa';
-    if (score >= 11) return 'Severa';
-    if (score >= 7) return 'Moderada';
-    if (score >= 5) return 'Leve';
-    return 'Sin depresión';
-  }
-
-  String _clasificarAnsiedad(int score) {
-    if (score >= 10) return 'Extremadamente severa';
-    if (score >= 8) return 'Severa';
-    if (score >= 5) return 'Moderada';
-    if (score >= 4) return 'Leve';
-    return 'Sin ansiedad';
-  }
-
-  String _clasificarEstres(int score) {
-    if (score >= 17) return 'Extremadamente severo';
-    if (score >= 13) return 'Severo';
-    if (score >= 10) return 'Moderado';
-    if (score >= 8) return 'Leve';
-    return 'Sin estrés';
   }
 
   @override
@@ -154,14 +143,17 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
                         itemCount: resultados.length,
                         itemBuilder: (context, index) {
                           final resultado = resultados[index];
+                          final fecha = resultado['fecha'] ?? '';
+                          final hora = resultado['hora'] ?? '';
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ResultadoDetalleScreen(
-                                    fecha: resultado['fecha'],
-                                    hora: resultado['hora'],
+                                    fecha: fecha,
+                                    hora: hora,
                                     detalles: resultado,
                                   ),
                                 ),
@@ -181,7 +173,9 @@ class _HistorialResultadosScreenState extends State<HistorialResultadosScreen> {
                                       color: Colors.white, size: 30),
                                   SizedBox(width: 16),
                                   Text(
-                                    '${resultado['fecha']} ${resultado['hora']}',
+                                    fecha.isNotEmpty
+                                        ? '$fecha $hora'
+                                        : 'Sin fecha',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 18),
                                   ),
@@ -209,7 +203,8 @@ class ResultadoDetalleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final clasificacion = detalles['clasificacion'] as Map<String, dynamic>;
+    final clasificacion =
+        (detalles['clasificacion'] as Map?)?.cast<String, dynamic>() ?? {};
 
     return Scaffold(
       appBar: AppBar(
@@ -225,17 +220,17 @@ class ResultadoDetalleScreen extends StatelessWidget {
           children: [
             SizedBox(height: 24),
             Text(
-              'Nivel de ansiedad: ${clasificacion['Ansiedad']}',
+              'Nivel de ansiedad: ${clasificacion['Ansiedad'] ?? 'N/A'}',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 24),
             Text(
-              'Nivel de depresión: ${clasificacion['Depresión']}',
+              'Nivel de depresión: ${clasificacion['Depresión'] ?? 'N/A'}',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 24),
             Text(
-              'Nivel de estrés: ${clasificacion['Estrés']}',
+              'Nivel de estrés: ${clasificacion['Estrés'] ?? 'N/A'}',
               style: TextStyle(fontSize: 20),
             ),
           ],
