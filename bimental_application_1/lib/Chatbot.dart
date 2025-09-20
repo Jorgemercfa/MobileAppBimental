@@ -458,6 +458,13 @@ class _ChatScreenState extends State<ChatScreen> {
                               fontSize: 16, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Maximo 100 palabras.',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                         const SizedBox(height: 16),
                         SizedBox(
                           width: 220,
