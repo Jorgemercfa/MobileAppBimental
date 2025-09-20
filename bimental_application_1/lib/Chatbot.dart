@@ -316,8 +316,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final dass21Results = await Dass21Api().processAnswers(userAnswers);
       await AnswersRepository.saveDass21Results(dass21Results, userId);
 
-      final timestamp =
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      final timestamp = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
       setState(() {
         _messages.add({
           'bot':
