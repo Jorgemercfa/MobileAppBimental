@@ -441,12 +441,24 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Por favor, lea cada afirmación y seleccione la opción que mejor refleje '
+                          'con qué frecuencia le ocurrió durante la semana pasada.\n\n',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            // mejora la legibilidad con más espacio entre líneas
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 400),
                           child: Text(
                             _selectedQuestions.first['texto']!,
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -454,7 +466,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         const Text(
                           'Responde a la siguiente pregunta con tu texto.',
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
