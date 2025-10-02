@@ -60,6 +60,8 @@ class TermsAndConditionsScreen extends StatelessWidget {
             _buildSectionTitle('8. Contacto'),
             _buildSectionText(
                 'Si tiene alguna consulta sobre estos términos y condiciones, puede comunicarse con nuestro equipo de soporte en el siguiente correo: equiposoporte@bimental.com'),
+            _buildSectionText(
+                'Además, puede encontrar información adicional en nuestra página web oficial: www.bimental.com'),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(

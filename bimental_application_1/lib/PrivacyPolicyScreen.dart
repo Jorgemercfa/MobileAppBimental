@@ -122,6 +122,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildSectionTitle('11. Información adicional'),
             _buildSectionText(
                 'Si tienes preguntas sobre esta política, puedes contactarnos a través de serviciocliente@bimental.com.'),
+            _buildSectionText(
+                'Además, puedes consultar información sobre el cuestionario (explicación, finalidad y sección “Acerca de”) en nuestra página web oficial: www.bimental.com'),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
