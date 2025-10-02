@@ -16,69 +16,50 @@ class TermsAndConditionsScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            _buildSectionTitle('1. Aceptación de los Términos'),
+            _buildSectionTitle('1. Introducción'),
             _buildSectionText(
-                'Al acceder y utilizar la aplicación móvil Bimental (en adelante, "la Aplicación"), usted acepta cumplir y quedar vinculado por los siguientes Términos y Condiciones de Uso, así como por nuestra Política de Privacidad. Si no está de acuerdo con alguno de estos términos, deberá abstenerse de utilizar la Aplicación.'),
-            _buildSectionTitle('2. Naturaleza del Servicio'),
+                'Al utilizar esta aplicación móvil, usted acepta los términos y condiciones aquí descritos. Si no está de acuerdo con estos términos, por favor no utilice la aplicación.'),
+            _buildSectionTitle('2. Instrucciones de uso de la Aplicación'),
             _buildSectionText(
-                'La Aplicación proporciona un sistema de evaluación aproximada basado en el cuestionario DASS-21, utilizando algoritmos de Machine Learning para identificar posibles niveles de depresión, ansiedad y estrés. Los resultados generados son ESTIMACIONES APROXIMADAS y en NINGÚN CASO constituyen un diagnóstico médico profesional, una prescripción terapéutica o un sustituto de la consulta con un profesional de salud mental calificado.'),
+                'Para usar la aplicación primero debes registrarte en Registrar usuario, llenando tus datos (nombre, apellido, edad, correo electrónico, número de celular, contraseña) y aceptando los Términos y Condiciones y la Política de Privacidad.'),
             _buildSectionText(
-                'Los usuarios comprenden y aceptan que la exactitud de los resultados puede variar y que la Aplicación opera como una herramienta de orientación inicial, no como un servicio de diagnóstico clínico.'),
-            _buildSectionTitle('3. Requisitos de Uso'),
+                'Con tu cuenta creada ya puedes iniciar sesión. Si olvidas tu contraseña, puedes recuperarla en Olvidé Contraseña.'),
             _buildSectionText(
-                'Para utilizar la Aplicación, los usuarios deben:'),
+                'Desde la Home accedes a todo: Chatbot, Resultados, Configuración y Políticas de Privacidad.'),
             _buildSectionText(
-                '- Ser mayor de 18 años o contar con consentimiento parental si son menores de edad.'),
+                'En el Chatbot solo escribe un mensaje. Para iniciar el cuestionario, escribe "cuestionario" y responde las preguntas (máx. 100 palabras por respuesta).'),
             _buildSectionText(
-                '- Proporcionar información veraz y completa durante el registro.'),
+                'En Resultados verás tu historial y podrás elegir entre el más reciente o uno anterior. Al hacer clic en dicha opción, te aparecerán los niveles de ansiedad, depresión y estrés en (Sin, Leve, Moderado, Severo o Extremadamente Severo).'),
             _buildSectionText(
-                '- Utilizar la Aplicación de manera responsable y conforme a estos términos.'),
+                'En Configuración puedes activar el modo oscuro para modificar el color de la pantalla o cambiar tus datos (nombre, apellido, correo, celular).'),
             _buildSectionText(
-                '- Aceptar explícitamente el procesamiento de sus datos según lo establecido en la Política de Privacidad.'),
-            _buildSectionTitle('4. Limitaciones de Responsabilidad'),
-            _buildSectionText('Bimental S.A.C. no asume responsabilidad por:'),
+                'Las Políticas de Privacidad están disponibles desde la Home.'),
             _buildSectionText(
-                '- Decisiones o acciones tomadas por los usuarios basadas en los resultados proporcionados por la Aplicación.'),
+                'Para cerrar sesión, toca el botón en la esquina superior derecha.'),
+            _buildSectionTitle('3. Finalidad de la Aplicación'),
             _buildSectionText(
-                '- La exactitud, integridad o actualidad de los resultados generados por los algoritmos de Machine Learning.'),
+                'La aplicación tiene como finalidad proporcionar un sistema de triaje basado en el cuestionario DASS-21. Los resultados proporcionados son aproximaciones generadas por algoritmos de Machine Learning y no constituyen un diagnóstico médico profesional. Deben ser utilizados únicamente como referencia y no sustituyen la evaluación de un profesional de salud mental calificado.'),
+            _buildSectionTitle('4. Almacenamiento de Datos'),
             _buildSectionText(
-                '- Consecuencias derivadas de la interpretación o mal uso de la información proporcionada por la Aplicación.'),
+                'Los resultados de las evaluaciones serán almacenados en nuestra base de datos de forma segura. Estos datos podrán ser utilizados por los administradores de la aplicación para generar reportes y contactar a usuarios con resultados de nivel medio o grave. Para mayor información sobre el tratamiento de datos de usuarios, se requiere revisión de la Política de Privacidad.'),
+            _buildSectionTitle('5. Seguridad'),
             _buildSectionText(
-                '- Problemas técnicos, interrupciones o fallos en el servicio que puedan afectar la disponibilidad de la Aplicación.'),
-            _buildSectionTitle('5. Propiedad Intelectual'),
+                'Nos comprometemos a proteger la información de los usuarios. Los datos recopilados no serán compartidos con terceros sin consentimiento, salvo en los casos requeridos por ley. Por ello, se garantiza confidencialidad de la información brindada por el usuario y de aquella derivada de los resultados proporcionados por la aplicación.'),
             _buildSectionText(
-                'Todos los derechos de propiedad intelectual sobre la Aplicación, incluyendo pero no limitándose al software, algoritmos, interfaces, diseños y contenidos, son propiedad exclusiva de Bimental S.A.C. o de sus licenciantes. Queda prohibida la reproducción, distribución o modificación sin autorización expresa.'),
-            _buildSectionTitle('6. Conducta del Usuario'),
+                'Asimismo, para evitar brechas o filtraciones de datos sobre usuarios, se aplicará el sistema Firestore Security Rules para garantizar dicha protección. Se comprobará adicionalmente la exactitud de los datos del usuario. Ante la detección de suplantación de identidad, se procederá con la suspensión de la cuenta.'),
+            _buildSectionTitle('6. Limitación de Responsabilidad'),
             _buildSectionText(
-                'El usuario se compromete a utilizar la Aplicación de forma lícita y ética, absteniéndose de:'),
-            _buildSectionText('- Proporcionar información falsa o engañosa.'),
+                'La aplicación no sustituye una consulta con un profesional de salud mental. El usuario es responsable del uso de la información proporcionada y comprende que los resultados son indicativos y no diagnósticos definitivos.'),
             _buildSectionText(
-                '- Intentar acceder a áreas restringidas o a datos de otros usuarios.'),
+                'La aplicación no se hace responsable por acciones tomadas basadas en los resultados proporcionados, ni por cualquier consecuencia derivada de la interpretación de los mismos.'),
             _buildSectionText(
-                '- Realizar ingeniería inversa, descompilar o modificar la Aplicación.'),
+                'La exactitud de los resultados puede variar y la aplicación no asume responsabilidad por decisiones tomadas basadas en estos resultados. Se recomienda siempre consultar con un profesional de salud mental para una evaluación precisa.'),
+            _buildSectionTitle('7. Reclamaciones'),
             _buildSectionText(
-                '- Utilizar la Aplicación para fines fraudulentos o ilegales.'),
-            _buildSectionTitle('7. Modificaciones del Servicio'),
+                'Ante cualquier reclamo sobre la funcionalidad de la aplicación o sobre los resultados de la evaluación, el usuario puede plantear su reclamo a partir de la siguiente dirección de correo serviciocliente@bimental.com. Asimismo, se ofrece un libro de reclamaciones virtual en el que el usuario puede registrar sus respectivos reclamos sobre la aplicación.'),
+            _buildSectionTitle('8. Contacto'),
             _buildSectionText(
-                'Bimental S.A.C. se reserva el derecho de modificar, suspender o discontinuar la Aplicación o cualquier parte de ella, en cualquier momento y sin previo aviso. Asimismo, podrá actualizar estos Términos y Condiciones, notificando a los usuarios sobre cambios sustanciales.'),
-            _buildSectionTitle('8. Consentimientos Específicos'),
-            _buildSectionText(
-                'Al utilizar la Aplicación, el usuario otorga su consentimiento explícito para:'),
-            _buildSectionText(
-                '- El procesamiento de sus datos personales y respuestas según lo establecido en la Política de Privacidad.'),
-            _buildSectionText(
-                '- Ser contactado por los administradores en caso de que sus resultados alcancen niveles Severo o Extremadamente Severo (si así lo ha aceptado específicamente).'),
-            _buildSectionText(
-                '- Recibir recomendaciones y recursos de salud mental (si así lo ha aceptado específicamente).'),
-            _buildSectionTitle('9. Terminación'),
-            _buildSectionText(
-                'Bimental S.A.C. podrá suspender o terminar el acceso a la Aplicación a cualquier usuario que incumpla estos Términos y Condiciones, sin perjuicio de otras acciones legales disponibles.'),
-            _buildSectionTitle('10. Ley Aplicable y Jurisdicción'),
-            _buildSectionText(
-                'Estos Términos y Condiciones se regirán e interpretarán de acuerdo con las leyes de Perú. Cualquier disputa relacionada con los mismos será resuelta en los tribunales competentes de Lima, Perú.'),
-            _buildSectionTitle('11. Contacto'),
-            _buildSectionText(
-                'Para cualquier consulta relacionada con estos Términos y Condiciones, puede contactarnos a través de serviciocliente@bimental.com.'),
+                'Si tiene alguna consulta sobre estos términos y condiciones, puede comunicarse con nuestro equipo de soporte en el siguiente correo: equiposoporte@bimental.com'),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
@@ -90,8 +71,8 @@ class TermsAndConditionsScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
-                child: const Text('Aceptar y Continuar',
-                    style: TextStyle(color: Colors.white)),
+                child:
+                    const Text('Salir', style: TextStyle(color: Colors.white)),
               ),
             ),
             SizedBox(height: 20),
