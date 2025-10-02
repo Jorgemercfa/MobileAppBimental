@@ -364,14 +364,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   final isUserMessage = message.containsKey('user');
 
                   return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: isUserMessage
                         ? MainAxisAlignment.end
                         : MainAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // <-- cambio aquí
                     children: [
                       if (!isUserMessage)
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+                          padding: const EdgeInsets.only(left: 8.0, right: 6.0),
                           child: CircleAvatar(
                             radius: 20,
                             backgroundImage:
@@ -381,35 +382,50 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       Flexible(
                         child: Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           margin: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 8),
+                              vertical: 6, horizontal: 8),
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.65,
+                            maxWidth: MediaQuery.of(context).size.width * 0.70,
                           ),
                           decoration: BoxDecoration(
-                            color: isUserMessage
-                                ? Colors.green[600]
-                                : Colors.green[300],
-                            borderRadius: BorderRadius.only(
-                              topLeft: const Radius.circular(12),
-                              topRight: const Radius.circular(12),
-                              bottomLeft:
-                                  Radius.circular(isUserMessage ? 12 : 0),
-                              bottomRight:
-                                  Radius.circular(isUserMessage ? 0 : 12),
+                            gradient: LinearGradient(
+                              colors: isUserMessage
+                                  ? [Colors.green[400]!, Colors.green[600]!]
+                                  : [Colors.blue[300]!, Colors.blue[500]!],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(18),
+                              topRight: const Radius.circular(18),
+                              bottomLeft:
+                                  Radius.circular(isUserMessage ? 18 : 4),
+                              bottomRight:
+                                  Radius.circular(isUserMessage ? 4 : 18),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(2, 2),
+                                blurRadius: 4,
+                              )
+                            ],
                           ),
                           child: Text(
                             isUserMessage ? message['user']! : message['bot']!,
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
+                              color: Colors.white,
+                              fontSize: 16,
+                              height: 1.3,
+                            ),
                           ),
                         ),
                       ),
                       if (isUserMessage)
                         Padding(
-                          padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                          padding: const EdgeInsets.only(left: 6.0, right: 8.0),
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor: Colors.blue[200],
