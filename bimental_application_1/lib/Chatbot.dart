@@ -319,8 +319,15 @@ class _ChatScreenState extends State<ChatScreen> {
       final timestamp = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
       setState(() {
         _messages.add({
-          'bot':
-              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp"
+          'bot': "✅ Cuestionario completado y guardado correctamente.\n"
+              "📅 Fecha: $timestamp\n\n"
+              "Puede ver los resultados en la vista de Resultado.\n"
+              "📌 Si sientes que necesitas apoyo adicional, aquí tienes algunas opciones de contacto:\n"
+              "• Línea 100 (atención gratuita 24/7 en Perú).\n"
+              "• Centro de Salud Mental Comunitario: 📞 (01) 315-5100.\n"
+              "• Colegio de Psicólogos del Perú: www.cpsp.pe\n"
+              "• Contacta con un especialista de confianza o escribe al WhatsApp de ayuda psicológica: +51 955 557 000."
+              "• También puede ser contactado por un mienbro del equipo Bimental."
         });
         _showQuestionnaire = false;
         _selectedQuestions = [];
@@ -468,7 +475,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 400),
                           child: Text(
@@ -478,15 +485,19 @@ class _ChatScreenState extends State<ChatScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 5),
                         const Text(
-                          'Responde a la siguiente pregunta con tu texto.',
+                          'Responda con una de las siguientes opciones:\n'
+                          '• Nunca (0): No me ha ocurrido. (También: no, nunca, casi nunca).\n'
+                          '• Un poco (1): Me ha ocurrido algunas veces. (También: raras veces, ocasionalmente, sí, poco).\n'
+                          '• Bastante (2): Me ha ocurrido con frecuencia. (También: frecuentemente, casi siempre, sí, bastante).\n'
+                          '• Mucho (3): Me ha ocurrido la mayor parte del tiempo. (También: siempre, sí, mucho).\n',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                         const Text(
                           'Maximo 100 palabras.',
                           style: TextStyle(
