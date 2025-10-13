@@ -183,7 +183,7 @@ class _ChatScreenState extends State<ChatScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.black87,
+              color: Color(0xFF1A119B),
             ),
           ),
           actionsAlignment: MainAxisAlignment.center,
@@ -447,14 +447,37 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           if (_showQuestionnaire)
             Expanded(
-              child: Center(
+              child: Align(
+                alignment: Alignment
+                    .topCenter, // 🔹 coloca el contenido al inicio vertical
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 0.0), // 🔹 sin espacio superior
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // 🔹 Texto de opciones (pegado arriba)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 0),
+                          child: Text(
+                            'Las siguientes opciones indican con qué frecuencia ha experimentado cada situación:\n'
+                            '• Nunca (0): No me ha ocurrido. (También: no, nunca, casi nunca).\n'
+                            '• Un poco (1): Me ha ocurrido algunas veces. (También: raras veces, ocasionalmente, sí, poco).\n'
+                            '• Bastante (2): Me ha ocurrido con frecuencia. (También: frecuentemente, casi siempre, sí, bastante).\n'
+                            '• Mucho (3): Me ha ocurrido la mayor parte del tiempo. (También: siempre, sí, mucho).',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1A119B),
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+
+                        // 🔹 Número de pregunta
                         Text(
                           "Pregunta ${questionCategoryNumber} de ${_questions.length}",
                           style: const TextStyle(
@@ -464,58 +487,62 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
+                        const SizedBox(height: 10),
+
+                        // 🔹 Instrucción principal
+                        const Text(
                           'Por favor, lea cada afirmación y seleccione la opción que mejor refleje '
-                          'con qué frecuencia le ocurrió durante la semana pasada.\n\n',
+                          'con qué frecuencia le ocurrió durante la semana pasada.',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
-                            // mejora la legibilidad con más espacio entre líneas
+                            color: Color(0xFF1A119B),
+                            height: 1.4,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 18),
+
+                        // 🔹 Pregunta principal
                         ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 400),
+                          constraints: const BoxConstraints(maxWidth: 400),
                           child: Text(
-                            _selectedQuestions.first['texto']!,
+                            "${_selectedQuestions.first['texto']!}",
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A119B),
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 64),
+
+                        // 🔹 Límite de palabras
                         const Text(
-                          'Responda con una de las siguientes opciones:\n'
-                          '• Nunca (0): No me ha ocurrido. (También: no, nunca, casi nunca).\n'
-                          '• Un poco (1): Me ha ocurrido algunas veces. (También: raras veces, ocasionalmente, sí, poco).\n'
-                          '• Bastante (2): Me ha ocurrido con frecuencia. (También: frecuentemente, casi siempre, sí, bastante).\n'
-                          '• Mucho (3): Me ha ocurrido la mayor parte del tiempo. (También: siempre, sí, mucho).\n',
+                          'Máximo 100 palabras.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A119B),
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Maximo 100 palabras.',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
                         const SizedBox(height: 16),
+
+                        // 🔹 Botón "Finalizar Cuestionario"
                         SizedBox(
                           width: 220,
                           child: ElevatedButton(
                             onPressed: _finishQuestionnaire,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF2516B0),
+                              backgroundColor: const Color(0xFF2516B0),
                               foregroundColor: Colors.white,
+                              elevation: 4,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              minimumSize: Size(220, 36),
+                              minimumSize: const Size(220, 40),
                             ),
                             child: const Text(
                               "Finalizar Cuestionario",
