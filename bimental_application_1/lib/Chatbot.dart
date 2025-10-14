@@ -3,7 +3,6 @@ import 'package:bimental_application_1/session_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:math';
 import 'AnswersRepository.dart';
 import 'chatbot_api.dart';
 
@@ -34,279 +33,185 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _messages = [];
   bool _showQuestionnaire = false;
   int questionCategoryNumber = 1;
+  bool _hasShownDisclaimer = false;
 
+  // Preguntas actualizadas según lo solicitado
   final Map<String, List<Map<String, String>>> _questions = {
     "1": [
-      {"id": "1.1", "texto": "1) Me costó mucho relajarme"},
-      {"id": "1.2", "texto": "1) Me fue difícil relajarme"},
-      {"id": "1.3", "texto": "1) Relajarme resultó ser un desafío"},
-      {
-        "id": "1.4",
-        "texto": "1) Tuve problemas para encontrar un momento de relajación"
-      }
+      {"id": "1.1", "texto": "1) Me ha costado mucho descargar la tensión"},
     ],
     "2": [
       {"id": "2.1", "texto": "2) Me di cuenta que tenía la boca seca"},
-      {"id": "2.2", "texto": "2) Noté que mi boca estaba seca"},
-      {"id": "2.3", "texto": "2) Sentí sequedad en la boca"},
-      {"id": "2.4", "texto": "2) Percibí que mi boca carecía de humedad"}
     ],
     "3": [
       {"id": "3.1", "texto": "3) No podía sentir ningún sentimiento positivo"},
-      {
-        "id": "3.2",
-        "texto": "3) Me resultaba imposible experimentar emociones positivas"
-      },
-      {"id": "3.3", "texto": "3) No lograba sentirme bien emocionalmente"},
-      {"id": "3.4", "texto": "3) No podía conectar con sentimientos agradables"}
     ],
     "4": [
-      {
-        "id": "4.1",
-        "texto":
-            "4) Se me hizo difícil respirar (p. ej., respiración excesivamente rápida o falta de aliento sin hacer esfuerzo físico)"
-      },
-      {"id": "4.2", "texto": "4) Tuve problemas para respirar de forma normal"},
-      {"id": "4.3", "texto": "4) Sentí que me costaba tomar aire"},
-      {
-        "id": "4.4",
-        "texto":
-            "4) Experimenté dificultad al intentar respirar sin razón aparente"
-      }
+      {"id": "4.1", "texto": "4) Se me hizo difícil respirar"},
     ],
     "5": [
       {
         "id": "5.1",
         "texto": "5) Se me hizo difícil tomar la iniciativa para hacer cosas"
       },
-      {"id": "5.2", "texto": "5) Me costó iniciar actividades por mi cuenta"},
-      {
-        "id": "5.3",
-        "texto": "5) Sentí que no podía empezar cosas nuevas fácilmente"
-      },
-      {"id": "5.4", "texto": "5) Iniciar tareas fue complicado para mí"}
     ],
     "6": [
       {
         "id": "6.1",
         "texto": "6) Reaccioné exageradamente en ciertas situaciones"
       },
-      {
-        "id": "6.2",
-        "texto":
-            "6) Respondí de forma desproporcionada en algunas circunstancias"
-      },
-      {
-        "id": "6.3",
-        "texto":
-            "6) Mi reacción en ciertas situaciones fue más intensa de lo normal"
-      },
-      {
-        "id": "6.4",
-        "texto": "6) Exageré mis respuestas en determinados momentos"
-      }
     ],
     "7": [
-      {"id": "7.1", "texto": "7) Tuve temblores (p. ej., en las manos)"},
-      {"id": "7.2", "texto": "7) Sentí que mis manos temblaban"},
-      {"id": "7.3", "texto": "7) Experimenté temblores físicos"},
-      {
-        "id": "7.4",
-        "texto": "7) Noté movimientos involuntarios en mis extremidades"
-      }
+      {"id": "7.1", "texto": "7) Sentí que mis manos temblaban"},
     ],
     "8": [
-      {"id": "8.1", "texto": "8) Sentí que tenía muchos nervios"},
-      {"id": "8.2", "texto": "8) Me sentí extremadamente nervioso"},
-      {"id": "8.3", "texto": "8) Los nervios me dominaron en varias ocasiones"},
-      {"id": "8.4", "texto": "8) Estuve inquieto y con mucha ansiedad"}
+      {
+        "id": "8.1",
+        "texto":
+            "8) He sentido que estaba gastando una gran cantidad de energía"
+      },
     ],
     "9": [
       {
         "id": "9.1",
         "texto":
-            "9) Estuve preocupado por situaciones en las cuales podía entrar en pánico y hacer el ridículo"
+            "9) Estaba preocupado por situaciones en las cuales podía tener pánico o en las que podría hacer el ridículo"
       },
-      {
-        "id": "9.2",
-        "texto":
-            "9) Me angustié ante la posibilidad de perder el control y avergonzarme"
-      },
-      {
-        "id": "9.3",
-        "texto":
-            "9) Temí encontrarme en situaciones donde pudiera entrar en pánico"
-      },
-      {
-        "id": "9.4",
-        "texto": "9) Me preocupaba pasar vergüenza por no controlar mi ansiedad"
-      }
     ],
     "10": [
       {
         "id": "10.1",
-        "texto": "10) Sentí que no tenía nada por lo que ilusionarme"
+        "texto": "10) He sentido que no había nada que me ilusionara"
       },
-      {"id": "10.2", "texto": "10) Sentí que no había nada que me motivara"},
-      {"id": "10.3", "texto": "10) Me faltaba entusiasmo hacia el futuro"},
-      {
-        "id": "10.4",
-        "texto": "10) Carecía de expectativas positivas que me alegraran"
-      }
     ],
     "11": [
-      {"id": "11.1", "texto": "11) Me sentí agitado"},
-      {"id": "11.2", "texto": "11) Estuve inquieto y alterado"},
-      {"id": "11.3", "texto": "11) Sentí que no podía estar en calma"},
-      {"id": "11.4", "texto": "11) Me noté muy nervioso y acelerado"}
+      {"id": "11.1", "texto": "11) Me he sentido inquieto"},
     ],
     "12": [
       {"id": "12.1", "texto": "12) Se me hizo difícil relajarme"},
-      {"id": "12.2", "texto": "12) Relajarme fue complicado para mí"},
-      {
-        "id": "12.3",
-        "texto": "12) Tuve problemas para alcanzar un estado de calma"
-      },
-      {"id": "12.4", "texto": "12) Me costó mucho encontrar tranquilidad"}
     ],
     "13": [
       {"id": "13.1", "texto": "13) Me sentí triste y deprimido"},
-      {
-        "id": "13.2",
-        "texto": "13) Experimenté una sensación profunda de tristeza"
-      },
-      {"id": "13.3", "texto": "13) Me noté abatido y sin ánimos"},
-      {"id": "13.4", "texto": "13) Estuve emocionalmente decaído"}
     ],
     "14": [
       {
         "id": "14.1",
         "texto":
-            "14) No toleré nada que no me permitiera continuar con lo que estaba haciendo"
+            "14) No toleré nada que me no permitiera continuar con lo que estaba haciendo"
       },
-      {
-        "id": "14.2",
-        "texto": "14) Me frustré con cualquier interrupción en mis actividades"
-      },
-      {
-        "id": "14.3",
-        "texto":
-            "14) No pude soportar situaciones que afectaran mi ritmo de trabajo"
-      },
-      {
-        "id": "14.4",
-        "texto": "14) Me molestaba cualquier cosa que interrumpiera mis planes"
-      }
     ],
     "15": [
-      {"id": "15.1", "texto": "15) Sentí que estaba cercano a sentir pánico"},
-      {
-        "id": "15.2",
-        "texto": "15) Percibí que estaba al borde de entrar en pánico"
-      },
-      {
-        "id": "15.3",
-        "texto":
-            "15) Tuve la sensación de que un ataque de pánico era inminente"
-      },
-      {
-        "id": "15.4",
-        "texto":
-            "15) Sentí que la ansiedad extrema estaba a punto de desbordarse"
-      }
+      {"id": "15.1", "texto": "15) Sentí que estaba al punto de pánico"},
     ],
     "16": [
       {"id": "16.1", "texto": "16) No me pude entusiasmar por nada"},
-      {"id": "16.2", "texto": "16) Nada lograba despertar mi interés"},
-      {
-        "id": "16.3",
-        "texto": "16) No encontré motivación en ninguna actividad"
-      },
-      {"id": "16.4", "texto": "16) Carecía de entusiasmo por todo"}
     ],
     "17": [
       {"id": "17.1", "texto": "17) Sentí que valía muy poco como persona"},
-      {
-        "id": "17.2",
-        "texto": "17) Percibí que mi valor personal era insignificante"
-      },
-      {
-        "id": "17.3",
-        "texto": "17) Me sentí menospreciado, incluso por mí mismo"
-      },
-      {
-        "id": "17.4",
-        "texto": "17) Creí que no tenía importancia como individuo"
-      }
     ],
     "18": [
-      {"id": "18.1", "texto": "18) Sentí que estaba muy irritable"},
-      {"id": "18.2", "texto": "18) Me noté fácilmente molesto"},
-      {"id": "18.3", "texto": "18) Estuve más propenso a la irritación"},
       {
-        "id": "18.4",
-        "texto": "18) Cualquier cosa pequeña me hacía perder la paciencia"
-      }
+        "id": "18.1",
+        "texto": "18) He tendido a sentirme enfadado con facilidad"
+      },
     ],
     "19": [
       {
         "id": "19.1",
         "texto":
-            "19) Sentí la actividad de mi corazón a pesar de no haber hecho ningún esfuerzo físico (p. ej., aumento de los latidos, sensación de palpitación o salto de los latidos)"
+            "19) Sentí los latidos de mi corazón a pesar de no haber hecho ningún esfuerzo físico"
       },
-      {
-        "id": "19.2",
-        "texto": "19) Percibí latidos acelerados sin razón aparente"
-      },
-      {
-        "id": "19.3",
-        "texto":
-            "19) Sentí que mi corazón palpitaba con fuerza, incluso en reposo"
-      },
-      {
-        "id": "19.4",
-        "texto":
-            "19) Noté un ritmo cardíaco irregular sin haber realizado ejercicio"
-      }
     ],
     "20": [
       {"id": "20.1", "texto": "20) Tuve miedo sin razón"},
-      {"id": "20.2", "texto": "20) Sentí temor sin un motivo específico"},
-      {"id": "20.3", "texto": "20) Me asusté sin causa aparente"},
-      {
-        "id": "20.4",
-        "texto": "20) Experimenté una sensación de miedo injustificado"
-      }
     ],
     "21": [
       {"id": "21.1", "texto": "21) Sentí que la vida no tenía ningún sentido"},
-      {
-        "id": "21.2",
-        "texto": "21) Percibí que mi existencia carecía de propósito"
-      },
-      {"id": "21.3", "texto": "21) Me parecía que todo en la vida era inútil"},
-      {
-        "id": "21.4",
-        "texto": "21) Sentí que no había razones para seguir adelante"
-      }
     ]
   };
 
   List<Map<String, String>> _selectedQuestions = [];
   List<String> userAnswers = [];
 
-  Map<String, String> _generateRandomQuestion() {
-    final random = Random();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showDisclaimerPopup();
+    });
+  }
+
+  Map<String, String> _getQuestion() {
     final group = _questions[questionCategoryNumber.toString()];
     return group != null && group.isNotEmpty
-        ? group[random.nextInt(group.length)]
+        ? group[0]
         : {"id": "N/A", "texto": "No hay más preguntas disponibles"};
+  }
+
+  void _showDisclaimerPopup() {
+    if (_hasShownDisclaimer) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        _hasShownDisclaimer = true;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: Colors.white,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 50),
+              SizedBox(height: 10),
+              Text(
+                "Aviso",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A119B),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          content: const Text(
+            "Los resultados del cuestionario son solo una referencia y "
+            "no reemplazan la evaluación de un profesional de salud mental.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFF1A119B),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1A119B),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                "Entendido",
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _sendMessage() async {
     final text = _controller.text.trim();
 
-    // Validación de texto vacío (siempre aplica)
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -318,7 +223,6 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
 
-    // Validación de 100 palabras SOLO durante el cuestionario
     if (_showQuestionnaire) {
       final wordCount =
           text.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).length;
@@ -348,8 +252,9 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       setState(() {
+        _messages.clear(); // Limpiar conversación al iniciar cuestionario
         _showQuestionnaire = true;
-        _selectedQuestions = [_generateRandomQuestion()];
+        _selectedQuestions = [_getQuestion()];
         _controller.clear();
         questionCategoryNumber = 1;
         userAnswers.clear();
@@ -363,7 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
         questionCategoryNumber++;
         if (questionCategoryNumber <= _questions.length) {
           setState(() {
-            _selectedQuestions = [_generateRandomQuestion()];
+            _selectedQuestions = [_getQuestion()];
           });
         } else {
           _finishQuestionnaire();
@@ -380,7 +285,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       final response = await _chatbotService.obtenerRespuesta(text);
-
       setState(() {
         _messages.add({'bot': response});
       });
@@ -412,12 +316,18 @@ class _ChatScreenState extends State<ChatScreen> {
       final dass21Results = await Dass21Api().processAnswers(userAnswers);
       await AnswersRepository.saveDass21Results(dass21Results, userId);
 
-      final timestamp =
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      final timestamp = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
       setState(() {
         _messages.add({
-          'bot':
-              "✅ Cuestionario completado y guardado correctamente.\n📅 Fecha: $timestamp"
+          'bot': "✅ Cuestionario completado y guardado correctamente.\n"
+              "📅 Fecha: $timestamp\n\n"
+              "Puede ver los resultados en la vista de Resultado.\n"
+              "📌 Si sientes que necesitas apoyo adicional, aquí tienes algunas opciones de contacto:\n"
+              "• Línea 100 (atención gratuita 24/7 en Perú).\n"
+              "• Centro de Salud Mental Comunitario: 📞 (01) 315-5100.\n"
+              "• Colegio de Psicólogos del Perú: www.cpsp.pe\n"
+              "• Contacta con un especialista de confianza o escribe al WhatsApp de ayuda psicológica: +51 955 557 000."
+              "• También puede ser contactado por un mienbro del equipo Bimental."
         });
         _showQuestionnaire = false;
         _selectedQuestions = [];
@@ -452,78 +362,203 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                final isUserMessage = message.containsKey('user');
-                return Align(
-                  alignment: isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.7),
-                    decoration: BoxDecoration(
-                      color:
-                          isUserMessage ? Colors.green[600] : Colors.green[300],
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(12),
-                        topRight: const Radius.circular(12),
-                        bottomLeft: Radius.circular(isUserMessage ? 12 : 0),
-                        bottomRight: Radius.circular(isUserMessage ? 0 : 12),
+          if (!_showQuestionnaire)
+            Expanded(
+              child: ListView.builder(
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  final isUserMessage = message.containsKey('user');
+
+                  return Row(
+                    mainAxisAlignment: isUserMessage
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // <-- cambio aquí
+                    children: [
+                      if (!isUserMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 6.0),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                AssetImage('assets/images/logo_bimental.png'),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 8),
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.70,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: isUserMessage
+                                  ? [Colors.green[400]!, Colors.green[600]!]
+                                  : [Colors.blue[300]!, Colors.blue[500]!],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(18),
+                              topRight: const Radius.circular(18),
+                              bottomLeft:
+                                  Radius.circular(isUserMessage ? 18 : 4),
+                              bottomRight:
+                                  Radius.circular(isUserMessage ? 4 : 18),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(2, 2),
+                                blurRadius: 4,
+                              )
+                            ],
+                          ),
+                          child: Text(
+                            isUserMessage ? message['user']! : message['bot']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              height: 1.3,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      isUserMessage ? message['user']! : message['bot']!,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          if (_showQuestionnaire) ...[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      "Pregunta ${questionCategoryNumber} de ${_questions.length}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      _selectedQuestions.first['texto']!,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  const Text(
-                    'Responde a la siguiente pregunta con tu texto.',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: _finishQuestionnaire,
-                    child: const Text("Finalizar Cuestionario"),
-                  ),
-                ],
+                      if (isUserMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6.0, right: 8.0),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.blue[200],
+                            child:
+                                const Icon(Icons.person, color: Colors.white),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
             ),
-          ],
+          if (_showQuestionnaire)
+            Expanded(
+              child: Align(
+                alignment: Alignment
+                    .topCenter, // 🔹 coloca el contenido al inicio vertical
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 0.0), // 🔹 sin espacio superior
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // 🔹 Texto de opciones (pegado arriba)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 0),
+                          child: Text(
+                            'Las siguientes opciones indican con qué frecuencia ha experimentado cada situación:\n'
+                            '• Nunca (0): No me ha ocurrido. (También: no, nunca, casi nunca).\n'
+                            '• Un poco (1): Me ha ocurrido algunas veces. (También: raras veces, ocasionalmente, sí, poco).\n'
+                            '• Bastante (2): Me ha ocurrido con frecuencia. (También: frecuentemente, casi siempre, sí, bastante).\n'
+                            '• Mucho (3): Me ha ocurrido la mayor parte del tiempo. (También: siempre, sí, mucho).',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1A119B),
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+
+                        // 🔹 Número de pregunta
+                        Text(
+                          "Pregunta ${questionCategoryNumber} de ${_questions.length}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A119B),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 10),
+
+                        // 🔹 Instrucción principal
+                        const Text(
+                          'Por favor, lea cada afirmación y seleccione la opción que mejor refleje '
+                          'con qué frecuencia le ocurrió durante la semana pasada.',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF1A119B),
+                            height: 1.4,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 18),
+
+                        // 🔹 Pregunta principal
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 400),
+                          child: Text(
+                            "${_selectedQuestions.first['texto']!}",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A119B),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 64),
+
+                        // 🔹 Límite de palabras
+                        const Text(
+                          'Máximo 100 palabras.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1A119B),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // 🔹 Botón "Finalizar Cuestionario"
+                        SizedBox(
+                          width: 220,
+                          child: ElevatedButton(
+                            onPressed: _finishQuestionnaire,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2516B0),
+                              foregroundColor: Colors.white,
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              minimumSize: const Size(220, 40),
+                            ),
+                            child: const Text(
+                              "Finalizar Cuestionario",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(

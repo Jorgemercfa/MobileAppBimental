@@ -214,12 +214,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 leftTitles: AxisTitles(
                                   sideTitles: SideTitles(
                                     showTitles: true,
-                                    reservedSize: 28,
+                                    reservedSize:
+                                        40, // más espacio para que no se corte
                                     getTitlesWidget: (value, meta) {
-                                      return Text(value.toInt().toString(),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: azulBimental));
+                                      if (value % 10 != 0) {
+                                        return const SizedBox
+                                            .shrink(); // solo múltiplos de 10
+                                      }
+                                      return Text(
+                                        value.toInt().toString(),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: azulBimental,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      );
                                     },
                                   ),
                                 ),

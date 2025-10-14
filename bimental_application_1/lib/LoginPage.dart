@@ -22,21 +22,64 @@ class LoginPage extends StatelessWidget {
           final UserRepository userRepository = UserRepository();
           List<User> usuariosRegistrados = await userRepository.getUsers();
 
-          User? usuarioAutenticado;
-          for (var usuario in usuariosRegistrados) {
-            if (usuario.email == _emailController.text &&
-                usuario.password == _passwordController.text) {
-              usuarioAutenticado = usuario;
-              break;
-            }
+          // Verificar si el correo existe
+          User? usuarioEncontrado = usuariosRegistrados.firstWhere(
+            (usuario) => usuario.email == _emailController.text,
+            orElse: () => User('', '', '', '', '', ''),
+          );
+
+          if (usuarioEncontrado.email.isEmpty) {
+            // 🔸 Usuario no existente
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text(
+                  'Usuario no encontrado',
+                  style: TextStyle(
+                    color: Color(0xFF1A119B),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                content: const Text(
+                  'Usuario no registrado. '
+                  'Por favor, verifique o regístrese para continuar.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF1A119B),
+                  ),
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1A119B),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      "Aceptar",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+            return;
           }
 
-          if (usuarioAutenticado != null) {
+          // Verificar si la contraseña coincide
+          if (usuarioEncontrado.password == _passwordController.text) {
             await SessionService.saveUserSession(
-              id: usuarioAutenticado.id,
-              email: usuarioAutenticado.email,
-              name: usuarioAutenticado.name,
-              lastName: usuarioAutenticado.lastName,
+              id: usuarioEncontrado.id,
+              email: usuarioEncontrado.email,
+              name: usuarioEncontrado.name,
+              lastName: usuarioEncontrado.lastName,
             );
 
             Navigator.pushReplacement(
@@ -44,8 +87,12 @@ class LoginPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           } else {
+            // 🔸 Contraseña incorrecta
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Credenciales incorrectas')),
+              const SnackBar(
+                content: Text('Contraseña incorrecta'),
+                backgroundColor: Colors.redAccent,
+              ),
             );
           }
         } catch (e) {
@@ -192,7 +239,7 @@ class LoginPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1A119B),
+                    backgroundColor: Colors.green[600],
                     padding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 20),
                   ),

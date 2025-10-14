@@ -6,7 +6,89 @@ class AnswersRepository {
   static List<AnswersUser> answersHistory = [];
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Guarda los resultados del DASS-21 en Firestore, junto con el userId y timestamp.
+  // -----------------------
+  // Clasificadores públicos
+  // -----------------------
+  static String clasificarDepresion(int score) {
+    if (score >= 14) return 'Extremadamente severa';
+    if (score >= 11) return 'Severa';
+    if (score >= 7) return 'Moderada';
+    if (score >= 5) return 'Leve';
+    return 'Sin depresión';
+  }
+
+  static String clasificarAnsiedad(int score) {
+    if (score >= 10) return 'Extremadamente severa';
+    if (score >= 8) return 'Severa';
+    if (score >= 5) return 'Moderada';
+    if (score >= 4) return 'Leve';
+    return 'Sin ansiedad';
+  }
+
+  static String clasificarEstres(int score) {
+    if (score >= 17) return 'Extremadamente severo';
+    if (score >= 13) return 'Severo';
+    if (score >= 10) return 'Moderado';
+    if (score >= 8) return 'Leve';
+    return 'Sin estrés';
+  }
+
+  // -----------------------
+  // Helpers internos
+  // -----------------------
+  static int _toInt(dynamic v) {
+    if (v == null) return 0;
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    if (v is num) return v.toInt();
+    if (v is String) {
+      final parsed = int.tryParse(v);
+      if (parsed != null) return parsed;
+      final pd = double.tryParse(v);
+      if (pd != null) return pd.toInt();
+    }
+    return 0;
+  }
+
+  static String _formatTimestamp(dynamic ts) {
+    try {
+      if (ts == null) return '';
+      if (ts is DateTime) {
+        return DateFormat('yyyy-MM-dd HH:mm:ss').format(ts);
+      } else if (ts is Timestamp) {
+        return DateFormat('yyyy-MM-dd HH:mm:ss').format(ts.toDate());
+      } else {
+        // si es string u otro, intentar parsear o devolver tal cual
+        String s = ts.toString();
+        // si ya está en formato conocido
+        if (RegExp(r'^\d{4}-\d{2}-\d{2}').hasMatch(s)) return s;
+        final tryParse = DateTime.tryParse(s);
+        if (tryParse != null)
+          return DateFormat('yyyy-MM-dd HH:mm:ss').format(tryParse);
+        return s;
+      }
+    } catch (e) {
+      return ts?.toString() ?? '';
+    }
+  }
+
+  static List<AnswersUser> _snapshotToAnswers(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      final timestamp = _formatTimestamp(data['timestamp']);
+      return AnswersUser(
+        userId: data['userId']?.toString() ?? '',
+        timestamp: timestamp,
+        p_depresion: _toInt(data['p_depresion']),
+        p_ansiedad: _toInt(data['p_ansiedad']),
+        p_estres: _toInt(data['p_estres']),
+      );
+    }).toList();
+  }
+
+  // -----------------------
+  // Guardado
+  // -----------------------
   static Future<void> saveDass21Results(
       Map<String, dynamic> results, String userId) async {
     DateTime now = DateTime.now();
@@ -15,24 +97,24 @@ class AnswersRepository {
     AnswersUser newEntry = AnswersUser(
       userId: userId,
       timestamp: timestampStr,
-      p_depresion: results['depresion'] ?? 0,
-      p_ansiedad: results['ansiedad'] ?? 0,
-      p_estres: results['estres'] ?? 0,
+      p_depresion: _toInt(results['depresion']),
+      p_ansiedad: _toInt(results['ansiedad']),
+      p_estres: _toInt(results['estres']),
     );
 
+    // mantener historial local (opcional)
     answersHistory.add(newEntry);
 
     try {
-      // Guardar en la colección principal
       await _firestore.collection('answers').add({
-        'timestamp': now, // Guardar como DateTime
+        'timestamp': now, // guardamos DateTime/Timestamp
         'p_depresion': newEntry.p_depresion,
         'p_ansiedad': newEntry.p_ansiedad,
         'p_estres': newEntry.p_estres,
         'userId': userId,
       });
 
-      // Guardado opcional en estructura optimizada por usuario
+      // estructura optimizada por usuario (opcional)
       try {
         await _firestore
             .collection('user_answers')
@@ -45,7 +127,7 @@ class AnswersRepository {
           'p_estres': newEntry.p_estres,
         });
       } catch (e) {
-        print("Error al guardar en estructura optimizada: $e");
+        print("Warning: no se pudo guardar en user_answers: $e");
       }
 
       print("Datos DASS-21 guardados en Firestore correctamente.");
@@ -54,80 +136,65 @@ class AnswersRepository {
     }
   }
 
-  /// Obtiene todos los resultados de todos los usuarios (solo para administradores)
+  // -----------------------
+  // Lecturas
+  // -----------------------
+  /// Devuelve todos los resultados (admin)
   static Future<List<AnswersUser>> getAllAnswersFromFirestore() async {
     try {
-      List<AnswersUser> allAnswers = [];
-
-      try {
-        QuerySnapshot snapshot = await _firestore
-            .collection('answers')
-            .orderBy('timestamp', descending: true)
-            .get();
-
-        allAnswers = _processSnapshot(snapshot);
-      } catch (e) {
-        // Intento alternativo sin ordenamiento si falla
-        try {
-          QuerySnapshot snapshot = await _firestore.collection('answers').get();
-          allAnswers = _processSnapshot(snapshot);
-          allAnswers.sort((a, b) {
-            try {
-              final dateA =
-                  DateFormat('yyyy-MM-dd HH:mm:ss').parse(a.timestamp);
-              final dateB =
-                  DateFormat('yyyy-MM-dd HH:mm:ss').parse(b.timestamp);
-              return dateB.compareTo(dateA);
-            } catch (e) {
-              return b.timestamp.compareTo(a.timestamp);
-            }
-          });
-        } catch (e) {
-          print("Error en intento alternativo: $e");
-        }
-      }
-
-      return allAnswers;
+      QuerySnapshot snapshot = await _firestore
+          .collection('answers')
+          .orderBy('timestamp', descending: true)
+          .get();
+      return _snapshotToAnswers(snapshot);
     } catch (e) {
-      print("Error en la verificación de admin: $e");
-      return [];
+      // fallback: intentar sin orderBy y luego ordenar localmente
+      try {
+        QuerySnapshot snapshot = await _firestore.collection('answers').get();
+        List<AnswersUser> list = _snapshotToAnswers(snapshot);
+        list.sort((a, b) {
+          final da = DateTime.tryParse(a.timestamp) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+          final db = DateTime.tryParse(b.timestamp) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+          return db.compareTo(da);
+        });
+        return list;
+      } catch (e2) {
+        print("Error getAllAnswersFromFirestore fallback: $e2");
+        return [];
+      }
     }
   }
 
-  /// Obtiene los resultados de un usuario específico
+  /// Devuelve resultados del usuario especificado
   static Future<List<AnswersUser>> getAnswersFromFirestore(
       String userId) async {
-    List<AnswersUser> userAnswers = [];
-
     try {
-      // Consulta principal a la colección 'answers'
       QuerySnapshot snapshot = await _firestore
           .collection('answers')
           .where('userId', isEqualTo: userId)
           .orderBy('timestamp', descending: true)
           .get();
-
-      userAnswers = _processSnapshot(snapshot);
+      return _snapshotToAnswers(snapshot);
     } catch (e) {
-      // Intento 1: Sin ordenamiento
+      // fallback 1: sin ordenar
       try {
         QuerySnapshot snapshot = await _firestore
             .collection('answers')
             .where('userId', isEqualTo: userId)
             .get();
-
-        userAnswers = _processSnapshot(snapshot);
-        userAnswers.sort((a, b) {
-          try {
-            final dateA = DateFormat('yyyy-MM-dd HH:mm:ss').parse(a.timestamp);
-            final dateB = DateFormat('yyyy-MM-dd HH:mm:ss').parse(b.timestamp);
-            return dateB.compareTo(dateA);
-          } catch (e) {
-            return b.timestamp.compareTo(a.timestamp);
-          }
+        List<AnswersUser> list = _snapshotToAnswers(snapshot);
+        list.sort((a, b) {
+          final da = DateTime.tryParse(a.timestamp) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+          final db = DateTime.tryParse(b.timestamp) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+          return db.compareTo(da);
         });
-      } catch (e) {
-        // Intento 2: Estructura optimizada (user_answers)
+        return list;
+      } catch (e2) {
+        // fallback 2: estructura por usuario
         try {
           QuerySnapshot snapshot = await _firestore
               .collection('user_answers')
@@ -135,45 +202,25 @@ class AnswersRepository {
               .collection('results')
               .orderBy('timestamp', descending: true)
               .get();
-
-          userAnswers = _processSnapshot(snapshot, userId);
-        } catch (e) {
-          print("Error al obtener de estructura optimizada: $e");
+          return snapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            final timestamp = _formatTimestamp(data['timestamp']);
+            return AnswersUser(
+              userId: userId,
+              timestamp: timestamp,
+              p_depresion: _toInt(data['p_depresion']),
+              p_ansiedad: _toInt(data['p_ansiedad']),
+              p_estres: _toInt(data['p_estres']),
+            );
+          }).toList();
+        } catch (e3) {
+          print("Error getAnswersFromFirestore fallback: $e3");
+          return [];
         }
       }
     }
-
-    return userAnswers;
   }
 
-  static List<AnswersUser> _processSnapshot(QuerySnapshot snapshot,
-      [String? userId]) {
-    return snapshot.docs.map((doc) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-      // Manejo de timestamp (DateTime, Timestamp o String)
-      String timestamp;
-      if (data['timestamp'] is DateTime) {
-        timestamp = DateFormat('yyyy-MM-dd HH:mm:ss').format(data['timestamp']);
-      } else if (data['timestamp'] is Timestamp) {
-        timestamp = DateFormat('yyyy-MM-dd HH:mm:ss')
-            .format((data['timestamp'] as Timestamp).toDate());
-      } else {
-        timestamp = data['timestamp']?.toString() ?? '';
-      }
-
-      return AnswersUser(
-        userId: userId ?? data['userId'] ?? '',
-        timestamp: timestamp,
-        p_depresion: (data['p_depresion'] ?? 0).toInt(),
-        p_ansiedad: (data['p_ansiedad'] ?? 0).toInt(),
-        p_estres: (data['p_estres'] ?? 0).toInt(),
-      );
-    }).toList();
-  }
-
-  /// Obtiene el historial local
-  static List<AnswersUser> getAnswers() {
-    return answersHistory;
-  }
+  /// Historial local (opcional)
+  static List<AnswersUser> getAnswers() => answersHistory;
 }
