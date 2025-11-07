@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'User.dart';
+import 'session_service.dart';
 
 class UserRepository {
   static final UserRepository instance = UserRepository._internal();
@@ -81,7 +83,8 @@ class UserRepository {
   Future<bool> updatePassword(String email, String newPassword) async {
     try {
       if (email.isEmpty || newPassword.isEmpty) {
-        throw Exception("Email y contraseña son requeridos");
+        print("updatePassword: email o contraseña vacíos");
+        return false;
       }
 
       final querySnapshot = await FirebaseFirestore.instance
@@ -106,7 +109,10 @@ class UserRepository {
   Future<bool> updateUserData(
       String email, String name, String lastName, String phone) async {
     try {
-      if (email.isEmpty) throw Exception("Email es requerido");
+      if (email.isEmpty) {
+        print("updateUserData: email vacío");
+        return false;
+      }
 
       final querySnapshot = await FirebaseFirestore.instance
           .collection("users")
@@ -127,28 +133,100 @@ class UserRepository {
   }
 
   /// 🔹 Nuevo método: solo actualiza los campos enviados en [nuevosDatos]
+  /// Ahora intenta identificar al usuario por (1) uid en el mapa, (2) id en SessionService,
+  /// (3) uid de FirebaseAuth, o (4) email; no lanza excepción visible.
   Future<bool> updateUserDataMap(Map<String, dynamic> nuevosDatos) async {
     try {
-      if (nuevosDatos.isEmpty || !nuevosDatos.containsKey("email")) {
-        throw Exception(
-            "Se requiere al menos el email para identificar al usuario");
+      if (nuevosDatos.isEmpty) {
+        print("updateUserDataMap: no se enviaron datos para actualizar");
+        return false;
       }
 
-      final email = nuevosDatos["email"];
+      // Prioridad: uid (map) > SessionService user_id > firebaseAuth.uid
+      String? uid = nuevosDatos['uid']?.toString();
+      String? email = nuevosDatos['email']?.toString();
 
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection("users")
-          .where("email", isEqualTo: email)
-          .limit(1)
-          .get();
+      // Intentar obtener id/email desde session si no vienen en el mapa
+      if ((uid == null || uid.isEmpty)) {
+        final sessionId = await SessionService.getUserId();
+        if (sessionId != null && sessionId.isNotEmpty) {
+          uid = sessionId;
+        }
+      }
+      if ((email == null || email.isEmpty)) {
+        final sessionEmail = await SessionService.getUserEmail();
+        if (sessionEmail != null && sessionEmail.isNotEmpty) {
+          email = sessionEmail;
+        }
+      }
 
-      if (querySnapshot.docs.isEmpty) return false;
+      // Si todavía no hay, usar FirebaseAuth currentUser
+      final fb_auth.User? firebaseUser =
+          fb_auth.FirebaseAuth.instance.currentUser;
+      if ((uid == null || uid.isEmpty) && firebaseUser != null) {
+        uid = firebaseUser.uid;
+      }
+      if ((email == null || email.isEmpty) && firebaseUser?.email != null) {
+        email = firebaseUser!.email;
+      }
 
-      // Quitamos el email del mapa si no lo quieres sobreescribir en Firestore
+      if ((uid == null || uid.isEmpty) && (email == null || email.isEmpty)) {
+        print("updateUserDataMap: no se encontró identificador (uid/email)");
+        return false;
+      }
+
+      DocumentReference? docRef;
+
+      // Si tenemos uid: intentar localizar por campo 'id' o por docId == uid
+      if (uid != null && uid.isNotEmpty) {
+        final byIdSnapshot = await FirebaseFirestore.instance
+            .collection("users")
+            .where("id", isEqualTo: uid)
+            .limit(1)
+            .get();
+        if (byIdSnapshot.docs.isNotEmpty) {
+          docRef = byIdSnapshot.docs.first.reference;
+        } else {
+          // intentar doc con id == uid
+          final doc = FirebaseFirestore.instance.collection("users").doc(uid);
+          final docSnap = await doc.get();
+          if (docSnap.exists) {
+            docRef = doc;
+          }
+        }
+      }
+
+      // Si no se encontró por uid, intentar buscar por email
+      if (docRef == null && email != null && email.isNotEmpty) {
+        final q = await FirebaseFirestore.instance
+            .collection("users")
+            .where("email", isEqualTo: email)
+            .limit(1)
+            .get();
+        if (q.docs.isNotEmpty) {
+          docRef = q.docs.first.reference;
+        }
+      }
+
+      if (docRef == null) {
+        print(
+            "updateUserDataMap: no se encontró documento de usuario para actualizar");
+        return false;
+      }
+
+      // No queremos sobreescribir identificadores a menos que se quiera cambiar
       Map<String, dynamic> datosActualizados = Map.from(nuevosDatos);
       datosActualizados.remove("email");
+      datosActualizados.remove("uid");
 
-      await querySnapshot.docs.first.reference.update(datosActualizados);
+      if (datosActualizados.isEmpty) {
+        // Si no hay nada que actualizar, devolver true (operación sin cambios)
+        print(
+            "updateUserDataMap: nada que actualizar (solo identificador enviado)");
+        return true;
+      }
+
+      await docRef.update(datosActualizados);
 
       return true;
     } catch (e) {

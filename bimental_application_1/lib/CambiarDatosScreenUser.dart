@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'UserRepository.dart'; // Importar UserRepository
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+import 'UserRepository.dart';
+import 'session_service.dart';
 
 class CambiarDatosScreenUser extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -11,46 +13,105 @@ class CambiarDatosScreenUser extends StatelessWidget {
   CambiarDatosScreenUser({Key? key}) : super(key: key);
 
   void actualizarDatos(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      final UserRepository userRepository = UserRepository();
+    // Validaciones solo si el usuario escribió algo
+    final String emailInput = _emailController.text.trim();
+    final String telefonoInput = _telefonoController.text.trim();
 
-      // Solo actualizar los campos que no estén vacíos
-      Map<String, String> nuevosDatos = {};
-
-      if (_nombresController.text.isNotEmpty) {
-        nuevosDatos["nombres"] = _nombresController.text;
-      }
-      if (_apellidosController.text.isNotEmpty) {
-        nuevosDatos["apellidos"] = _apellidosController.text;
-      }
-      if (_emailController.text.isNotEmpty) {
-        nuevosDatos["email"] = _emailController.text;
-      }
-      if (_telefonoController.text.isNotEmpty) {
-        nuevosDatos["telefono"] = _telefonoController.text;
-      }
-
-      if (nuevosDatos.isEmpty) {
+    if (emailInput.isNotEmpty) {
+      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+      if (!emailRegex.hasMatch(emailInput)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No ingresaste ningún dato para actualizar'),
-          ),
+          const SnackBar(content: Text('Por favor, ingrese un correo válido')),
         );
         return;
       }
+    }
 
-      bool success = await userRepository.updateUserDataMap(nuevosDatos);
-
-      if (success) {
+    if (telefonoInput.isNotEmpty) {
+      final phoneRegex = RegExp(r'^\+?\d{6,15}$');
+      if (!phoneRegex.hasMatch(telefonoInput)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Datos actualizados correctamente')),
+          const SnackBar(
+              content: Text('Por favor, ingrese un número telefónico válido')),
         );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al actualizar los datos')),
-        );
+        return;
       }
+    }
+
+    final UserRepository userRepository = UserRepository();
+
+    Map<String, dynamic> nuevosDatos = {};
+
+    // Ajusta las keys según tu Firestore ('name', 'lastName', 'phone' en este ejemplo)
+    if (_nombresController.text.trim().isNotEmpty) {
+      nuevosDatos["name"] = _nombresController.text.trim();
+    }
+    if (_apellidosController.text.trim().isNotEmpty) {
+      nuevosDatos["lastName"] = _apellidosController.text.trim();
+    }
+    if (emailInput.isNotEmpty) {
+      nuevosDatos["email"] = emailInput;
+    }
+    if (telefonoInput.isNotEmpty) {
+      nuevosDatos["phone"] = telefonoInput;
+    }
+
+    // Añadir identificador del usuario desde SessionService si no fue enviado
+    final sessionId = await SessionService.getUserId();
+    final sessionEmail = await SessionService.getUserEmail();
+    final fb_auth.User? firebaseUser =
+        fb_auth.FirebaseAuth.instance.currentUser;
+
+    if (!nuevosDatos.containsKey("email")) {
+      if (sessionEmail != null && sessionEmail.isNotEmpty) {
+        nuevosDatos["email"] = sessionEmail;
+      } else if (firebaseUser?.email != null) {
+        nuevosDatos["email"] = firebaseUser!.email!;
+      }
+    }
+
+    // Añadir uid (id) preferiblemente desde sesión, si no desde firebaseUser
+    if (!nuevosDatos.containsKey("uid")) {
+      if (sessionId != null && sessionId.isNotEmpty) {
+        nuevosDatos["uid"] = sessionId;
+      } else if (firebaseUser?.uid != null) {
+        nuevosDatos["uid"] = firebaseUser!.uid;
+      }
+    }
+
+    if (!nuevosDatos.containsKey("email") && !nuevosDatos.containsKey("uid")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'No se pudo identificar el usuario. Por favor inicie sesión.'),
+        ),
+      );
+      return;
+    }
+
+    // Si el único dato enviado es el identificador (sin cambios reales), avisar y salir
+    final dataToUpdate = Map<String, dynamic>.from(nuevosDatos)
+      ..remove('email')
+      ..remove('uid');
+    if (dataToUpdate.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('No ingresaste ningún dato para actualizar')),
+      );
+      return;
+    }
+
+    bool success = await userRepository.updateUserDataMap(nuevosDatos);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Datos actualizados correctamente')),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al actualizar los datos')),
+      );
     }
   }
 
@@ -107,14 +168,6 @@ class CambiarDatosScreenUser extends StatelessWidget {
                   fillColor: Colors.white,
                 ),
                 cursorColor: const Color(0xFF1A119B),
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Por favor, ingrese un correo válido';
-                    }
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 20),
               TextFormField(
