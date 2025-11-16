@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 // Clase que maneja la comunicación con la API del modelo DASS-21
 class Dass21Api {
   // URL del endpoint del servidor backend que procesa las respuestas del cuestionario
-  String url = 'http://127.0.0.1:8000/predict/';
+  String url =
+      'https://microserviciobimentalml-production.up.railway.app/predict';
 
   // Método asíncrono que envía las respuestas del usuario a la API para procesarlas
   Future<Map<String, dynamic>> processAnswers(List<String> answers) async {

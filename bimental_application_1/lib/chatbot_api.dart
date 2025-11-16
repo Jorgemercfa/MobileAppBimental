@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatbotService {
-  final String _apiUrl = 'http://127.0.0.1:8000/chat/'; // Tu endpoint local
+  final String _apiUrl =
+      'https://microserviciobimentalml-production.up.railway.app/chat'; // Tu endpoint local
 
   /// Enviar mensaje al backend FastAPI y obtener respuesta
   Future<String> obtenerRespuesta(String mensaje) async {

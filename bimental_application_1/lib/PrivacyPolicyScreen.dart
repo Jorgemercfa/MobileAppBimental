@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
+  final Uri _webUrl =
+      Uri.parse('https://jorgemercfa.github.io/Bimental_landinpage/');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +24,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildSectionTitle('1. Introducción'),
             _buildSectionText(
                 'Esta Política de Privacidad describe cómo nuestra aplicación móvil recopila, usa, almacena, protege y comparte la información de los usuarios en relación con la evaluación aproximada de los niveles de depresión, ansiedad y estrés basada en el cuestionario DASS-21. El uso de la Aplicación está sujeto a la aceptación de esta política.'),
+
             _buildSectionTitle('2. Información Recopilada'),
             _buildSectionText(
                 'Datos personales para la cuenta: Para crear una cuenta y utilizar la evaluación, se solicitará su nombre y correo electrónico. El proporcionar esta información es necesario para el funcionamiento básico de la aplicación.'),
@@ -30,6 +36,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Resultados de la evaluación: Nivel de depresión, ansiedad y estrés según el procesamiento del modelo de Machine Learning. Estos resultados son estrictamente aproximados y no constituyen bajo ningún concepto un diagnóstico médico profesional.'),
             _buildSectionText(
                 'Datos de actividad: Registros de uso de la Aplicación con fines de mantenimiento y mejora técnica.'),
+
             _buildSectionTitle('3. Decisiones Automatizadas'),
             _buildSectionText(
                 'Nuestra aplicación utiliza un modelo de Machine Learning entrenado con un conjunto de datos sintéticos diseñados para reconocer patrones relacionados con la escala DASS-21. A partir de frases de los usuarios, el sistema transforma el texto en información numérica y lo analiza para identificar niveles de depresión, ansiedad o estrés, ofreciendo resultados que van desde leve hasta extremadamente severo.'),
@@ -45,13 +52,16 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Estrés: dificultad para concentrarse, irritabilidad, sensación de sobrecarga, impaciencia o problemas para descansar adecuadamente.'),
             _buildSectionText(
                 'Estos resultados se generan mediante cálculos automáticos del modelo y se complementan con procesos de validación clínica y técnica, garantizando que la información presentada sea confiable y útil para fines de orientación en salud mental.'),
+
             _buildSectionTitle('4. Propósitos del Uso de la Información'),
             _buildSectionText(
                 'Los datos recopilados serán utilizados con los siguientes propósitos esenciales y no esenciales:'),
+
             _buildSectionText(
                 'Finalidad Esencial (Base legal: Ejecución del contrato):'),
             _buildSectionText(
                 'Procesar las respuestas al DASS-21 suministradas y generar resultados de triaje aproximados.'),
+
             _buildSectionText(
                 'Finalidades No Esenciales (Base legal: Consentimiento explícito):'),
             _buildSectionText(
@@ -62,6 +72,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Recomendaciones: Proporcionarle recomendaciones de contacto o recursos de salud mental en caso de resultados elevados. Esta acción requiere su consentimiento expreso por separado:'),
             _buildSectionText(
                 'Sí, acepto recibir recomendaciones o información de contacto basadas en mis resultados.'),
+
             _buildSectionText(
                 'Finalidades Operativas (Base legal: Interés legítimo):'),
             _buildSectionText(
@@ -70,6 +81,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Mejorar la funcionalidad, seguridad y experiencia de usuario de la Aplicación.'),
             _buildSectionText(
                 'Realizar labores de mantenimiento y soporte técnico.'),
+
             _buildSectionTitle('5. Compartición y Transferencia de Datos'),
             _buildSectionText(
                 'La información recopilada no será compartida con terceros, salvo en los siguientes casos:'),
@@ -87,9 +99,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Cuando sea requerido por ley o autoridad competente: Para cumplir con una obligación legal, una orden judicial o una solicitud gubernamental.'),
             _buildSectionText(
                 'Para proteger derechos de seguridad: Cuando sea necesario para investigar, prevenir o tomar medidas respecto a actividades ilegales, fraudes potenciales, situaciones que impliquen amenazas potenciales a la seguridad física de cualquier persona, o para proteger los derechos, propiedad o seguridad de la Aplicación, nuestros usuarios o del público.'),
+
             _buildSectionTitle('6. Almacenamiento y Seguridad'),
             _buildSectionText(
                 'Tomamos medidas de seguridad técnicas y organizativas adecuadas para proteger la información del usuario contra accesos no autorizados, alteraciones, divulgaciones o destrucción. La información se almacena en servidores seguros con tecnologías de cifrado (en tránsito y en reposo) y acceso restringido y auditado.'),
+
             _buildSectionTitle('7. Derechos del Usuario'),
             _buildSectionText('El usuario tiene derecho a:'),
             _buildSectionText(
@@ -108,28 +122,33 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 'Solicitar información sobre las condiciones bajo las cuales se trata sus datos.'),
             _buildSectionText(
                 'Para ejercer estos derechos, el usuario puede contactar al Delegado de Protección de Datos o equipo de soporte a través del correo: equiposoporte@bimental.com. De considerar que no ha sido atendido en el ejercicio de sus derechos, puede presentar una reclamación ante la Autoridad Nacional de Protección de Datos Personales.'),
+
             _buildSectionTitle('8. Responsable del Tratamiento de Datos'),
             _buildSectionText('Nombre / Razón Social: Bimental S.A.C.'),
             _buildSectionText('RUC: 36546858374'),
             _buildSectionText(
                 'Correo electrónico de contacto: contacto@bimental.com'),
+
             _buildSectionTitle('9. Conservación de los Datos'),
             _buildSectionText(
                 'Los datos personales de los usuarios serán conservados mientras la aplicación se mantenga en uso, salvo que exista un procedimiento administrativo o proceso judicial pendiente sobre los derechos de usuario sobre sus datos o ante indicios de fraude. Se conservarán los datos para finalidades de recomendación y de contacto con profesionales de la salud hasta por el plazo de 3 meses, siempre que haya mediado consentimiento previo por parte del usuario titular de los datos.'),
+
             _buildSectionTitle('10. Cambios en la Política de Privacidad'),
             _buildSectionText(
                 'Nos reservamos el derecho de modificar esta política en cualquier momento. Cualquier cambio sustancial será notificado a los usuarios mediante la Aplicación o a través del correo electrónico proporcionado, dándole la oportunidad de revisar y aceptar los nuevos términos antes de que entren en efecto.'),
+
             _buildSectionTitle('11. Información adicional'),
             _buildSectionText(
                 'Si tienes preguntas sobre esta política, puedes contactarnos a través de serviciocliente@bimental.com.'),
+
+            // ⭐ Enlace corregido ⭐
             _buildSectionText(
-                'Además, puedes consultar información sobre el cuestionario (explicación, finalidad y sección “Acerca de”) en nuestra página web oficial: www.bimental.com'),
+                'Además, puedes consultar información sobre el cuestionario (explicación, finalidad y sección “Acerca de”) en nuestra página web oficial: https://jorgemercfa.github.io/Bimental_landinpage/'),
+
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A119B),
                   padding:
@@ -146,26 +165,58 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
+  // --- TÍTULO ---
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
 
+  // --- TEXTO (CON LINK CORREGIDO) ---
   Widget _buildSectionText(String text) {
+    final String urlText = 'https://jorgemercfa.github.io/Bimental_landinpage/';
+
+    if (text.contains(urlText)) {
+      final parts = text.split(urlText);
+      final String before = parts[0].trimRight();
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: RichText(
+          text: TextSpan(
+            style:
+                const TextStyle(color: const Color(0xFF1A119B), fontSize: 16),
+            children: [
+              TextSpan(text: before + ' '),
+              TextSpan(
+                text: urlText,
+                style: const TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    final Uri link = Uri.parse(urlText);
+                    if (await canLaunchUrl(link)) {
+                      await launchUrl(link,
+                          mode: LaunchMode.externalApplication);
+                    }
+                  },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 16),
-      ),
+      child: Text(text,
+          style: const TextStyle(fontSize: 16, color: const Color(0xFF1A119B))),
     );
   }
 }
