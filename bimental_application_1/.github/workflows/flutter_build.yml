@@ -2,33 +2,37 @@ name: Build Android AAB
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Descarga tu repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Instala Flutter
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'   # Cambia si usas otra versión
+          flutter-version: "3.24.0"
 
-      # Obtiene dependencias
       - name: Flutter pub get
         run: flutter pub get
 
-      # Compila el AAB release
       - name: Build AAB
         run: flutter build appbundle --release
 
-      # Guarda el archivo para descargarlo
-      - name: Upload AAB Artifact
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: app-release-aab
           path: build/app/outputs/bundle/release/app-release.aab
