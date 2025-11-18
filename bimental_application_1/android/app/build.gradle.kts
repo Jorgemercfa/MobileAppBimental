@@ -1,15 +1,27 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android") version "2.1.0"  // Correcto y compatbile
+    id("org.jetbrains.kotlin.android") version "2.1.0"
     // El plugin de Flutter SIEMPRE va al final
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// ---------------------------------------------------------
+// 🔐 Cargar key.properties para firmar la app en RELEASE
+// ---------------------------------------------------------
+val keystoreProperties = Properties()
+val keystoreFile = rootProject.file("key.properties")
+
+if (keystoreFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystoreFile))
 }
 
 android {
     namespace = "com.example.bimental_application_1"
     compileSdk = flutter.compileSdkVersion
 
-    // Versión estable recomendada
     ndkVersion = "25.2.9519653"
 
     compileOptions {
@@ -29,14 +41,30 @@ android {
         versionName = flutter.versionName
     }
 
+    // ---------------------------------------------------------
+    // 🔐 Configuración de firma
+    // ---------------------------------------------------------
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+
     buildTypes {
         release {
-            // Evita errores de shrinkResources/minify
+            // Firma REAL para Google Play
+            signingConfig = signingConfigs.getByName("release")
+
+            // Desactivar shrink para evitar errores
             isMinifyEnabled = false
             isShrinkResources = false
+        }
 
-            // Por ahora firma con debug (GitHub Actions lo permite)
-            signingConfig = signingConfigs.getByName("debug")
+        debug {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
