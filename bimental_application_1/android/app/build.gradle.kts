@@ -1,35 +1,40 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("org.jetbrains.kotlin.android") version "1.9.23"  // Recomendado para Flutter 3.24
+    // El plugin de Flutter SIEMPRE debe ir al final
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.example.bimental_application_1"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+
+    // ⚠️ Recomendación: Poner esta versión compatible
+    ndkVersion = "25.2.9519653"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17  // Mejor usar 17 para compatibilidad con Firebase
+        sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
     }
 
     defaultConfig {
         applicationId = "com.example.bimental_application_1"
-        minSdk = 23   // 🔥 Firebase Auth requiere minSdk 23
+
+        // ⚠️ Firebase recomienda mínimo 23, correcto
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
+
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
+            isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("debug")
         }
     }
