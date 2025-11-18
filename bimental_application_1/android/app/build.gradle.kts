@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android") version "1.9.23"  // Recomendado para Flutter 3.24
+    id("org.jetbrains.kotlin.android") version "2.1.0"  // Recomendado para Flutter 3.24
     // El plugin de Flutter SIEMPRE debe ir al final
     id("dev.flutter.flutter-gradle-plugin")
 }
