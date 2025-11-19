@@ -22,7 +22,7 @@ android {
     namespace = "com.example.bimental_application_1"
     compileSdk = flutter.compileSdkVersion
 
-    ndkVersion = "25.2.9519653"
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -45,13 +45,18 @@ android {
     // 🔐 Configuración de firma
     // ---------------------------------------------------------
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String?
-            keyPassword = keystoreProperties["keyPassword"] as String?
-            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
-            storePassword = keystoreProperties["storePassword"] as String?
+    create("release") {
+        val storeFilePath = keystoreProperties["storeFile"] as String?
+        if (storeFilePath != null) {
+            storeFile = file(storeFilePath)
         }
+
+        keyAlias = keystoreProperties["keyAlias"] as String?
+        keyPassword = keystoreProperties["keyPassword"] as String?
+        storePassword = keystoreProperties["storePassword"] as String?
     }
+}
+
 
     buildTypes {
         release {
