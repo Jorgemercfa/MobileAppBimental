@@ -4,7 +4,7 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") version "2.1.0"
-    // El plugin de Flutter SIEMPRE va al final
+    // El plugin de Flutter siempre va al final
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -16,6 +16,8 @@ val keystoreFile = rootProject.file("key.properties")
 
 if (keystoreFile.exists()) {
     keystoreProperties.load(FileInputStream(keystoreFile))
+} else {
+    println("⚠️ WARNING: No se encontró key.properties. La app no se firmará para release.")
 }
 
 android {
@@ -45,31 +47,35 @@ android {
     // 🔐 Configuración de firma
     // ---------------------------------------------------------
     signingConfigs {
-    create("release") {
-        val storeFilePath = keystoreProperties["storeFile"] as String?
-        if (storeFilePath != null) {
-            storeFile = file(storeFilePath)
+        create("release") {
+            val storeFilePath = keystoreProperties["storeFile"] as String?
+            if (!storeFilePath.isNullOrBlank() && file(storeFilePath).exists()) {
+                storeFile = file(storeFilePath)
+                keyAlias = keystoreProperties["keyAlias"] as String?
+                keyPassword = keystoreProperties["keyPassword"] as String?
+                storePassword = keystoreProperties["storePassword"] as String?
+            } else {
+                println("⚠️ WARNING: Keystore no encontrado o ruta inválida. Firma RELEASE deshabilitada temporalmente")
+            }
         }
-
-        keyAlias = keystoreProperties["keyAlias"] as String?
-        keyPassword = keystoreProperties["keyPassword"] as String?
-        storePassword = keystoreProperties["storePassword"] as String?
     }
-}
-
 
     buildTypes {
         release {
-            // Firma REAL para Google Play
-            signingConfig = signingConfigs.getByName("release")
+            val releaseSigning = signingConfigs.findByName("release")
+            if (releaseSigning != null && releaseSigning.storeFile != null) {
+                signingConfig = releaseSigning
+            } else {
+                println("⚠️ WARNING: No se aplicará firma release. Asegúrate de tener key.properties y keystore válidos.")
+            }
 
-            // Desactivar shrink para evitar errores
             isMinifyEnabled = false
             isShrinkResources = false
         }
 
         debug {
-            signingConfig = signingConfigs.getByName("release")
+            // No firmamos debug con release
+            signingConfig = null
         }
     }
 }
