@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      CI: true
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.configureondemand=false"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -25,23 +29,26 @@ jobs:
         with:
           flutter-version: "3.24.0"
 
-      # 👇 Muy importante: ir a la carpeta del proyecto Flutter
-      - name: Go to Flutter project directory
-        run: cd bimental_application_1
+      # Ir al directorio del proyecto Flutter
+      - name: Set working directory
+        run: echo "Working directory set"
+        working-directory: bimental_application_1
 
-      # 👇 El resto de comandos ya corren dentro del directorio
+      # Limpieza antes del build (IMPORTANTE)
+      - name: Flutter clean
+        working-directory: bimental_application_1
+        run: flutter clean
+
       - name: Flutter pub get
-        run: |
-          cd bimental_application_1
-          flutter pub get
+        working-directory: bimental_application_1
+        run: flutter pub get
 
-      - name: Build AAB
-        run: |
-          cd bimental_application_1
-          flutter build appbundle --release
+      - name: Build AAB Release
+        working-directory: bimental_application_1
+        run: flutter build appbundle --release
 
-      - name: Upload AAB
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-aab
+          name: app-release
           path: bimental_application_1/build/app/outputs/bundle/release/app-release.aab
